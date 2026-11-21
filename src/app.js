@@ -146,41 +146,53 @@
     });
   }
 
-  /* ---------- story: four marks ---------- */
+  /* ---------- story: every print in the collection ---------- */
   var MARKS = [
-    { id:'chevron', name:'Chevron', img:'media/pat-maitri.jpg', cap:'Maitri kimono, detail', on:['maitri'],
-      see:'A column of arrowheads, one above the next, all pointing the same way.',
-      read:'We read it as a path. It is the direction a family has been walking for longer than anyone can remember, and the reason the columns never turn back.',
-      svg:'<svg viewBox="0 0 80 120"><path d="M20 38 40 18 60 38M20 66 40 46 60 66M20 94 40 74 60 94M20 122 40 102 60 122"/></svg>' },
-    { id:'bars', name:'House', img:'media/pat-maitri.jpg', cap:'Maitri kimono, detail', on:['maitri'],
-      see:'A pointed roof drawn twice, with five short bars stacked beneath it.',
-      read:'We read it as the house and what it holds. The roof is shelter. The bars are what is stored under it: grain, cloth, the people inside.',
-      svg:'<svg viewBox="0 0 80 120"><path d="M12 44 40 12 68 44M24 44 40 26 56 44M12 58H68M12 72H68M12 86H68M12 100H68M12 114H68"/></svg>' },
-    { id:'tooth', name:'Tooth', img:'media/pat-midori.jpg', cap:'Haritha kimono, detail', on:['midori','aiko','hikari'],
-      see:'Triangles set point to edge in a long band, like a row of teeth.',
-      read:'We read it as a guard. Wherever it runs, down a seam or along a hem, it marks the edge of something worth keeping safe.',
-      svg:'<svg viewBox="0 0 80 120"><path d="M14 8V112M14 8 62 26 14 44 62 62 14 80 62 98 14 112M62 8V112"/></svg>' },
-    { id:'cross', name:'Crossroads', img:'media/pat-hikari.jpg', cap:'Prakasha kimono, detail', on:['hikari'],
-      see:'A grid of small squares, each one crossed from corner to corner.',
-      read:'We read it as the meeting place. Four roads arrive at one point, and the square repeats because every village has one.',
-      svg:'<svg viewBox="0 0 80 120"><path d="M10 20H70V100H10ZM10 60H70M40 20V100M10 20 40 60 10 100M40 20 70 60 40 100M40 20 10 60 40 100M70 20 40 60 70 100"/></svg>' }
+    { h:'maitri', name:'Chevron and house', on:['maitri'],
+      see:'Off-white marks on black. Columns of arrowheads run between pointed blocks filled with short bars.',
+      read:'We read the arrowheads as a path, and the blocks as the house it leads back to.' },
+    { h:'midori', name:'Tooth', on:['midori'],
+      see:'Brown triangles set point to edge in long bands, with rows of small diamonds between them.',
+      read:'We read it as a guard: a border that keeps what is inside it.' },
+    { h:'aiko', name:'Tooth and thread', on:['aiko'],
+      see:'The same teeth in cream on green, running between groups of fine lines.',
+      read:'The lines are the thread. The teeth are where it is tied off.' },
+    { h:'hikari', name:'Crossroads', on:['hikari'],
+      see:'Red on cream. Bands of triangles sit beside small squares, each crossed corner to corner.',
+      read:'We read the crossed square as a meeting place: four roads arriving at one point.' },
+    { h:'vasanta', name:'Diamond', on:['vasanta'],
+      see:'A black lattice of diamonds and dots running down a pale yellow edge.',
+      read:'We read the diamond as an eye that stays open. It sits on the edge of the cloth and watches.' },
+    { h:'padma', name:'Star', on:['padma'],
+      see:'Six-pointed stars set inside hexagons, purple on cream.',
+      read:'We read it as the night sky, used the way it was first used: as a map.' },
+    { h:'shunya', name:'Field', on:['shunya'],
+      see:'A grid of small squares, each filled with loose stamped marks, pink on cream.',
+      read:'We read it as land seen from above. Every plot is the same size and planted differently.' },
+    { h:'yashodhara', name:'Fan', on:['yashodhara'],
+      see:'Rows of overlapping fans, like shells or scales, in plum.',
+      read:'We read it as water: one wave laid over the last.' },
+    { h:'surya', name:'Sun band', on:['surya'],
+      see:'Cream flowers on green, crossed by a blue band of circles and arcs.',
+      read:'We read the circles as the sun, crossing from one edge of the cloth to the other.' },
+    { h:'darvish', name:'Paisley', on:['darvish'],
+      see:'Teardrop shapes and flowers arranged in panels, on turquoise.',
+      read:'Paisley is a teardrop motif that came out of Persia and India. Here it is a reminder that cloth travels, and patterns travel with it.' },
+    { h:'mani', name:'Sprig', on:['mani'],
+      see:'Small gold sprigs scattered over orange, above a banded border.',
+      read:'We read each sprig as a seed: small, repeated, and enough to cover the whole field.' }
   ];
   var markAt = -1, story = document.querySelector('.v-story');
-  function tileOf(m){                                  // the mark, repeated, becomes the page's surface
-    var c = document.createElement('canvas'); c.width = 160; c.height = 240;
-    var x = c.getContext('2d'); x.strokeStyle = 'rgba(236,228,214,.22)'; x.lineWidth = 3; x.lineCap = 'square';
-    var p = new Path2D(m.svg.match(/d="([^"]+)"/)[1]);
-    x.stroke(p); x.translate(80, 120); x.stroke(p); x.translate(-160, 0); x.stroke(p); x.translate(160, -240); x.stroke(p); x.translate(-160,0); x.stroke(p);
-    return 'url(' + c.toDataURL() + ')';
-  }
   $('marks').innerHTML = MARKS.map(function(m,i){
-    return '<section class="mk" data-i="'+i+'" aria-label="'+m.name+'"><figure class="mk-cloth"><img src="'+m.img+'" alt="'+m.cap+'" loading="lazy"><figcaption>'+m.cap+'</figcaption></figure>'
-      + '<div class="mk-text"><div class="mk-glyph" aria-hidden="true">'+m.svg+'</div><h4 class="mk-name">'+m.name+'</h4><p class="mk-see">'+m.see+'</p><p class="mk-read">'+m.read+'</p>'
-      + '<p class="mk-on">Worn on'+m.on.map(function(h){ return '<a href="#piece-'+h+'">'+esc(P[h].t)+'</a>'; }).join('')+'</p></div></section>';
+    var p = P[m.h], cap = esc(p.f);
+    return '<section class="mk" data-i="'+i+'" aria-label="'+m.name+'">'
+      + '<figure class="mk-sw"><img src="media/sw/'+m.h+'.jpg" alt="'+m.name+' pattern, drawn flat" loading="lazy"></figure>'
+      + '<div class="mk-text"><p class="mk-n">'+two(i+1)+' / '+two(MARKS.length)+'</p><h4 class="mk-name">'+m.name+'</h4><p class="mk-see">'+m.see+'</p><p class="mk-read">'+m.read+'</p>'
+      + '<a class="mk-cloth" href="#piece-'+m.h+'"><img src="media/cl/'+m.h+'.jpg" alt="" loading="lazy"><span><b>On the cloth</b>'+cap+'</span></a></div></section>';
   }).join('');
   function showMark(i){
     if (i === markAt) return; markAt = i;
-    var sp = $('storyPat'); sp.style.backgroundImage = tileOf(MARKS[i]); sp.style.backgroundSize = '160px 240px';
+    var sp = $('storyPat'); sp.style.backgroundImage = 'url(media/sw/'+MARKS[i].h+'.jpg)'; sp.style.backgroundSize = '420px 420px';
   }
   if ('IntersectionObserver' in window){
     var mio = new IntersectionObserver(function(es){ es.forEach(function(e){ if (e.isIntersecting) showMark(+e.target.getAttribute('data-i')); }); }, { root:story, rootMargin:'-45% 0px -45% 0px' });
