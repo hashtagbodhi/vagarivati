@@ -16,6 +16,9 @@
 
   /* ---------- static parts ---------- */
   $('cats').innerHTML = '<a href="#shop" data-cat="shop">All</a>' + cats.map(function(c){ return '<a href="#'+c.slug+'" data-cat="'+c.slug+'">'+c.name+'</a>'; }).join('') + '<a href="#story" data-cat="story">Story</a>';
+  $('menuList').innerHTML = '<a href="#shop" data-cat="shop"><span>All pieces</span><i>'+all.length+'</i></a>'
+    + cats.map(function(c){ return '<a href="#'+c.slug+'" data-cat="'+c.slug+'"><span>'+c.name+'</span><i>'+c.items.length+'</i></a>'; }).join('')
+    + '<a class="m-story" href="#story" data-cat="story"><span>Story</span><i>The collection and its prints</i></a>';
   var gl=''; for (var g=0;g<24;g++) gl+='<i></i>'; $('gridlines').innerHTML = gl;
 
   /* ---------- names: one word ---------- */
@@ -29,6 +32,8 @@
   function setFilter(f){
     var c = catBy[f];
     cells.forEach(function(t){ t.hidden = !!c && t.getAttribute('data-cat')!==f; });
+    var shown = cells.filter(function(t){ return !t.hidden; }).length;
+    $('wallNow').innerHTML = '<b>'+(c ? c.name : 'All pieces')+'</b><span>'+shown+' pieces</span><i>Change</i>';
     if (S.filter !== f){ wall.classList.remove('swap'); void wall.offsetWidth; wall.classList.add('swap'); }
     S.filter = f;
   }
@@ -62,7 +67,7 @@
   function syncChrome(){
     var list = S.view==='home' && inCatalog();
     app.classList.toggle('solid', S.view==='home' && home.scrollTop > home.clientHeight - 80);
-    [].forEach.call(document.querySelectorAll('#cats a'), function(a){
+    [].forEach.call(document.querySelectorAll('#cats a, #menuList a'), function(a){
       var k = a.getAttribute('data-cat');
       a.setAttribute('aria-current', (list && k===S.filter) || (S.view==='piece' && S.piece && k===S.piece.c) || (S.view==='story' && k==='story'));
     });
@@ -72,7 +77,7 @@
 
   /* ---------- sound: the film carries the music ---------- */
   var film = $('film'), wantSound = true, soundBtn = $('soundBtn');
-  function paintSound(){ var on = !film.muted && !film.paused; soundBtn.textContent = on ? 'Sound on' : 'Sound off'; soundBtn.setAttribute('aria-pressed', on); }
+  function paintSound(){ var on = !film.muted && !film.paused; soundBtn.textContent = $('soundBtn2').textContent = on ? 'Sound on' : 'Sound off'; soundBtn.setAttribute('aria-pressed', on); }
   function playFilm(){
     film.muted = !wantSound;
     var pr = film.play();
@@ -81,7 +86,7 @@
   }
   function firstTouch(){ if (wantSound && (film.muted || film.paused)) playFilm(); }
   ['pointerdown','keydown'].forEach(function(ev){ window.addEventListener(ev, firstTouch, { once:true, capture:true }); });
-  soundBtn.onclick = function(){ wantSound = film.muted || film.paused; playFilm(); };
+  soundBtn.onclick = $('soundBtn2').onclick = function(){ wantSound = film.muted || film.paused; playFilm(); };
   film.addEventListener('volumechange', paintSound);
 
   /* ---------- piece ---------- */
@@ -174,6 +179,7 @@
       + f.items.map(function(h){ return '<button type="button" class="sw" data-h="'+h+'" aria-label="'+MARKS[h].name+'"><img src="media/sw/'+h+'.jpg" alt="" loading="lazy"><span>'+MARKS[h].name+'</span></button>'; }).join('')
       + '</div></div>';
   }).join('');
+  if (narrow.matches) document.querySelector('.fam').appendChild($('pgView'));
   function showMark(h){
     if (h === markAt) return; markAt = h; var m = MARKS[h], p = P[h];
     [].forEach.call(document.querySelectorAll('.sw'), function(b){ b.setAttribute('aria-pressed', b.getAttribute('data-h')===h); });
@@ -187,7 +193,7 @@
   $('pgGrid').addEventListener('click', function(e){
     var b = e.target.closest('.sw'); if (!b) return;
     showMark(b.getAttribute('data-h')); snd('tick');
-    if (narrow.matches) $('pgView').scrollIntoView({ behavior:'smooth', block:'start' });
+    if (narrow.matches){ b.closest('.fam').appendChild($('pgView')); $('pgView').scrollIntoView({ behavior:'smooth', block:'nearest' }); }
   });
 
   /* ---------- policies ---------- */
@@ -289,6 +295,16 @@
     if (line) line.q++; else bag.push({ h:p.h, id:v.id, s:v.s, q:1 });
     renderBag(); snd('toll'); openBag(true);
   };
+  var menuEl = $('menu'), menuOpen = false;
+  function openMenu(o){
+    if (o !== menuOpen) snd('sheet');
+    menuOpen = o; menuEl.classList.toggle('open', o); menuEl.setAttribute('aria-hidden', !o); menuEl.inert = !o;
+    $('scrim').hidden = !o && !bagOpen;
+    if (o) $('menuClose').focus({preventScroll:true});
+  }
+  $('menuBtn').onclick = $('wallNow').onclick = function(){ openMenu(true); };
+  $('menuClose').onclick = function(){ openMenu(false); };
+  menuEl.addEventListener('click', function(e){ if (e.target.closest('a')) openMenu(false); });
   var bagEl = $('bag'), bagOpen = false, lastFocus = null;
   function openBag(o){
     if (o !== bagOpen) snd('sheet');
@@ -296,7 +312,7 @@
     bagEl.setAttribute('aria-hidden', !o); bagEl.inert = !o;
     if (o){ lastFocus = document.activeElement; $('bagClose').focus({preventScroll:true}); } else if (lastFocus && lastFocus.focus) lastFocus.focus({preventScroll:true});
   }
-  $('bagBtn').onclick = function(){ openBag(true); }; $('bagClose').onclick = $('scrim').onclick = function(){ openBag(false); };
+  $('bagBtn').onclick = function(){ openBag(true); }; $('bagClose').onclick = function(){ openBag(false); }; $('scrim').onclick = function(){ if (menuOpen) openMenu(false); if (bagOpen) openBag(false); };
   var toastT; function toast(t){ var el = $('toast'); el.textContent = t; el.classList.add('on'); clearTimeout(toastT); toastT = setTimeout(function(){ el.classList.remove('on'); }, 1600); }
 
   /* ---------- grid overlay ---------- */
@@ -317,6 +333,7 @@
   function route(){
     var h = (location.hash || '#home').slice(1), from = S.view, first = !started; started = true;
     if (bagOpen) openBag(false);
+    if (menuOpen) openMenu(false);
     if (h !== 'system') S.last = h;
     if (h==='shop' || catBy[h]){
       var same = S.filter === h && (from==='piece' || from==='system') && inCatalog();
@@ -353,7 +370,7 @@
     if (e.metaKey || e.ctrlKey || e.altKey) return;
     var k = e.key;
     if (k==='Escape'){
-      if (bagOpen) openBag(false); else if (S.view==='piece') go(S.list); else if (S.view==='story' || S.view==='info') go('shop'); else if (S.view==='system') go(S.last);
+      if (menuOpen) openMenu(false); else if (bagOpen) openBag(false); else if (S.view==='piece') go(S.list); else if (S.view==='story' || S.view==='info') go('shop'); else if (S.view==='system') go(S.last);
       return;
     }
     if (bagOpen) return;

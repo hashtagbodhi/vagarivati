@@ -4,6 +4,7 @@
     <a class="brand" href="#home" aria-label="Vagari Vati, home">{{MONO}}</a>
     <nav class="cats" id="cats" aria-label="Categories"></nav>
     <div class="tools">
+      <button type="button" class="tool" id="menuBtn" aria-haspopup="dialog">Menu</button>
       <button type="button" class="tool" id="soundBtn" aria-pressed="false">Sound off</button>
       <a href="#system" class="tool" id="sysLink">System</a>
       <button type="button" class="tool" id="gridBtn" aria-pressed="false">Grid</button>
@@ -27,9 +28,10 @@
       </div>
       <div class="catalog" id="catalog">
         <div class="fx" aria-hidden="true"><i class="fx-pat"></i><i class="fx-pat fx-slip"></i><i class="fx-grain"></i></div>
+        <button type="button" class="wall-now" id="wallNow"></button>
         <div class="wall" id="wall"></div>
         <footer class="end grid">
-          <p>&copy; 2026 Vagari Vati, by Justin Titus</p>
+          <p class="sign"><b>Vagari Vati</b><span>Discover Destiny</span></p>
           <nav class="end-links" aria-label="Policies"><a href="#shipping">Shipping</a><a href="#returns">Returns</a><a href="#privacy">Privacy</a><a href="#terms">Terms</a></nav>
           <div class="end-r"><a href="https://www.instagram.com/vagarivati" target="_blank" rel="noopener">Instagram</a><button type="button" class="totop"><i class="ic ic-sword"></i>Top</button></div>
         </footer>
@@ -64,6 +66,10 @@
           <nav class="p-links" aria-label="Policies"><a href="#shipping">Shipping</a><a href="#returns">Returns</a><a href="#privacy">Privacy</a><a href="#terms">Terms</a></nav>
           <a class="neighbor next" id="pieceNext" href="#"><span></span><i class="chev r"></i></a>
         </div>
+        <footer class="p-sign">
+          <b>Vagari Vati</b><span>Discover Destiny</span>
+          <nav aria-label="Policies"><a href="#shipping">Shipping</a><a href="#returns">Returns</a><a href="#privacy">Privacy</a><a href="#terms">Terms</a></nav>
+        </footer>
       </div>
     </section>
 
@@ -82,7 +88,7 @@
 
         <section class="st-sec" aria-label="The patterns">
           <h3 class="st-h">Eleven prints in four families</h3>
-          <div class="st-side"><span class="ilab"><i class="ic ic-eye"></i>The patterns</span><span>Point at a print to read it</span></div>
+          <div class="st-side"><span class="ilab"><i class="ic ic-eye"></i>The patterns</span><span>Choose a print to read it</span></div>
           <div class="st-body">
             <p>In much of West Africa, cloth is a place to keep memory. On Malian mud cloth, <i>b&ograve;g&ograve;lanfini</i>, each mark is painted by hand in fermented mud and stands for something its maker knows: a place, a saying, a passage in a life.</p>
             <p>Most of the prints here are made of the same kinds of shapes. A few, the florals and the paisley, came by other roads, and we say so where they do.</p>
@@ -110,7 +116,7 @@
           </div>
         </section>
         <footer class="end grid">
-          <p>&copy; 2026 Vagari Vati, by Justin Titus</p>
+          <p class="sign"><b>Vagari Vati</b><span>Discover Destiny</span></p>
           <nav class="end-links" aria-label="Policies"><a href="#shipping">Shipping</a><a href="#returns">Returns</a><a href="#privacy">Privacy</a><a href="#terms">Terms</a></nav>
           <div class="end-r"><a href="https://www.instagram.com/vagarivati" target="_blank" rel="noopener">Instagram</a><button type="button" class="totop"><i class="ic ic-sword"></i>Top</button></div>
         </footer>
@@ -128,7 +134,7 @@
         </article>
       </div>
       <footer class="end grid">
-      <p>&copy; 2026 Vagari Vati, by Justin Titus</p>
+      <p class="sign"><b>Vagari Vati</b><span>Discover Destiny</span></p>
       <nav class="end-links" aria-label="Policies"><a href="#shipping">Shipping</a><a href="#returns">Returns</a><a href="#privacy">Privacy</a><a href="#terms">Terms</a></nav>
       <div class="end-r"><a href="https://www.instagram.com/vagarivati" target="_blank" rel="noopener">Instagram</a><button type="button" class="totop"><i class="ic ic-sword"></i>Top</button></div>
     </footer>
@@ -187,6 +193,18 @@
         <a class="btn solid" id="checkout" href="#" target="_blank" rel="noopener">Check out</a>
         <p class="fine">Shipping and taxes are calculated at checkout, which opens on vagarivati.com.</p>
       </div>
+    </div>
+  </aside>
+
+  <aside class="menu" id="menu" role="dialog" aria-modal="true" aria-label="Menu" aria-hidden="true" inert>
+    <div class="menu-head">
+      <p class="bag-t">Menu</p>
+      <button type="button" class="tool" id="menuClose">Close</button>
+    </div>
+    <nav class="menu-list" id="menuList" aria-label="Sections"></nav>
+    <div class="menu-foot">
+      <button type="button" class="tool" id="soundBtn2">Sound off</button>
+      <span><a href="#shipping">Shipping</a><a href="#returns">Returns</a><a href="#privacy">Privacy</a><a href="#terms">Terms</a></span>
     </div>
   </aside>
 
