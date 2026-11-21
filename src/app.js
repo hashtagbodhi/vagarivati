@@ -52,7 +52,7 @@
     var gx = g.getContext('2d'), im = gx.createImageData(220,220), d = im.data;
     for (var i=0;i<d.length;i+=4){ var v = Math.random(); d[i]=d[i+1]=d[i+2]=255; d[i+3] = v > .5 ? Math.floor(Math.pow(v,3)*120) : 0; }
     gx.putImageData(im,0,0);
-    catalog.style.setProperty('--print', 'url('+c.toDataURL()+')');
+    app.style.setProperty('--print', 'url('+c.toDataURL()+')');
     app.style.setProperty('--grain', 'url('+g.toDataURL()+')');
   })();
   function fit(){ app.style.setProperty('--vh', home.clientHeight + 'px'); }
@@ -108,7 +108,8 @@
     S.size = null;
     $('pieceBack').href = '#' + S.list; $('pieceBackLabel').textContent = catBy[S.list] ? catBy[S.list].name : 'All';
     $('pieceCrumb').textContent = c.name + ', ' + two(k+1) + ' of ' + two(c.items.length);
-    var ti = $('pieceTitle'); ti.textContent = p.t; ti.classList.toggle('long', p.t.length > 8);
+    var ti = $('pieceTitle'); ti.setAttribute('aria-label', p.t); ti.classList.toggle('long', p.t.length > 8);
+    ti.innerHTML = p.t.split('').map(function(ch,i){ return '<span aria-hidden="true" style="--i:'+i+'">'+esc(ch)+'</span>'; }).join('');
     $('piecePrice').textContent = priceOf(p);
     $('pieceDesc').innerHTML = p.d.map(function(t){ return '<p>'+esc(t.replace(/([a-z]\.)([A-Z])/g,'$1 $2'))+'</p>'; }).join('');
     thumbs.innerHTML = p.i.map(function(f,i){ return '<button type="button" role="tab" data-i="'+i+'" aria-label="Photo '+(i+1)+'"><img src="'+IMG+f+'" alt=""></button>'; }).join('');
@@ -128,7 +129,7 @@
     [].forEach.call($('sizes').children, function(b){ b.setAttribute('aria-checked', b.getAttribute('data-id')===S.size); });
     if (!$('addBtn').disabled) $('addBtn').textContent = 'Add to bag';
   }
-  $('sizes').addEventListener('click', function(e){ var b = e.target.closest('button'); if (b && !b.disabled) pickSize(b.getAttribute('data-id')); });
+  $('sizes').addEventListener('click', function(e){ var b = e.target.closest('button'); if (b && !b.disabled){ pickSize(b.getAttribute('data-id')); snd('tick'); } });
   thumbs.addEventListener('click', function(e){ var b = e.target.closest('button'); if (b) showImg(+b.getAttribute('data-i')); });
   $('pPhoto').addEventListener('click', function(){ showImg(S.img+1); });
 
@@ -146,58 +147,89 @@
     });
   }
 
-  /* ---------- story: every print in the collection ---------- */
-  var MARKS = [
-    { h:'maitri', name:'Chevron and house', on:['maitri'],
-      see:'Off-white marks on black. Columns of arrowheads run between pointed blocks filled with short bars.',
-      read:'We read the arrowheads as a path, and the blocks as the house it leads back to.' },
-    { h:'midori', name:'Tooth', on:['midori'],
-      see:'Brown triangles set point to edge in long bands, with rows of small diamonds between them.',
-      read:'We read it as a guard: a border that keeps what is inside it.' },
-    { h:'aiko', name:'Tooth and thread', on:['aiko'],
-      see:'The same teeth in cream on green, running between groups of fine lines.',
-      read:'The lines are the thread. The teeth are where it is tied off.' },
-    { h:'hikari', name:'Crossroads', on:['hikari'],
-      see:'Red on cream. Bands of triangles sit beside small squares, each crossed corner to corner.',
-      read:'We read the crossed square as a meeting place: four roads arriving at one point.' },
-    { h:'vasanta', name:'Diamond', on:['vasanta'],
-      see:'A black lattice of diamonds and dots running down a pale yellow edge.',
-      read:'We read the diamond as an eye that stays open. It sits on the edge of the cloth and watches.' },
-    { h:'padma', name:'Star', on:['padma'],
-      see:'Six-pointed stars set inside hexagons, purple on cream.',
-      read:'We read it as the night sky, used the way it was first used: as a map.' },
-    { h:'shunya', name:'Field', on:['shunya'],
-      see:'A grid of small squares, each filled with loose stamped marks, pink on cream.',
-      read:'We read it as land seen from above. Every plot is the same size and planted differently.' },
-    { h:'yashodhara', name:'Fan', on:['yashodhara'],
-      see:'Rows of overlapping fans, like shells or scales, in plum.',
-      read:'We read it as water: one wave laid over the last.' },
-    { h:'surya', name:'Sun band', on:['surya'],
-      see:'Cream flowers on green, crossed by a blue band of circles and arcs.',
-      read:'We read the circles as the sun, crossing from one edge of the cloth to the other.' },
-    { h:'darvish', name:'Paisley', on:['darvish'],
-      see:'Teardrop shapes and flowers arranged in panels, on turquoise.',
-      read:'Paisley is a teardrop motif that came out of Persia and India. Here it is a reminder that cloth travels, and patterns travel with it.' },
-    { h:'mani', name:'Sprig', on:['mani'],
-      see:'Small gold sprigs scattered over orange, above a banded border.',
-      read:'We read each sprig as a seed: small, repeated, and enough to cover the whole field.' }
+  /* ---------- story: the prints, sorted into four families, with one viewer ---------- */
+  var FAMS = [
+    { name:'Marks', note:'Signs drawn by hand', items:['maitri','hikari','vasanta'] },
+    { name:'Bands', note:'Teeth and stripes', items:['midori','aiko'] },
+    { name:'Fields', note:'One shape, repeated', items:['padma','shunya','yashodhara'] },
+    { name:'Flora', note:'Flowers and paisley', items:['surya','darvish','mani'] }
   ];
-  var markAt = -1, story = document.querySelector('.v-story');
-  $('marks').innerHTML = MARKS.map(function(m,i){
-    var p = P[m.h], cap = esc(p.f);
-    return '<section class="mk" data-i="'+i+'" aria-label="'+m.name+'">'
-      + '<figure class="mk-sw"><img src="media/sw/'+m.h+'.jpg" alt="'+m.name+' pattern, drawn flat" loading="lazy"></figure>'
-      + '<div class="mk-text"><p class="mk-n">'+two(i+1)+' / '+two(MARKS.length)+'</p><h4 class="mk-name">'+m.name+'</h4><p class="mk-see">'+m.see+'</p><p class="mk-read">'+m.read+'</p>'
-      + '<a class="mk-cloth" href="#piece-'+m.h+'"><img src="media/cl/'+m.h+'.jpg" alt="" loading="lazy"><span><b>On the cloth</b>'+cap+'</span></a></div></section>';
+  var MARKS = {
+    maitri:{ name:'Chevron and house', see:'Off-white marks on black. Columns of arrowheads run between pointed blocks filled with short bars.', read:'We read the arrowheads as a path, and the blocks as the house it leads back to.' },
+    hikari:{ name:'Crossroads', see:'Red on cream. Bands of triangles sit beside small squares, each crossed corner to corner.', read:'We read the crossed square as a meeting place: four roads arriving at one point.' },
+    vasanta:{ name:'Diamond', see:'A black lattice of diamonds and dots running down a pale yellow edge.', read:'We read the diamond as an eye that stays open. It sits on the edge of the cloth and watches.' },
+    midori:{ name:'Tooth', see:'Brown triangles set point to edge in long bands, with rows of small diamonds between them.', read:'We read it as a guard: a border that keeps what is inside it.' },
+    aiko:{ name:'Tooth and thread', see:'The same teeth in cream on green, running between groups of fine lines.', read:'The lines are the thread. The teeth are where it is tied off.' },
+    padma:{ name:'Star', see:'Six-pointed stars set inside hexagons, purple on cream.', read:'We read it as the night sky, used the way it was first used: as a map.' },
+    shunya:{ name:'Field', see:'A grid of small squares, each filled with loose stamped marks, pink on cream.', read:'We read it as land seen from above. Every plot is the same size and planted differently.' },
+    yashodhara:{ name:'Fan', see:'Rows of overlapping fans, like shells or scales, in plum.', read:'We read it as water: one wave laid over the last.' },
+    surya:{ name:'Sun band', see:'Cream flowers on green, crossed by a blue band of circles and arcs.', read:'We read the circles as the sun, crossing from one edge of the cloth to the other.' },
+    darvish:{ name:'Paisley', see:'Teardrop shapes and flowers arranged in panels, on turquoise.', read:'Paisley is a teardrop motif that came out of Persia and India. Here it is a reminder that cloth travels, and patterns travel with it.' },
+    mani:{ name:'Sprig', see:'Small gold sprigs scattered over orange, above a banded border.', read:'We read each sprig as a seed: small, repeated, and enough to cover the whole field.' }
+  };
+  var ORDER = []; FAMS.forEach(function(f){ f.items.forEach(function(h){ ORDER.push(h); }); });
+  var markAt = null, story = document.querySelector('.v-story');
+  $('pgGrid').innerHTML = FAMS.map(function(f){
+    return '<div class="fam"><p class="fam-h"><b>'+f.name+'</b><span>'+f.note+'</span></p><div class="fam-row">'
+      + f.items.map(function(h){ return '<button type="button" class="sw" data-h="'+h+'" aria-label="'+MARKS[h].name+'"><img src="media/sw/'+h+'.jpg" alt="" loading="lazy"><span>'+MARKS[h].name+'</span></button>'; }).join('')
+      + '</div></div>';
   }).join('');
-  function showMark(i){
-    if (i === markAt) return; markAt = i;
-    var sp = $('storyPat'); sp.style.backgroundImage = 'url(media/sw/'+MARKS[i].h+'.jpg)'; sp.style.backgroundSize = '420px 420px';
+  function showMark(h){
+    if (h === markAt) return; markAt = h; var m = MARKS[h], p = P[h];
+    [].forEach.call(document.querySelectorAll('.sw'), function(b){ b.setAttribute('aria-pressed', b.getAttribute('data-h')===h); });
+    $('pvImg').src = 'media/sw/'+h+'.jpg'; $('pvImg').alt = m.name + ' pattern, drawn flat';
+    $('pvN').textContent = two(ORDER.indexOf(h)+1) + ' / ' + two(ORDER.length);
+    $('pvName').textContent = m.name; $('pvSee').textContent = m.see; $('pvRead').textContent = m.read;
+    $('pvCloth').href = '#piece-'+h; $('pvClothImg').src = 'media/cl/'+h+'.jpg'; $('pvClothName').textContent = p.f;
+    var sp = $('storyPat'); sp.style.backgroundImage = 'url(media/sw/'+h+'.jpg)'; sp.style.backgroundSize = '420px 420px';
   }
-  if ('IntersectionObserver' in window){
-    var mio = new IntersectionObserver(function(es){ es.forEach(function(e){ if (e.isIntersecting) showMark(+e.target.getAttribute('data-i')); }); }, { root:story, rootMargin:'-45% 0px -45% 0px' });
-    [].forEach.call(document.querySelectorAll('.mk'), function(el){ mio.observe(el); });
+  $('pgGrid').addEventListener('pointerover', function(e){ var b = e.target.closest('.sw'); if (b && e.pointerType==='mouse') showMark(b.getAttribute('data-h')); });
+  $('pgGrid').addEventListener('click', function(e){
+    var b = e.target.closest('.sw'); if (!b) return;
+    showMark(b.getAttribute('data-h')); snd('tick');
+    if (narrow.matches) $('pgView').scrollIntoView({ behavior:'smooth', block:'start' });
+  });
+
+  /* ---------- policies ---------- */
+  var POL = {
+    shipping:{ t:'Shipping', draft:true, html:'<p>Shipping cost and delivery time are shown at checkout, before you pay.</p><h3>Where we ship</h3><p>To be confirmed by Vagari Vati.</p><h3>Dispatch</h3><p>To be confirmed by Vagari Vati.</p><h3>Duties and taxes</h3><p>Taxes are calculated at checkout. For orders shipped across a border, the checkout shows any duties before you pay.</p>' },
+    returns:{ t:'Returns', draft:true, html:'<h3>Return window</h3><p>To be confirmed by Vagari Vati.</p><h3>Condition</h3><p>To be confirmed by Vagari Vati.</p><h3>How to start a return</h3><p>To be confirmed by Vagari Vati.</p>' },
+    privacy:{ t:'Privacy', html:$('privacySrc').innerHTML },
+    terms:{ t:'Terms', draft:true, html:'<p>Checkout and payment run on vagarivati.com. The terms of sale will be published here.</p>' }
+  };
+  $('polNav').innerHTML = Object.keys(POL).map(function(k){ return '<a href="#'+k+'" data-k="'+k+'">'+POL[k].t+'</a>'; }).join('');
+  function showPolicy(k){
+    var p = POL[k];
+    [].forEach.call($('polNav').children, function(a){ a.setAttribute('aria-current', a.getAttribute('data-k')===k); });
+    $('polTitle').textContent = p.t; $('polDraft').hidden = !p.draft; $('polBody').innerHTML = p.html;
+    document.querySelector('.v-info').scrollTop = 0;
   }
+
+  /* ---------- interface sounds: low, short, and only while Sound is on ---------- */
+  var actx = null;
+  function snd(kind){
+    if (!wantSound || !actx || actx.state !== 'running') return;
+    var t = actx.currentTime, out = actx.createGain(); out.connect(actx.destination);
+    function tone(f, g, d, type, f2){
+      var o = actx.createOscillator(), a = actx.createGain(); o.type = type || 'sine'; o.frequency.setValueAtTime(f, t);
+      if (f2) o.frequency.exponentialRampToValueAtTime(f2, t + d);
+      a.gain.setValueAtTime(0.0001, t); a.gain.exponentialRampToValueAtTime(g, t + .012); a.gain.exponentialRampToValueAtTime(0.0001, t + d);
+      o.connect(a); a.connect(out); o.start(t); o.stop(t + d + .05);
+    }
+    if (kind === 'tick'){ tone(170, .10, .09, 'sine', 80); }                                   // a knock on wood
+    else if (kind === 'open'){ tone(196, .05, 1.3); tone(294, .03, 1.0); tone(466, .012, .7); } // a small bell
+    else if (kind === 'toll'){ tone(98, .12, 2.6); tone(147, .06, 2.2); tone(233, .03, 1.6); tone(261, .015, 1.2); } // a deep bell
+    else if (kind === 'sheet'){                                                                  // cloth drawn across
+      var n = actx.createBufferSource(), buf = actx.createBuffer(1, actx.sampleRate * .35, actx.sampleRate), d = buf.getChannelData(0);
+      for (var i=0;i<d.length;i++) d[i] = (Math.random()*2-1) * (1 - i/d.length);
+      var f = actx.createBiquadFilter(); f.type = 'bandpass'; f.frequency.setValueAtTime(300, t); f.frequency.exponentialRampToValueAtTime(1400, t + .3); f.Q.value = .8;
+      var a = actx.createGain(); a.gain.value = .05; n.buffer = buf; n.connect(f); f.connect(a); a.connect(out); n.start(t);
+    }
+  }
+  ['pointerdown','keydown'].forEach(function(ev){ window.addEventListener(ev, function(){
+    try { if (!actx){ var AC = window.AudioContext || window.webkitAudioContext; if (AC) actx = new AC(); } if (actx && actx.state === 'suspended') actx.resume(); } catch(e){}
+  }, { capture:true }); });
+  $('cats').addEventListener('click', function(){ snd('tick'); });
 
   /* ---------- bag ---------- */
   var bag = [];
@@ -207,11 +239,13 @@
     var n = bag.reduce(function(s,l){ return s+l.q; }, 0), sub = bag.reduce(function(s,l){ return s + l.q*P[l.h].p; }, 0);
     $('bagCount').textContent = n; $('bagBtn').classList.toggle('has', n>0);
     $('bagEmpty').hidden = n>0; $('bagFoot').hidden = n===0; $('bagList').hidden = n===0;
+    $('bagN').textContent = n ? ' (' + n + ')' : '';
     $('bagList').innerHTML = bag.map(function(l,i){
       var p = P[l.h];
-      return '<li><img src="'+IMG+p.i[p.i.length-1]+'" alt=""><div><b>'+esc(label(p))+'</b><span class="meta">'+catBy[p.c].name+', size '+l.s+'</span>'
-        + '<div class="qty"><button type="button" data-act="dec" data-i="'+i+'" aria-label="One fewer">&minus;</button><span>'+l.q+'</span><button type="button" data-act="inc" data-i="'+i+'" aria-label="One more">+</button></div></div>'
-        + '<div class="right"><span>'+money(l.q*p.p)+'</span><button type="button" class="rm" data-act="rm" data-i="'+i+'">Remove</button></div></li>';
+      return '<li><a class="box" href="#piece-'+p.h+'"><img class="cut" src="cut/'+p.h+'.webp" alt=""></a>'
+        + '<p class="b-row"><b>'+esc(label(p))+'</b><span>'+money(l.q*p.p)+'</span></p><p class="meta">'+KIND[p.c]+', size '+l.s+'</p>'
+        + '<p class="b-row"><span class="qty"><button type="button" data-act="dec" data-i="'+i+'" aria-label="One fewer">&minus;</button><span>'+l.q+'</span><button type="button" data-act="inc" data-i="'+i+'" aria-label="One more">+</button></span>'
+        + '<button type="button" class="rm" data-act="rm" data-i="'+i+'">Remove</button></p></li>';
     }).join('');
     $('bagSub').textContent = money(sub);
     $('checkout').href = D.store + '/cart/' + bag.map(function(l){ return l.id+':'+l.q; }).join(',');
@@ -229,10 +263,11 @@
     var v = p.v.filter(function(v){ return String(v.id)===S.size; })[0];
     var line = bag.filter(function(l){ return String(l.id)===S.size; })[0];
     if (line) line.q++; else bag.push({ h:p.h, id:v.id, s:v.s, q:1 });
-    renderBag(); openBag(true);
+    renderBag(); snd('toll'); openBag(true);
   };
   var bagEl = $('bag'), bagOpen = false, lastFocus = null;
   function openBag(o){
+    if (o !== bagOpen) snd('sheet');
     bagOpen = o; bagEl.classList.toggle('open', o); $('scrim').hidden = !o;
     bagEl.setAttribute('aria-hidden', !o); bagEl.inert = !o;
     if (o){ lastFocus = document.activeElement; $('bagClose').focus({preventScroll:true}); } else if (lastFocus && lastFocus.focus) lastFocus.focus({preventScroll:true});
@@ -264,8 +299,9 @@
       setFilter(h); S.list = h; show('home');
       if (!same) toCatalog(from==='home' && !first);
     } else if (h.indexOf('piece-')===0 && P[h.slice(6)]){
-      S.piece = P[h.slice(6)]; buildPiece(S.piece); show('piece');
-    } else if (h==='story'){ showMark(0); show('story'); story.scrollTop = 0; }
+      S.piece = P[h.slice(6)]; buildPiece(S.piece); show('piece'); if (!first) snd('open');
+    } else if (h==='story'){ showMark(markAt || ORDER[0]); show('story'); story.scrollTop = 0; }
+    else if (POL[h]){ showPolicy(h); show('info'); }
     else if (h==='system'){ show('system'); }
     else { show('home'); home.scrollTo({ top:0, behavior: from==='home' && !first ? 'smooth' : 'auto' }); }
   }
@@ -293,7 +329,7 @@
     if (e.metaKey || e.ctrlKey || e.altKey) return;
     var k = e.key;
     if (k==='Escape'){
-      if (bagOpen) openBag(false); else if (S.view==='piece') go(S.list); else if (S.view==='story') go('shop'); else if (S.view==='system') go(S.last);
+      if (bagOpen) openBag(false); else if (S.view==='piece') go(S.list); else if (S.view==='story' || S.view==='info') go('shop'); else if (S.view==='system') go(S.last);
       return;
     }
     if (bagOpen) return;
@@ -315,5 +351,6 @@
     app.addEventListener('pointerleave', function(){ cur.classList.remove('on'); });
   }
 
+  app.addEventListener('click', function(e){ var b = e.target.closest('.totop'); if (b){ var v = b.closest('.view'); (v.classList.contains('v-home') ? home : v).scrollTo({ top:0, behavior:'smooth' }); } });
   renderBag(); setFilter('shop'); route(); playFilm();
 })();

@@ -21,25 +21,26 @@
         <div class="shade"></div>
         <h1 class="sr">Vagari Vati</h1>
         <div class="foot grid">
+          <a class="descend" href="#shop" aria-label="Go to the pieces"><i class="ic ic-sword"></i></a>
           <p class="home-note">Streetwear in organic textiles.<br>New York City.</p>
           <a class="enter" href="#shop">See all 38 pieces</a>
         </div>
       </div>
       <div class="catalog" id="catalog">
         <div class="fx" aria-hidden="true"><i class="fx-pat"></i><i class="fx-pat fx-slip"></i><i class="fx-grain"></i></div>
-        <div class="wall-top"><div class="stamps" aria-label="38 pieces. Streetwear. 2026."><span class="stamp s-dia"><b>38</b></span><span class="stamp-t">pieces<br>five kinds</span><span class="stamp s-ell"><b>Streetwear</b></span><span class="stamp s-cir"><b>20</b><b>26</b></span></div></div>
         <div class="wall" id="wall"></div>
         <footer class="end grid">
-          <p>&copy; 2026 Vagari Vati</p>
-          <p class="end-mid">Shipping and taxes are calculated at checkout.</p>
-          <a href="https://www.instagram.com/vagarivati" target="_blank" rel="noopener">Instagram</a>
+          <p>&copy; 2026 Vagari Vati, by Justin Titus</p>
+          <nav class="end-links" aria-label="Policies"><a href="#shipping">Shipping</a><a href="#returns">Returns</a><a href="#privacy">Privacy</a><a href="#terms">Terms</a></nav>
+          <div class="end-r"><a href="https://www.instagram.com/vagarivati" target="_blank" rel="noopener">Instagram</a><button type="button" class="totop"><i class="ic ic-sword"></i>Top</button></div>
         </footer>
       </div>
     </section>
 
     <!-- Piece: the product page -->
     <section class="view v-piece" data-name="piece" aria-label="Piece">
-      <button type="button" class="p-photo" id="pPhoto" data-cur="Next photo" aria-label="Next photo">
+      <div class="fx fx-dim" aria-hidden="true"><i class="fx-pat"></i><i class="fx-grain"></i></div>
+      <button type="button" class="p-photo" id="pPhoto" aria-label="Next photo">
         <img id="pieceImgA" alt=""><img id="pieceImgB" alt="">
         <span class="p-num" id="pNum"></span>
       </button>
@@ -72,7 +73,7 @@
       <div class="st">
         <header class="st-sec st-open">
           <h2 class="st-h">Worn in memory of the land before us</h2>
-          <div class="st-side"><span class="ilab"><i class="ic ic-star"></i>The collection</span><span>Vagari Vati, by Justin Titus</span><div class="stamps" aria-label="38 pieces. Streetwear. 2026."><span class="stamp s-dia"><b>38</b></span><span class="stamp-t">pieces<br>five kinds</span><span class="stamp s-ell"><b>Streetwear</b></span><span class="stamp s-cir"><b>20</b><b>26</b></span></div></div>
+          <div class="st-side"><span class="ilab"><i class="ic ic-star"></i>The collection</span><span>Vagari Vati, by Justin Titus</span></div>
           <div class="st-body">
             <p class="st-first">This collection is Justin Titus&rsquo;s tribute to his ancestors and to their land in Africa.</p>
             <p>It is cut loose, for a city a long way from that land. What carries the memory across is the print.</p>
@@ -80,15 +81,25 @@
         </header>
 
         <section class="st-sec" aria-label="The patterns">
-          <h3 class="st-h">Eleven prints, read one at a time</h3>
-          <div class="st-side"><span class="ilab"><i class="ic ic-eye"></i>The patterns</span><span>Every print in the collection, drawn flat beside the cloth it comes from</span></div>
+          <h3 class="st-h">Eleven prints in four families</h3>
+          <div class="st-side"><span class="ilab"><i class="ic ic-eye"></i>The patterns</span><span>Point at a print to read it</span></div>
           <div class="st-body">
             <p>In much of West Africa, cloth is a place to keep memory. On Malian mud cloth, <i>b&ograve;g&ograve;lanfini</i>, each mark is painted by hand in fermented mud and stands for something its maker knows: a place, a saying, a passage in a life.</p>
             <p>Most of the prints here are made of the same kinds of shapes. A few, the florals and the paisley, came by other roads, and we say so where they do.</p>
           </div>
         </section>
 
-        <div id="marks"></div>
+        <section class="pg" aria-label="All prints">
+          <div class="pg-grid" id="pgGrid"></div>
+          <aside class="pg-view" id="pgView">
+            <img id="pvImg" alt="">
+            <p class="mk-n" id="pvN"></p>
+            <h4 class="mk-name" id="pvName"></h4>
+            <p class="mk-see" id="pvSee"></p>
+            <p class="mk-read" id="pvRead"></p>
+            <a class="mk-cloth" id="pvCloth" href="#"><img id="pvClothImg" alt=""><span><b>On the cloth</b><span id="pvClothName"></span></span></a>
+          </aside>
+        </section>
 
         <section class="st-sec st-close" aria-label="Ancestry">
           <h3 class="st-h">A record you can wear</h3>
@@ -100,11 +111,29 @@
           </div>
         </section>
         <footer class="end grid">
-          <p>&copy; 2026 Vagari Vati</p>
-          <p class="end-mid"><i class="ic ic-starburst"></i>A collection by Justin Titus.</p>
-          <a href="https://www.instagram.com/vagarivati" target="_blank" rel="noopener">Instagram</a>
+          <p>&copy; 2026 Vagari Vati, by Justin Titus</p>
+          <nav class="end-links" aria-label="Policies"><a href="#shipping">Shipping</a><a href="#returns">Returns</a><a href="#privacy">Privacy</a><a href="#terms">Terms</a></nav>
+          <div class="end-r"><a href="https://www.instagram.com/vagarivati" target="_blank" rel="noopener">Instagram</a><button type="button" class="totop"><i class="ic ic-sword"></i>Top</button></div>
         </footer>
       </div>
+    </section>
+
+    <!-- Policies: small type, no blackletter -->
+    <section class="view v-info" data-name="info" aria-label="Policies">
+      <div class="pol grid">
+        <nav class="pol-nav" id="polNav" aria-label="Policy pages"></nav>
+        <article class="pol-doc">
+          <h2 class="pol-h" id="polTitle"></h2>
+          <p class="pol-draft" id="polDraft">Draft. These terms are placeholders until Vagari Vati supplies them.</p>
+          <div class="pol-body" id="polBody"></div>
+        </article>
+      </div>
+      <footer class="end grid">
+      <p>&copy; 2026 Vagari Vati, by Justin Titus</p>
+      <nav class="end-links" aria-label="Policies"><a href="#shipping">Shipping</a><a href="#returns">Returns</a><a href="#privacy">Privacy</a><a href="#terms">Terms</a></nav>
+      <div class="end-r"><a href="https://www.instagram.com/vagarivati" target="_blank" rel="noopener">Instagram</a><button type="button" class="totop"><i class="ic ic-sword"></i>Top</button></div>
+    </footer>
+      <template id="privacySrc">{{PRIVACY}}</template>
     </section>
 
     <!-- System: the design system on one screen -->
@@ -147,16 +176,18 @@
 
   <div class="scrim" id="scrim" hidden></div>
   <aside class="bag" id="bag" role="dialog" aria-modal="true" aria-label="Your bag" aria-hidden="true" inert>
-    <div class="bag-head">
-      <h2>Bag</h2>
+    <div class="bag-head grid">
+      <p class="bag-t">Your bag<span id="bagN"></span></p>
       <button type="button" class="tool" id="bagClose">Close</button>
     </div>
-    <ul class="bag-list" id="bagList"></ul>
-    <div class="bag-empty" id="bagEmpty"><i class="ic ic-shell"></i><p>Your bag is empty. Open a piece, pick a size and add it here.</p></div>
-    <div class="bag-foot" id="bagFoot">
-      <p class="sub"><span>Subtotal</span><b id="bagSub"></b></p>
-      <a class="btn solid" id="checkout" href="#" target="_blank" rel="noopener">Check out</a>
-      <p class="fine">Checkout opens on vagarivati.com with these pieces in your cart.</p>
+    <div class="bag-body grid">
+      <ul class="bag-list" id="bagList"></ul>
+      <div class="bag-empty" id="bagEmpty"><i class="ic ic-shell"></i><p>Your bag is empty. Open a piece, pick a size and add it here.</p></div>
+      <div class="bag-foot" id="bagFoot">
+        <p class="sub"><span>Subtotal</span><b id="bagSub"></b></p>
+        <a class="btn solid" id="checkout" href="#" target="_blank" rel="noopener">Check out</a>
+        <p class="fine">Shipping and taxes are calculated at checkout, which opens on vagarivati.com.</p>
+      </div>
     </div>
   </aside>
 

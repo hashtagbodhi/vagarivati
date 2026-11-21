@@ -3,7 +3,7 @@
 import os
 here=os.path.dirname(os.path.abspath(__file__)); src=os.path.join(here,'src')
 rd=lambda n: open(os.path.join(src,n),encoding='utf-8').read()
-body=rd('body.html').replace('{{WORDMARK}}',rd('_wordmark.svg')).replace('{{MONO}}',rd('_mono.svg'))
+body=rd('body.html').replace('{{WORDMARK}}',rd('_wordmark.svg')).replace('{{MONO}}',rd('_mono.svg')).replace('{{PRIVACY}}',rd('_privacy.html'))
 head='''<title>Vagari Vati</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
