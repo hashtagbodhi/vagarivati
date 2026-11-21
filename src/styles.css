@@ -390,3 +390,6 @@ img,video,svg{display:block}
   .hero .descend{display:grid;width:48px;height:48px}
   .hero .descend .ic{width:38px;height:38px}
 }
+/* square cards, four across on desktop */
+.box{aspect-ratio:1}
+@media (min-width:1101px){.wall{grid-template-columns:repeat(4,calc(var(--col)*3.6));column-gap:calc(var(--col)*1.2);row-gap:calc(var(--col)*1.7)}}
