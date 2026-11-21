@@ -118,7 +118,7 @@
     var avail = p.v.filter(function(v){ return v.a; });
     if (avail.length === 1) pickSize(avail[0].id);
     var add = $('addBtn'); add.disabled = so; add.textContent = so ? 'Sold out' : 'Add to bag';
-    $('buyNote').textContent = so ? 'This piece is sold out in every size.' : 'Shipping and taxes are calculated at checkout.';
+    $('buyNote').innerHTML = so ? 'This piece is sold out in every size.' : 'Ships worldwide from India. <a class="link" href="#returns">14-day returns</a>.';
     setNeighbor($('piecePrev'), c.items[k-1]); setNeighbor($('pieceNext'), c.items[k+1]);
     showImg(0, true);
     document.querySelector('.v-piece').scrollTop = 0;
@@ -192,10 +192,34 @@
 
   /* ---------- policies ---------- */
   var POL = {
-    shipping:{ t:'Shipping', draft:true, html:'<p>Shipping cost and delivery time are shown at checkout, before you pay.</p><h3>Where we ship</h3><p>To be confirmed by Vagari Vati.</p><h3>Dispatch</h3><p>To be confirmed by Vagari Vati.</p><h3>Duties and taxes</h3><p>Taxes are calculated at checkout. For orders shipped across a border, the checkout shows any duties before you pay.</p>' },
-    returns:{ t:'Returns', draft:true, html:'<h3>Return window</h3><p>To be confirmed by Vagari Vati.</p><h3>Condition</h3><p>To be confirmed by Vagari Vati.</p><h3>How to start a return</h3><p>To be confirmed by Vagari Vati.</p>' },
+    shipping:{ t:'Shipping', html:
+      '<p>We ship worldwide. Every order is packed and sent from India.</p>'
+      + '<h3>Dispatch</h3><p>Orders leave us within 2 to 4 business days. You get an email with a tracking link as soon as yours is on its way.</p>'
+      + '<h3>Delivery times</h3><ul><li>India: 3 to 6 business days</li><li>United States, Canada, United Kingdom, Europe and Australia: 7 to 14 business days</li><li>Rest of the world: 10 to 20 business days</li></ul><p>These are estimates from the day of dispatch. Customs checks can add a few days.</p>'
+      + '<h3>Cost</h3><p>Shipping is calculated at checkout from your address and the weight of your order. You see the full cost before you pay.</p>'
+      + '<h3>Duties and taxes</h3><p>Orders sent outside India may be charged import duties or taxes by your country. Where we can, the checkout shows and collects these up front. Where we cannot, the courier collects them on delivery, and they are yours to pay.</p>'
+      + '<h3>Changing an address</h3><p>Reply to your order confirmation email before the order is dispatched and we will update it. Once it has left, we cannot redirect it.</p>'
+      + '<h3>Late or lost orders</h3><p>If tracking has not moved for 10 days, or your order has not arrived 30 days after dispatch, reply to your order confirmation email. We will trace it with the courier and resend or refund it if it is lost.</p>' },
+    returns:{ t:'Returns', html:
+      '<p>You can return any piece within 14 days of delivery.</p>'
+      + '<h3>Condition</h3><p>Pieces must come back unworn, unwashed and with their tags attached. We cannot accept returns that show signs of wear.</p>'
+      + '<h3>How to start a return</h3><ol><li>Reply to your order confirmation email and tell us which piece you are returning and why.</li><li>We send you the return address and instructions within 2 business days.</li><li>Send the piece back with a tracked service and keep the receipt.</li></ol>'
+      + '<h3>Return shipping</h3><p>You pay for return shipping, unless the piece arrived faulty or we sent the wrong one.</p>'
+      + '<h3>Refunds</h3><p>We refund the price of the piece to your original payment method within 7 business days of receiving it. The original shipping cost and any import duties are not refunded.</p>'
+      + '<h3>Exchanges</h3><p>If you need a different size, tell us when you start the return. We will hold it for you if it is in stock and send it once your return arrives.</p>'
+      + '<h3>Faulty or wrong pieces</h3><p>Tell us within 7 days of delivery, with a photo. We will replace the piece or refund it in full, including shipping both ways.</p>'
+      + '<h3>Handmade variation</h3><p>These pieces are cut, dyed and printed in small batches. Slight differences in colour and print from one piece to the next are part of how they are made and are not faults.</p>' },
     privacy:{ t:'Privacy', html:$('privacySrc').innerHTML },
-    terms:{ t:'Terms', draft:true, html:'<p>Checkout and payment run on vagarivati.com. The terms of sale will be published here.</p>' }
+    terms:{ t:'Terms', html:
+      '<p>These terms apply when you order from Vagari Vati.</p>'
+      + '<h3>Orders</h3><p>Placing an order is an offer to buy. The order is accepted when we send your dispatch email. We may cancel and fully refund an order if a piece is out of stock or was listed at the wrong price.</p>'
+      + '<h3>Prices and payment</h3><p>Prices are shown in the currency at the top of your checkout. Payment is taken at checkout on vagarivati.com. Shipping, taxes and duties are shown before you pay.</p>'
+      + '<h3>The pieces</h3><p>We photograph every piece as accurately as we can. Colour can look different from one screen to another, and each piece varies slightly because of how it is made.</p>'
+      + '<h3>Shipping and returns</h3><p>Our <a href="#shipping">Shipping</a> and <a href="#returns">Returns</a> pages form part of these terms.</p>'
+      + '<h3>Our work</h3><p>The designs, prints, photographs, film and text on this site belong to Vagari Vati. Please do not copy or reuse them without asking.</p>'
+      + '<h3>Liability</h3><p>If something goes wrong with an order, our responsibility is limited to the amount you paid for it. Nothing here removes rights you have under the consumer law of your country.</p>'
+      + '<h3>Changes</h3><p>We may update these terms. The version on this page on the day you order is the one that applies to that order.</p>'
+      + '<h3>Contact</h3><p>For anything about an order, reply to your order confirmation email.</p>' }
   };
   $('polNav').innerHTML = Object.keys(POL).map(function(k){ return '<a href="#'+k+'" data-k="'+k+'">'+POL[k].t+'</a>'; }).join('');
   function showPolicy(k){
