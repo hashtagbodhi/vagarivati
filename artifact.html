@@ -38,7 +38,7 @@ img,video,svg{display:block}
 
 /* ---------- top bar ---------- */
 .top{position:absolute;inset:0 0 auto;height:var(--top);z-index:30;align-items:center;transition:background .4s}
-#app.solid .top,#app[data-view="piece"] .top,#app[data-view="story"] .top{background:var(--ink)}
+#app.solid .top,#app[data-view="story"] .top{background:var(--ink)}
 .brand{grid-column:1/5;justify-self:start;padding:8px 0}
 .wordmark{fill:currentColor}
 .brand .mono{height:52px;width:auto;fill:currentColor}
@@ -129,72 +129,69 @@ img,video,svg{display:block}
 .end .end-mid{grid-column:8/18;text-align:center}
 .end a{grid-column:18/25;justify-self:end;color:var(--white)}
 
-/* ---------- piece: photographs left, a fixed buying panel right ---------- */
-.v-piece,.v-story{overflow-y:auto;overflow-x:hidden;overscroll-behavior:contain;scrollbar-width:none}
-.v-piece::-webkit-scrollbar,.v-story::-webkit-scrollbar{display:none}
-.v-piece{background:var(--ink)}
-.pd{display:grid;grid-template-columns:repeat(24,minmax(0,1fr));padding:var(--top) max(var(--m),env(safe-area-inset-right,0px)) 0 0;align-items:start}
-.pd-photos{grid-column:1/16;display:grid;grid-template-columns:1fr 1fr;gap:2px}
-.pd-photos img{width:100%;aspect-ratio:3/4;object-fit:cover;object-position:50% 18%;background:var(--white)}
-.pd-info{grid-column:17/25;position:sticky;top:var(--top);padding:clamp(14px,3vh,30px) 0 32px;display:flex;flex-direction:column;align-items:stretch;min-width:0}
-.back{align-self:flex-start;display:inline-flex;align-items:center;gap:10px;color:var(--ash);transition:color .3s;padding:6px 0}
+/* ---------- piece ---------- */
+.p-photo{position:absolute;top:var(--top);bottom:0;left:0;width:calc(max(var(--m),env(safe-area-inset-left,0px)) + var(--col)*9);background:var(--white);overflow:hidden;display:block}
+.p-photo img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 18%;opacity:0;transition:opacity .5s ease}
+.p-photo img.on{opacity:1}
+.p-num{position:absolute;left:max(var(--m),env(safe-area-inset-left,0px));bottom:22px;color:var(--ink);font-size:var(--t-xs);font-variant-numeric:tabular-nums}
+.p-info{position:absolute;top:var(--top);bottom:0;right:max(var(--m),env(safe-area-inset-right,0px));left:calc(max(var(--m),env(safe-area-inset-left,0px)) + var(--col)*11);display:grid;grid-template-rows:auto minmax(0,1fr) auto auto auto;min-height:0}
+.p-top{display:flex;justify-content:space-between;align-items:center;padding-top:10px}
+.back{display:inline-flex;align-items:center;gap:10px;color:var(--ash);transition:color .3s;padding:6px 0}
 .back:hover{color:var(--white)}
-.pd-kind{margin-top:clamp(18px,5vh,48px);color:var(--ash)}
-.pd-name{font:400 clamp(48px,5vw,76px)/.95 var(--display);margin-top:6px}
-.pd-price{font-size:20px;font-weight:500;margin-top:14px;font-variant-numeric:tabular-nums}
-.pd-size{margin-top:clamp(20px,4vh,36px)}
-.pd-row{display:flex;justify-content:space-between;margin-bottom:10px}
-.pd-row span:last-child{color:var(--ash)}
-.sizes{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
-.sizes button{height:48px;border:1px solid var(--line);transition:background .2s,color .2s,border-color .2s}
+.crumb{font-size:var(--t-xs);color:var(--ash);font-variant-numeric:tabular-nums}
+.title{align-self:center;font:400 clamp(72px,min(13vw,26vh),240px)/.8 var(--display);overflow-wrap:anywhere;text-wrap:balance;padding:10px 0}
+.title.long{font-size:clamp(48px,min(6.6vw,12.5vh),118px)}
+.p-spec{display:grid;grid-template-columns:repeat(13,minmax(0,1fr));border-top:1px solid var(--line);padding-top:clamp(16px,2.8vh,28px)}
+.p-buy{grid-column:1/6;display:grid;gap:14px;align-content:start;justify-items:start}
+.price{font-size:clamp(24px,2vw,30px);line-height:1;font-weight:500;font-variant-numeric:tabular-nums}
+.sizes{display:flex;gap:8px}
+.sizes button{width:48px;height:48px;border:1px solid var(--line);transition:background .25s,color .25s,border-color .25s}
 .sizes button:hover{border-color:var(--white)}
 .sizes button[aria-checked="true"]{background:var(--white);color:var(--ink);border-color:var(--white)}
 .sizes button[disabled]{color:var(--ash);text-decoration:line-through;cursor:not-allowed;border-color:var(--line)}
-.pd-add{height:56px;margin-top:12px;font-size:var(--t-m);font-weight:500}
-.pd-acc{margin-top:clamp(20px,4vh,36px);border-top:1px solid var(--line)}
-.pd-acc details{border-bottom:1px solid var(--line)}
-.pd-acc summary{list-style:none;cursor:pointer;display:flex;justify-content:space-between;align-items:center;padding:16px 0;font-weight:500}
-.pd-acc summary::-webkit-details-marker{display:none}
-.pd-acc summary::after{content:"";width:9px;height:9px;flex:none;transition:transform .3s;
-  background:linear-gradient(var(--white),var(--white)) center/1px 100% no-repeat,linear-gradient(var(--white),var(--white)) center/100% 1px no-repeat}
-.pd-acc details[open] summary::after{transform:rotate(45deg)}
-.desc{color:var(--ash);font-size:14px;line-height:1.65;display:grid;gap:.9em;padding-bottom:18px;max-width:52ch}
-.link{color:var(--white);text-decoration:underline;text-underline-offset:4px;text-decoration-color:var(--blood)}
-.pd-more{padding:clamp(70px,14vh,150px) max(var(--m),env(safe-area-inset-right,0px)) clamp(60px,10vh,110px) max(var(--m),env(safe-area-inset-left,0px))}
-.pd-more-h{font:400 clamp(32px,3vw,44px)/1 var(--display);margin-bottom:clamp(28px,5vh,52px)}
-.more-row{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:calc(var(--col)*.75)}
+.p-buy .btn{width:100%}
+.desc{grid-column:7/14;color:var(--ash);font-size:14px;line-height:1.65;display:grid;gap:.9em;align-content:start;max-width:54ch}
+.p-thumbs{display:flex;gap:8px;margin-top:clamp(16px,3vh,30px)}
+.p-thumbs button{flex:0 0 calc(var(--col)*1.25);aspect-ratio:3/4;position:relative;overflow:hidden;background:var(--maroon)}
+.p-thumbs img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.38;transition:opacity .3s}
+.p-thumbs button{background:var(--white)}
+.p-thumbs button:hover img,.p-thumbs button[aria-selected="true"] img{opacity:1}
+.p-thumbs button[aria-selected="true"]{outline:1px solid var(--blood);outline-offset:2px}
+.p-foot{height:var(--foot);display:flex;justify-content:space-between;align-items:center}
+.neighbor{display:inline-flex;align-items:center;gap:12px;color:var(--ash);transition:color .3s;padding:8px 0}
+.neighbor:hover{color:var(--white)}
+@media (max-height:860px){.desc p+p{display:none}}
+@media (max-height:700px){.p-thumbs{display:none}}
 
-/* ---------- story ---------- */
-.v-story{background:var(--ink)}
-.v-story .fx-pat{opacity:.2;transition:opacity .5s}
-.st{position:relative;z-index:1}
-.st-k{grid-column:1/7;align-self:start;padding-top:10px}
-.st-open{padding-top:calc(var(--top) + clamp(60px,14vh,150px));padding-bottom:clamp(80px,16vh,170px);row-gap:clamp(28px,6vh,60px)}
-.st-h{grid-column:7/24;font:400 clamp(52px,7.4vw,124px)/.95 var(--display);text-wrap:balance}
-.st-h2{grid-column:7/22;font:400 clamp(38px,4.4vw,72px)/1 var(--display);text-wrap:balance}
-.st-lead{grid-column:13/23;display:grid;gap:1em;font-size:clamp(17px,1.5vw,22px);line-height:1.5;max-width:34em}
-.st-note{grid-column:13/23;color:var(--ash);font-size:var(--t-m);line-height:1.6;max-width:36em}
-.st-marks{padding-bottom:clamp(80px,16vh,170px)}
-.st-marks-head{row-gap:clamp(20px,4vh,40px);padding-bottom:clamp(40px,8vh,84px)}
-.rd-tabs{grid-column:1/6;display:grid;align-content:start;gap:2px}
-.rd-tabs button{display:flex;align-items:center;gap:12px;padding:12px 0;color:var(--ash);text-align:left;font-size:var(--t-m);transition:color .25s}
-.rd-tabs button::before{content:"";width:9px;height:9px;flex:none;opacity:0;transition:opacity .25s;
-  background:linear-gradient(var(--blood),var(--blood)) center/1px 100% no-repeat,linear-gradient(var(--blood),var(--blood)) center/100% 1px no-repeat}
-.rd-tabs button:hover,.rd-tabs button[aria-selected="true"]{color:var(--white)}
-.rd-tabs button[aria-selected="true"]::before{opacity:1}
-.rd-cloth{grid-column:7/16;margin:0}
-.rd-cloth img{width:100%;aspect-ratio:1;object-fit:cover;display:block}
-.rd-cloth figcaption{margin-top:10px;color:var(--ash);font-size:var(--t-xs)}
-.rd-text{grid-column:17/25;min-width:0}
-.rd-glyph{height:120px;color:var(--white)}
-.rd-glyph svg{height:100%;width:auto;display:block;fill:none;stroke:currentColor;stroke-width:3.2;stroke-linecap:square}
-.rd-name{font:400 clamp(40px,4vw,60px)/1 var(--display);margin-top:26px}
-.rd-see{margin-top:16px;font-size:var(--t-m);line-height:1.6;max-width:34ch}
-.rd-read{margin-top:12px;color:var(--ash);font-size:var(--t-m);line-height:1.6;max-width:34ch}
-.rd-on{margin-top:30px;color:var(--ash)}
-.rd-pieces{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;margin-top:16px}
-.st-close{padding-bottom:clamp(90px,18vh,190px);row-gap:clamp(28px,6vh,60px)}
-.st-close .enter{padding-top:14px}
+/* ---------- story: wide margins, two rails ----------
+   Five empty columns on each side. Rail A (6-11) carries names and cloth, rail B (13-19) carries reading text.
+   Only headings are large; everything you read is 15px, so the page gets its contrast from scale, not from weight. */
+.v-story{background:var(--ink);overflow-y:auto;overflow-x:hidden;overscroll-behavior:contain;scrollbar-width:none}
+.v-story::-webkit-scrollbar{display:none}
+.v-story .fx-pat{opacity:.13;transition:opacity .6s}
+.st{position:relative;z-index:1;padding-top:calc(var(--top) + clamp(70px,16vh,170px))}
+.st-sec,.mk{display:grid;grid-template-columns:repeat(24,minmax(0,1fr));padding-left:max(var(--m),env(safe-area-inset-left,0px));padding-right:max(var(--m),env(safe-area-inset-right,0px));align-items:start}
+.st-sec{row-gap:clamp(34px,7vh,72px);padding-bottom:clamp(110px,24vh,260px)}
+.st-h{grid-column:6/20;font:400 clamp(40px,4.6vw,72px)/1.02 var(--display);text-wrap:balance;max-width:14em}
+.st-side{grid-column:6/12;display:grid;gap:8px;color:var(--ash);font-size:var(--t-s)}
+.st-side .mark{color:var(--white)}
+.st-body{grid-column:13/20;display:grid;gap:1.1em;font-size:var(--t-m);line-height:1.7;color:var(--ash)}
+.st-body .st-first{color:var(--white)}
+.st-body i{font-style:italic}
+.mk{padding-bottom:clamp(110px,24vh,260px)}
+.mk-cloth{grid-column:6/12;margin:0}
+.mk-cloth img{width:100%;aspect-ratio:1;object-fit:cover;display:block}
+.mk-cloth figcaption{margin-top:10px;color:var(--ash);font-size:var(--t-xs)}
+.mk-text{grid-column:13/20;min-width:0}
+.mk-glyph{height:64px}
+.mk-glyph svg{height:100%;width:auto;display:block;fill:none;stroke:var(--blood);stroke-width:3.4;stroke-linecap:square}
+.mk-name{font:400 clamp(34px,3.2vw,48px)/1 var(--display);margin-top:22px}
+.mk-see{margin-top:20px;font-size:var(--t-m);line-height:1.7;color:var(--white)}
+.mk-read{margin-top:10px;font-size:var(--t-m);line-height:1.7;color:var(--ash)}
+.mk-on{margin-top:26px;color:var(--ash);font-size:var(--t-s)}
+.mk-on a{color:var(--white);text-decoration:underline;text-underline-offset:4px;text-decoration-color:var(--blood);margin-left:12px;white-space:nowrap}
+.mk-on a:hover{text-decoration-color:var(--white)}
+.st-close .enter{padding-top:12px;justify-self:start}
 
 /* ---------- system ---------- */
 .sys{position:absolute;inset:var(--top) 0 0;align-content:center;row-gap:40px;padding-bottom:5vh}
@@ -271,17 +268,18 @@ img,video,svg{display:block}
   .cap{flex-wrap:wrap;gap:4px 8px;margin-top:10px}
   .end{height:auto;padding-block:20px;row-gap:6px}
   .end p:first-child,.end .end-mid,.end a{grid-column:1/25;text-align:left;justify-self:start}
-  .pd{display:block;padding:var(--top) 0 0}
-  .pd-photos{display:flex;gap:2px;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none}
-  .pd-photos img{flex:0 0 86%;scroll-snap-align:start}
-  .pd-info{position:static;padding:14px max(16px,env(safe-area-inset-right,0px)) 24px max(16px,env(safe-area-inset-left,0px))}
-  .pd-kind{margin-top:14px}
-  .more-row{grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}
-  .st-k,.st-h,.st-h2,.st-lead,.st-note,.rd-tabs,.rd-cloth,.rd-text{grid-column:1/25}
-  .st-h{font-size:52px}
-  .st-open{padding-top:calc(var(--top) + 50px)}
-  .rd-tabs{grid-template-columns:1fr 1fr}
-  .reader{row-gap:24px}
+  .v-piece{overflow-y:auto;overflow-x:hidden;padding-top:var(--top)}
+  .p-photo{position:relative;top:auto;width:100%;height:62vh}
+  .p-num{left:16px;bottom:12px}
+  .p-info{position:static;display:flex;flex-direction:column;gap:18px;padding:14px max(16px,env(safe-area-inset-right,0px)) 24px max(16px,env(safe-area-inset-left,0px))}
+  .p-spec{display:flex;flex-direction:column;gap:22px}
+  .title,.title.long{font-size:56px;padding:0}
+  .p-thumbs{margin-top:0;order:-1;display:none}
+  .desc p+p{display:block}
+  .st{padding-top:calc(var(--top) + 48px)}
+  .st-h,.st-side,.st-body,.mk-cloth,.mk-text{grid-column:1/25}
+  .st-sec,.mk{row-gap:22px;padding-bottom:90px}
+  .st-h{font-size:40px}
   .sys{display:flex;flex-direction:column;gap:36px;overflow-y:auto;padding-top:16px;padding-bottom:40px;align-content:start}
   .bag{padding-left:max(16px,env(safe-area-inset-left,0px))}
 }
@@ -327,72 +325,65 @@ img,video,svg{display:block}
       </div>
     </section>
 
-    <!-- Piece: the product page. Photographs on the left, everything you need to buy on the right. -->
+    <!-- Piece: the product page -->
     <section class="view v-piece" data-name="piece" aria-label="Piece">
-      <div class="pd">
-        <div class="pd-photos" id="pdPhotos"></div>
-        <aside class="pd-info">
+      <button type="button" class="p-photo" id="pPhoto" data-cur="Next photo" aria-label="Next photo">
+        <img id="pieceImgA" alt=""><img id="pieceImgB" alt="">
+        <span class="p-num" id="pNum"></span>
+      </button>
+      <div class="p-info">
+        <div class="p-top">
           <a class="back" id="pieceBack" href="#shop"><i class="chev l"></i><span id="pieceBackLabel">Back</span></a>
-          <p class="pd-kind" id="pieceKind"></p>
-          <h2 class="pd-name" id="pieceTitle"></h2>
-          <p class="pd-price" id="piecePrice"></p>
-          <div class="pd-size">
-            <p class="pd-row"><span>Size</span><span id="sizeNote"></span></p>
+          <p class="crumb" id="pieceCrumb"></p>
+        </div>
+        <h2 class="title" id="pieceTitle"></h2>
+        <div class="p-spec">
+          <div class="p-buy">
+            <p class="price" id="piecePrice"></p>
             <div class="sizes" id="sizes" role="radiogroup" aria-label="Size"></div>
+            <button type="button" class="btn solid" id="addBtn">Add to bag</button>
+            <p class="fine" id="buyNote">Shipping and taxes are calculated at checkout.</p>
           </div>
-          <button type="button" class="btn solid pd-add" id="addBtn">Add to bag</button>
-          <div class="pd-acc">
-            <details open><summary>About this piece</summary><div class="desc" id="pieceDesc"></div></details>
-            <details id="patBox"><summary>The pattern</summary><div class="desc"><p id="patText"></p><p><a class="link" href="#story">Read the story of the patterns</a></p></div></details>
-            <details><summary>Delivery and payment</summary><div class="desc"><p id="buyNote">Shipping and taxes are calculated at checkout. Checkout runs on vagarivati.com.</p></div></details>
-          </div>
-        </aside>
-      </div>
-      <div class="pd-more">
-        <h3 class="pd-more-h" id="moreTitle"></h3>
-        <div class="more-row" id="moreRow"></div>
+          <div class="desc" id="pieceDesc"></div>
+        </div>
+        <div class="p-thumbs" id="thumbs" role="tablist" aria-label="Photos"></div>
+        <div class="p-foot">
+          <a class="neighbor prev" id="piecePrev" href="#"><i class="chev l"></i><span></span></a>
+          <a class="neighbor next" id="pieceNext" href="#"><span></span><i class="chev r"></i></a>
+        </div>
       </div>
     </section>
 
-    <!-- Story: the collection, its patterns, and where they come from -->
+    <!-- Story: two rails inside wide margins. Rail A (columns 6-11) holds names and cloth; rail B (columns 13-19) holds the reading text. -->
     <section class="view v-story" data-name="story" aria-label="Story">
       <div class="fx" aria-hidden="true"><i class="fx-pat" id="storyPat"></i><i class="fx-grain"></i></div>
       <div class="st">
-        <header class="st-open grid">
-          <p class="mark st-k">The collection</p>
+        <header class="st-sec st-open">
           <h2 class="st-h">Worn in memory of the land before us</h2>
-          <div class="st-lead">
-            <p>Vagari Vati is the work of Justin Titus. This collection is his tribute to his ancestors and to their land in Africa.</p>
+          <p class="st-side"><span class="mark">The collection</span><span>Vagari Vati, by Justin Titus</span></p>
+          <div class="st-body">
+            <p class="st-first">This collection is Justin Titus&rsquo;s tribute to his ancestors and to their land in Africa.</p>
             <p>It is cut loose, for a city a long way from that land. What carries the memory across is the print.</p>
           </div>
         </header>
 
-        <section class="st-marks" aria-label="The patterns">
-          <div class="grid st-marks-head">
-            <p class="mark st-k">The patterns</p>
-            <h3 class="st-h2">Four marks you will find on the cloth</h3>
-            <p class="st-note">In much of West Africa, cloth is a place to keep memory. On Malian mud cloth, <i>b&ograve;g&ograve;lanfini</i>, each mark is painted by hand in fermented mud and stands for something its maker knows: a place, a saying, a passage in a life. The prints here are made of the same kinds of shapes. Choose a mark to read it.</p>
-          </div>
-          <div class="reader grid">
-            <div class="rd-tabs" id="rdTabs" role="tablist" aria-label="Marks"></div>
-            <figure class="rd-cloth"><img id="rdCloth" alt=""><figcaption id="rdCap"></figcaption></figure>
-            <div class="rd-text">
-              <div class="rd-glyph" id="rdGlyph" aria-hidden="true"></div>
-              <h4 class="rd-name" id="rdName"></h4>
-              <p class="rd-see" id="rdSee"></p>
-              <p class="rd-read" id="rdRead"></p>
-              <p class="mark rd-on">Worn on</p>
-              <div class="rd-pieces" id="rdPieces"></div>
-            </div>
+        <section class="st-sec" aria-label="The patterns">
+          <h3 class="st-h">Four marks on the cloth</h3>
+          <p class="st-side"><span class="mark">The patterns</span><span>Scroll to read each one</span></p>
+          <div class="st-body">
+            <p>In much of West Africa, cloth is a place to keep memory. On Malian mud cloth, <i>b&ograve;g&ograve;lanfini</i>, each mark is painted by hand in fermented mud and stands for something its maker knows: a place, a saying, a passage in a life.</p>
+            <p>The prints here are made of the same kinds of shapes.</p>
           </div>
         </section>
 
-        <section class="st-close grid" aria-label="Ancestry">
-          <p class="mark st-k">Ancestry</p>
-          <h3 class="st-h2">A record you can wear</h3>
-          <div class="st-lead">
+        <div id="marks"></div>
+
+        <section class="st-sec st-close" aria-label="Ancestry">
+          <h3 class="st-h">A record you can wear</h3>
+          <p class="st-side"><span class="mark">Ancestry</span></p>
+          <div class="st-body">
             <p>A pattern like these is repeated by hand, row after row, by someone who learned it from someone else. Wearing it keeps that chain going one more link.</p>
-            <p>That is what this collection is for. Each piece is named for an idea worth carrying, and printed with the marks of the people who carried it first.</p>
+            <p>Each piece is named for an idea worth carrying, and printed with the marks of the people who carried it first.</p>
             <p><a class="enter" href="#shop">See all 38 pieces</a></p>
           </div>
         </section>
@@ -556,35 +547,46 @@ img,video,svg{display:block}
       + '<div class="box"><img class="cut" src="cut/'+h+'.webp" alt="" loading="lazy" draggable="false"></div>'
       + '<div class="cap">'+nameHTML(p)+'<span class="pr">'+priceOf(p)+'</span></div></a>';
   }
+  var imgA = $('pieceImgA'), imgB = $('pieceImgB'), front = imgA, thumbs = $('thumbs');
+  function showImg(i, instant){
+    var p = S.piece; S.img = (i + p.i.length) % p.i.length;
+    var next = front === imgA ? imgB : imgA, f = front;
+    var done = function(){ f.classList.remove('on'); next.classList.add('on'); };
+    next.onload = null; next.src = IMG + p.i[S.img]; next.alt = p.f + ', photo ' + (S.img+1);
+    if (instant || next.complete) done(); else next.onload = done;
+    front = next;
+    $('pNum').textContent = two(S.img+1) + ' / ' + two(p.i.length);
+    [].forEach.call(thumbs.children, function(b,k){ b.setAttribute('aria-selected', k===S.img); });
+  }
   function buildPiece(p){
-    var c = catBy[p.c];
+    var c = catBy[p.c], k = c.items.indexOf(p.h);
     S.size = null;
     $('pieceBack').href = '#' + S.list; $('pieceBackLabel').textContent = catBy[S.list] ? catBy[S.list].name : 'All';
-    $('pieceKind').textContent = KIND[p.c] + (p.s ? ', ' + p.s.toLowerCase() : '');
-    $('pieceTitle').textContent = p.t;
+    $('pieceCrumb').textContent = c.name + ', ' + two(k+1) + ' of ' + two(c.items.length);
+    var ti = $('pieceTitle'); ti.textContent = p.t; ti.classList.toggle('long', p.t.length > 8);
     $('piecePrice').textContent = priceOf(p);
     $('pieceDesc').innerHTML = p.d.map(function(t){ return '<p>'+esc(t.replace(/([a-z]\.)([A-Z])/g,'$1 $2'))+'</p>'; }).join('');
-    $('pdPhotos').innerHTML = p.i.map(function(f,i){ return '<img src="'+IMG+f+'" alt="'+esc(p.f)+', photo '+(i+1)+'"'+(i>1?' loading="lazy"':'')+'>'; }).join('');
+    thumbs.innerHTML = p.i.map(function(f,i){ return '<button type="button" role="tab" data-i="'+i+'" aria-label="Photo '+(i+1)+'"><img src="'+IMG+f+'" alt=""></button>'; }).join('');
     var so = soldOut(p);
     $('sizes').innerHTML = p.v.map(function(v){ return '<button type="button" role="radio" aria-checked="false" data-id="'+v.id+'"'+(v.a?'':' disabled')+'>'+v.s+'</button>'; }).join('');
-    $('sizeNote').textContent = so ? 'Sold out' : 'Select a size';
     var avail = p.v.filter(function(v){ return v.a; });
     if (avail.length === 1) pickSize(avail[0].id);
     var add = $('addBtn'); add.disabled = so; add.textContent = so ? 'Sold out' : 'Add to bag';
-    var marks = MARKS.filter(function(m){ return m.on.indexOf(p.h) > -1; });
-    $('patBox').hidden = !marks.length;
-    if (marks.length) $('patText').textContent = 'This piece carries ' + marks.map(function(m){ return 'the ' + m.name.toLowerCase(); }).join(' and ') + '.';
-    var rest = c.items.filter(function(h){ return h !== p.h; }).slice(0, 6);
-    $('moreTitle').textContent = 'More ' + c.name.toLowerCase();
-    $('moreRow').innerHTML = rest.map(cellHTML).join('');
-    document.querySelector('.v-piece').scrollTop = 0; $('pdPhotos').scrollLeft = 0;
+    $('buyNote').textContent = so ? 'This piece is sold out in every size.' : 'Shipping and taxes are calculated at checkout.';
+    setNeighbor($('piecePrev'), c.items[k-1]); setNeighbor($('pieceNext'), c.items[k+1]);
+    showImg(0, true);
+    document.querySelector('.v-piece').scrollTop = 0;
   }
+  function setNeighbor(a, h){ a.style.visibility = h ? '' : 'hidden'; if (h){ a.href = '#piece-'+h; a.querySelector('span').textContent = label(P[h]); } }
   function pickSize(id){
     S.size = String(id);
-    [].forEach.call($('sizes').children, function(b){ var on = b.getAttribute('data-id')===S.size; b.setAttribute('aria-checked', on); if (on) $('sizeNote').textContent = 'Size ' + b.textContent; });
+    [].forEach.call($('sizes').children, function(b){ b.setAttribute('aria-checked', b.getAttribute('data-id')===S.size); });
     if (!$('addBtn').disabled) $('addBtn').textContent = 'Add to bag';
   }
   $('sizes').addEventListener('click', function(e){ var b = e.target.closest('button'); if (b && !b.disabled) pickSize(b.getAttribute('data-id')); });
+  thumbs.addEventListener('click', function(e){ var b = e.target.closest('button'); if (b) showImg(+b.getAttribute('data-i')); });
+  $('pPhoto').addEventListener('click', function(){ showImg(S.img+1); });
+
 
   /* a cutout turns a little toward the pointer as it crosses the piece */
   if (window.matchMedia('(hover:hover) and (pointer:fine)').matches){
@@ -618,8 +620,7 @@ img,video,svg{display:block}
       read:'We read it as the meeting place. Four roads arrive at one point, and the square repeats because every village has one.',
       svg:'<svg viewBox="0 0 80 120"><path d="M10 20H70V100H10ZM10 60H70M40 20V100M10 20 40 60 10 100M40 20 70 60 40 100M40 20 10 60 40 100M70 20 40 60 70 100"/></svg>' }
   ];
-  var markAt = -1;
-  $('rdTabs').innerHTML = MARKS.map(function(m,i){ return '<button type="button" role="tab" data-i="'+i+'">'+m.name+'</button>'; }).join('');
+  var markAt = -1, story = document.querySelector('.v-story');
   function tileOf(m){                                  // the mark, repeated, becomes the page's surface
     var c = document.createElement('canvas'); c.width = 160; c.height = 240;
     var x = c.getContext('2d'); x.strokeStyle = 'rgba(236,228,214,.22)'; x.lineWidth = 3; x.lineCap = 'square';
@@ -627,16 +628,19 @@ img,video,svg{display:block}
     x.stroke(p); x.translate(80, 120); x.stroke(p); x.translate(-160, 0); x.stroke(p); x.translate(160, -240); x.stroke(p); x.translate(-160,0); x.stroke(p);
     return 'url(' + c.toDataURL() + ')';
   }
+  $('marks').innerHTML = MARKS.map(function(m,i){
+    return '<section class="mk" data-i="'+i+'" aria-label="'+m.name+'"><figure class="mk-cloth"><img src="'+m.img+'" alt="'+m.cap+'" loading="lazy"><figcaption>'+m.cap+'</figcaption></figure>'
+      + '<div class="mk-text"><div class="mk-glyph" aria-hidden="true">'+m.svg+'</div><h4 class="mk-name">'+m.name+'</h4><p class="mk-see">'+m.see+'</p><p class="mk-read">'+m.read+'</p>'
+      + '<p class="mk-on">Worn on'+m.on.map(function(h){ return '<a href="#piece-'+h+'">'+esc(P[h].t)+'</a>'; }).join('')+'</p></div></section>';
+  }).join('');
   function showMark(i){
-    if (i === markAt) return; markAt = i; var m = MARKS[i];
-    [].forEach.call($('rdTabs').children, function(b,k){ b.setAttribute('aria-selected', k===i); });
-    $('rdCloth').src = m.img; $('rdCloth').alt = m.cap; $('rdCap').textContent = m.cap;
-    $('rdGlyph').innerHTML = m.svg; $('rdName').textContent = m.name; $('rdSee').textContent = m.see; $('rdRead').textContent = m.read;
-    $('rdPieces').innerHTML = m.on.map(cellHTML).join('');
-    var sp = $('storyPat'); sp.style.backgroundImage = tileOf(m); sp.style.backgroundSize = '160px 240px';
+    if (i === markAt) return; markAt = i;
+    var sp = $('storyPat'); sp.style.backgroundImage = tileOf(MARKS[i]); sp.style.backgroundSize = '160px 240px';
   }
-  $('rdTabs').addEventListener('click', function(e){ var b = e.target.closest('button'); if (b) showMark(+b.getAttribute('data-i')); });
-  $('rdTabs').addEventListener('pointerover', function(e){ var b = e.target.closest('button'); if (b && e.pointerType==='mouse') showMark(+b.getAttribute('data-i')); });
+  if ('IntersectionObserver' in window){
+    var mio = new IntersectionObserver(function(es){ es.forEach(function(e){ if (e.isIntersecting) showMark(+e.target.getAttribute('data-i')); }); }, { root:story, rootMargin:'-45% 0px -45% 0px' });
+    [].forEach.call(document.querySelectorAll('.mk'), function(el){ mio.observe(el); });
+  }
 
   /* ---------- bag ---------- */
   var bag = [];
@@ -704,7 +708,7 @@ img,video,svg{display:block}
       if (!same) toCatalog(from==='home' && !first);
     } else if (h.indexOf('piece-')===0 && P[h.slice(6)]){
       S.piece = P[h.slice(6)]; buildPiece(S.piece); show('piece');
-    } else if (h==='story'){ showMark(Math.max(0, markAt)); show('story'); document.querySelector('.v-story').scrollTop = 0; }
+    } else if (h==='story'){ showMark(0); show('story'); story.scrollTop = 0; }
     else if (h==='system'){ show('system'); }
     else { show('home'); home.scrollTo({ top:0, behavior: from==='home' && !first ? 'smooth' : 'auto' }); }
   }
@@ -713,6 +717,21 @@ img,video,svg{display:block}
   // clicking the filter you are already on still takes you to the wall
   $('cats').addEventListener('click', function(e){ var a = e.target.closest('a'); if (a && location.hash === a.getAttribute('href')){ e.preventDefault(); route(); } });
 
+  /* ---------- product page: wheel, arrows and swipe page through the photos ---------- */
+  var acc = 0, lock = 0;
+  app.addEventListener('wheel', function(e){
+    if (S.view !== 'piece' || narrow.matches || bagOpen) return;
+    e.preventDefault();
+    var now = Date.now(); if (now < lock) return;
+    acc += (Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY);
+    if (Math.abs(acc) > 40){ showImg(S.img + (acc>0?1:-1)); acc = 0; lock = now + 520; }
+  }, { passive:false });
+  var t0 = null;
+  $('pPhoto').addEventListener('touchstart', function(e){ var t = e.touches[0]; t0 = { x:t.clientX, y:t.clientY }; }, { passive:true });
+  $('pPhoto').addEventListener('touchend', function(e){
+    if (!t0) return; var t = e.changedTouches[0], dx = t.clientX-t0.x, dy = t.clientY-t0.y; t0 = null;
+    if (Math.abs(dx) > 44 && Math.abs(dx) > Math.abs(dy)){ e.preventDefault(); showImg(S.img + (dx<0?1:-1)); }
+  });
   document.addEventListener('keydown', function(e){
     if (e.metaKey || e.ctrlKey || e.altKey) return;
     var k = e.key;
@@ -722,6 +741,10 @@ img,video,svg{display:block}
     }
     if (bagOpen) return;
     if (k==='g' || k==='G'){ toggleGrid(); return; }
+    if (S.view==='piece'){
+      if (k==='ArrowRight'){ e.preventDefault(); showImg(S.img+1); }
+      else if (k==='ArrowLeft'){ e.preventDefault(); showImg(S.img-1); }
+    }
   });
 
   /* ---------- pointer label ---------- */

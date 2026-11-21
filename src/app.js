@@ -92,35 +92,46 @@
       + '<div class="box"><img class="cut" src="cut/'+h+'.webp" alt="" loading="lazy" draggable="false"></div>'
       + '<div class="cap">'+nameHTML(p)+'<span class="pr">'+priceOf(p)+'</span></div></a>';
   }
+  var imgA = $('pieceImgA'), imgB = $('pieceImgB'), front = imgA, thumbs = $('thumbs');
+  function showImg(i, instant){
+    var p = S.piece; S.img = (i + p.i.length) % p.i.length;
+    var next = front === imgA ? imgB : imgA, f = front;
+    var done = function(){ f.classList.remove('on'); next.classList.add('on'); };
+    next.onload = null; next.src = IMG + p.i[S.img]; next.alt = p.f + ', photo ' + (S.img+1);
+    if (instant || next.complete) done(); else next.onload = done;
+    front = next;
+    $('pNum').textContent = two(S.img+1) + ' / ' + two(p.i.length);
+    [].forEach.call(thumbs.children, function(b,k){ b.setAttribute('aria-selected', k===S.img); });
+  }
   function buildPiece(p){
-    var c = catBy[p.c];
+    var c = catBy[p.c], k = c.items.indexOf(p.h);
     S.size = null;
     $('pieceBack').href = '#' + S.list; $('pieceBackLabel').textContent = catBy[S.list] ? catBy[S.list].name : 'All';
-    $('pieceKind').textContent = KIND[p.c] + (p.s ? ', ' + p.s.toLowerCase() : '');
-    $('pieceTitle').textContent = p.t;
+    $('pieceCrumb').textContent = c.name + ', ' + two(k+1) + ' of ' + two(c.items.length);
+    var ti = $('pieceTitle'); ti.textContent = p.t; ti.classList.toggle('long', p.t.length > 8);
     $('piecePrice').textContent = priceOf(p);
     $('pieceDesc').innerHTML = p.d.map(function(t){ return '<p>'+esc(t.replace(/([a-z]\.)([A-Z])/g,'$1 $2'))+'</p>'; }).join('');
-    $('pdPhotos').innerHTML = p.i.map(function(f,i){ return '<img src="'+IMG+f+'" alt="'+esc(p.f)+', photo '+(i+1)+'"'+(i>1?' loading="lazy"':'')+'>'; }).join('');
+    thumbs.innerHTML = p.i.map(function(f,i){ return '<button type="button" role="tab" data-i="'+i+'" aria-label="Photo '+(i+1)+'"><img src="'+IMG+f+'" alt=""></button>'; }).join('');
     var so = soldOut(p);
     $('sizes').innerHTML = p.v.map(function(v){ return '<button type="button" role="radio" aria-checked="false" data-id="'+v.id+'"'+(v.a?'':' disabled')+'>'+v.s+'</button>'; }).join('');
-    $('sizeNote').textContent = so ? 'Sold out' : 'Select a size';
     var avail = p.v.filter(function(v){ return v.a; });
     if (avail.length === 1) pickSize(avail[0].id);
     var add = $('addBtn'); add.disabled = so; add.textContent = so ? 'Sold out' : 'Add to bag';
-    var marks = MARKS.filter(function(m){ return m.on.indexOf(p.h) > -1; });
-    $('patBox').hidden = !marks.length;
-    if (marks.length) $('patText').textContent = 'This piece carries ' + marks.map(function(m){ return 'the ' + m.name.toLowerCase(); }).join(' and ') + '.';
-    var rest = c.items.filter(function(h){ return h !== p.h; }).slice(0, 6);
-    $('moreTitle').textContent = 'More ' + c.name.toLowerCase();
-    $('moreRow').innerHTML = rest.map(cellHTML).join('');
-    document.querySelector('.v-piece').scrollTop = 0; $('pdPhotos').scrollLeft = 0;
+    $('buyNote').textContent = so ? 'This piece is sold out in every size.' : 'Shipping and taxes are calculated at checkout.';
+    setNeighbor($('piecePrev'), c.items[k-1]); setNeighbor($('pieceNext'), c.items[k+1]);
+    showImg(0, true);
+    document.querySelector('.v-piece').scrollTop = 0;
   }
+  function setNeighbor(a, h){ a.style.visibility = h ? '' : 'hidden'; if (h){ a.href = '#piece-'+h; a.querySelector('span').textContent = label(P[h]); } }
   function pickSize(id){
     S.size = String(id);
-    [].forEach.call($('sizes').children, function(b){ var on = b.getAttribute('data-id')===S.size; b.setAttribute('aria-checked', on); if (on) $('sizeNote').textContent = 'Size ' + b.textContent; });
+    [].forEach.call($('sizes').children, function(b){ b.setAttribute('aria-checked', b.getAttribute('data-id')===S.size); });
     if (!$('addBtn').disabled) $('addBtn').textContent = 'Add to bag';
   }
   $('sizes').addEventListener('click', function(e){ var b = e.target.closest('button'); if (b && !b.disabled) pickSize(b.getAttribute('data-id')); });
+  thumbs.addEventListener('click', function(e){ var b = e.target.closest('button'); if (b) showImg(+b.getAttribute('data-i')); });
+  $('pPhoto').addEventListener('click', function(){ showImg(S.img+1); });
+
 
   /* a cutout turns a little toward the pointer as it crosses the piece */
   if (window.matchMedia('(hover:hover) and (pointer:fine)').matches){
@@ -154,8 +165,7 @@
       read:'We read it as the meeting place. Four roads arrive at one point, and the square repeats because every village has one.',
       svg:'<svg viewBox="0 0 80 120"><path d="M10 20H70V100H10ZM10 60H70M40 20V100M10 20 40 60 10 100M40 20 70 60 40 100M40 20 10 60 40 100M70 20 40 60 70 100"/></svg>' }
   ];
-  var markAt = -1;
-  $('rdTabs').innerHTML = MARKS.map(function(m,i){ return '<button type="button" role="tab" data-i="'+i+'">'+m.name+'</button>'; }).join('');
+  var markAt = -1, story = document.querySelector('.v-story');
   function tileOf(m){                                  // the mark, repeated, becomes the page's surface
     var c = document.createElement('canvas'); c.width = 160; c.height = 240;
     var x = c.getContext('2d'); x.strokeStyle = 'rgba(236,228,214,.22)'; x.lineWidth = 3; x.lineCap = 'square';
@@ -163,16 +173,19 @@
     x.stroke(p); x.translate(80, 120); x.stroke(p); x.translate(-160, 0); x.stroke(p); x.translate(160, -240); x.stroke(p); x.translate(-160,0); x.stroke(p);
     return 'url(' + c.toDataURL() + ')';
   }
+  $('marks').innerHTML = MARKS.map(function(m,i){
+    return '<section class="mk" data-i="'+i+'" aria-label="'+m.name+'"><figure class="mk-cloth"><img src="'+m.img+'" alt="'+m.cap+'" loading="lazy"><figcaption>'+m.cap+'</figcaption></figure>'
+      + '<div class="mk-text"><div class="mk-glyph" aria-hidden="true">'+m.svg+'</div><h4 class="mk-name">'+m.name+'</h4><p class="mk-see">'+m.see+'</p><p class="mk-read">'+m.read+'</p>'
+      + '<p class="mk-on">Worn on'+m.on.map(function(h){ return '<a href="#piece-'+h+'">'+esc(P[h].t)+'</a>'; }).join('')+'</p></div></section>';
+  }).join('');
   function showMark(i){
-    if (i === markAt) return; markAt = i; var m = MARKS[i];
-    [].forEach.call($('rdTabs').children, function(b,k){ b.setAttribute('aria-selected', k===i); });
-    $('rdCloth').src = m.img; $('rdCloth').alt = m.cap; $('rdCap').textContent = m.cap;
-    $('rdGlyph').innerHTML = m.svg; $('rdName').textContent = m.name; $('rdSee').textContent = m.see; $('rdRead').textContent = m.read;
-    $('rdPieces').innerHTML = m.on.map(cellHTML).join('');
-    var sp = $('storyPat'); sp.style.backgroundImage = tileOf(m); sp.style.backgroundSize = '160px 240px';
+    if (i === markAt) return; markAt = i;
+    var sp = $('storyPat'); sp.style.backgroundImage = tileOf(MARKS[i]); sp.style.backgroundSize = '160px 240px';
   }
-  $('rdTabs').addEventListener('click', function(e){ var b = e.target.closest('button'); if (b) showMark(+b.getAttribute('data-i')); });
-  $('rdTabs').addEventListener('pointerover', function(e){ var b = e.target.closest('button'); if (b && e.pointerType==='mouse') showMark(+b.getAttribute('data-i')); });
+  if ('IntersectionObserver' in window){
+    var mio = new IntersectionObserver(function(es){ es.forEach(function(e){ if (e.isIntersecting) showMark(+e.target.getAttribute('data-i')); }); }, { root:story, rootMargin:'-45% 0px -45% 0px' });
+    [].forEach.call(document.querySelectorAll('.mk'), function(el){ mio.observe(el); });
+  }
 
   /* ---------- bag ---------- */
   var bag = [];
@@ -240,7 +253,7 @@
       if (!same) toCatalog(from==='home' && !first);
     } else if (h.indexOf('piece-')===0 && P[h.slice(6)]){
       S.piece = P[h.slice(6)]; buildPiece(S.piece); show('piece');
-    } else if (h==='story'){ showMark(Math.max(0, markAt)); show('story'); document.querySelector('.v-story').scrollTop = 0; }
+    } else if (h==='story'){ showMark(0); show('story'); story.scrollTop = 0; }
     else if (h==='system'){ show('system'); }
     else { show('home'); home.scrollTo({ top:0, behavior: from==='home' && !first ? 'smooth' : 'auto' }); }
   }
@@ -249,6 +262,21 @@
   // clicking the filter you are already on still takes you to the wall
   $('cats').addEventListener('click', function(e){ var a = e.target.closest('a'); if (a && location.hash === a.getAttribute('href')){ e.preventDefault(); route(); } });
 
+  /* ---------- product page: wheel, arrows and swipe page through the photos ---------- */
+  var acc = 0, lock = 0;
+  app.addEventListener('wheel', function(e){
+    if (S.view !== 'piece' || narrow.matches || bagOpen) return;
+    e.preventDefault();
+    var now = Date.now(); if (now < lock) return;
+    acc += (Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY);
+    if (Math.abs(acc) > 40){ showImg(S.img + (acc>0?1:-1)); acc = 0; lock = now + 520; }
+  }, { passive:false });
+  var t0 = null;
+  $('pPhoto').addEventListener('touchstart', function(e){ var t = e.touches[0]; t0 = { x:t.clientX, y:t.clientY }; }, { passive:true });
+  $('pPhoto').addEventListener('touchend', function(e){
+    if (!t0) return; var t = e.changedTouches[0], dx = t.clientX-t0.x, dy = t.clientY-t0.y; t0 = null;
+    if (Math.abs(dx) > 44 && Math.abs(dx) > Math.abs(dy)){ e.preventDefault(); showImg(S.img + (dx<0?1:-1)); }
+  });
   document.addEventListener('keydown', function(e){
     if (e.metaKey || e.ctrlKey || e.altKey) return;
     var k = e.key;
@@ -258,6 +286,10 @@
     }
     if (bagOpen) return;
     if (k==='g' || k==='G'){ toggleGrid(); return; }
+    if (S.view==='piece'){
+      if (k==='ArrowRight'){ e.preventDefault(); showImg(S.img+1); }
+      else if (k==='ArrowLeft'){ e.preventDefault(); showImg(S.img-1); }
+    }
   });
 
   /* ---------- pointer label ---------- */

@@ -36,72 +36,65 @@
       </div>
     </section>
 
-    <!-- Piece: the product page. Photographs on the left, everything you need to buy on the right. -->
+    <!-- Piece: the product page -->
     <section class="view v-piece" data-name="piece" aria-label="Piece">
-      <div class="pd">
-        <div class="pd-photos" id="pdPhotos"></div>
-        <aside class="pd-info">
+      <button type="button" class="p-photo" id="pPhoto" data-cur="Next photo" aria-label="Next photo">
+        <img id="pieceImgA" alt=""><img id="pieceImgB" alt="">
+        <span class="p-num" id="pNum"></span>
+      </button>
+      <div class="p-info">
+        <div class="p-top">
           <a class="back" id="pieceBack" href="#shop"><i class="chev l"></i><span id="pieceBackLabel">Back</span></a>
-          <p class="pd-kind" id="pieceKind"></p>
-          <h2 class="pd-name" id="pieceTitle"></h2>
-          <p class="pd-price" id="piecePrice"></p>
-          <div class="pd-size">
-            <p class="pd-row"><span>Size</span><span id="sizeNote"></span></p>
+          <p class="crumb" id="pieceCrumb"></p>
+        </div>
+        <h2 class="title" id="pieceTitle"></h2>
+        <div class="p-spec">
+          <div class="p-buy">
+            <p class="price" id="piecePrice"></p>
             <div class="sizes" id="sizes" role="radiogroup" aria-label="Size"></div>
+            <button type="button" class="btn solid" id="addBtn">Add to bag</button>
+            <p class="fine" id="buyNote">Shipping and taxes are calculated at checkout.</p>
           </div>
-          <button type="button" class="btn solid pd-add" id="addBtn">Add to bag</button>
-          <div class="pd-acc">
-            <details open><summary>About this piece</summary><div class="desc" id="pieceDesc"></div></details>
-            <details id="patBox"><summary>The pattern</summary><div class="desc"><p id="patText"></p><p><a class="link" href="#story">Read the story of the patterns</a></p></div></details>
-            <details><summary>Delivery and payment</summary><div class="desc"><p id="buyNote">Shipping and taxes are calculated at checkout. Checkout runs on vagarivati.com.</p></div></details>
-          </div>
-        </aside>
-      </div>
-      <div class="pd-more">
-        <h3 class="pd-more-h" id="moreTitle"></h3>
-        <div class="more-row" id="moreRow"></div>
+          <div class="desc" id="pieceDesc"></div>
+        </div>
+        <div class="p-thumbs" id="thumbs" role="tablist" aria-label="Photos"></div>
+        <div class="p-foot">
+          <a class="neighbor prev" id="piecePrev" href="#"><i class="chev l"></i><span></span></a>
+          <a class="neighbor next" id="pieceNext" href="#"><span></span><i class="chev r"></i></a>
+        </div>
       </div>
     </section>
 
-    <!-- Story: the collection, its patterns, and where they come from -->
+    <!-- Story: two rails inside wide margins. Rail A (columns 6-11) holds names and cloth; rail B (columns 13-19) holds the reading text. -->
     <section class="view v-story" data-name="story" aria-label="Story">
       <div class="fx" aria-hidden="true"><i class="fx-pat" id="storyPat"></i><i class="fx-grain"></i></div>
       <div class="st">
-        <header class="st-open grid">
-          <p class="mark st-k">The collection</p>
+        <header class="st-sec st-open">
           <h2 class="st-h">Worn in memory of the land before us</h2>
-          <div class="st-lead">
-            <p>Vagari Vati is the work of Justin Titus. This collection is his tribute to his ancestors and to their land in Africa.</p>
+          <p class="st-side"><span class="mark">The collection</span><span>Vagari Vati, by Justin Titus</span></p>
+          <div class="st-body">
+            <p class="st-first">This collection is Justin Titus&rsquo;s tribute to his ancestors and to their land in Africa.</p>
             <p>It is cut loose, for a city a long way from that land. What carries the memory across is the print.</p>
           </div>
         </header>
 
-        <section class="st-marks" aria-label="The patterns">
-          <div class="grid st-marks-head">
-            <p class="mark st-k">The patterns</p>
-            <h3 class="st-h2">Four marks you will find on the cloth</h3>
-            <p class="st-note">In much of West Africa, cloth is a place to keep memory. On Malian mud cloth, <i>b&ograve;g&ograve;lanfini</i>, each mark is painted by hand in fermented mud and stands for something its maker knows: a place, a saying, a passage in a life. The prints here are made of the same kinds of shapes. Choose a mark to read it.</p>
-          </div>
-          <div class="reader grid">
-            <div class="rd-tabs" id="rdTabs" role="tablist" aria-label="Marks"></div>
-            <figure class="rd-cloth"><img id="rdCloth" alt=""><figcaption id="rdCap"></figcaption></figure>
-            <div class="rd-text">
-              <div class="rd-glyph" id="rdGlyph" aria-hidden="true"></div>
-              <h4 class="rd-name" id="rdName"></h4>
-              <p class="rd-see" id="rdSee"></p>
-              <p class="rd-read" id="rdRead"></p>
-              <p class="mark rd-on">Worn on</p>
-              <div class="rd-pieces" id="rdPieces"></div>
-            </div>
+        <section class="st-sec" aria-label="The patterns">
+          <h3 class="st-h">Four marks on the cloth</h3>
+          <p class="st-side"><span class="mark">The patterns</span><span>Scroll to read each one</span></p>
+          <div class="st-body">
+            <p>In much of West Africa, cloth is a place to keep memory. On Malian mud cloth, <i>b&ograve;g&ograve;lanfini</i>, each mark is painted by hand in fermented mud and stands for something its maker knows: a place, a saying, a passage in a life.</p>
+            <p>The prints here are made of the same kinds of shapes.</p>
           </div>
         </section>
 
-        <section class="st-close grid" aria-label="Ancestry">
-          <p class="mark st-k">Ancestry</p>
-          <h3 class="st-h2">A record you can wear</h3>
-          <div class="st-lead">
+        <div id="marks"></div>
+
+        <section class="st-sec st-close" aria-label="Ancestry">
+          <h3 class="st-h">A record you can wear</h3>
+          <p class="st-side"><span class="mark">Ancestry</span></p>
+          <div class="st-body">
             <p>A pattern like these is repeated by hand, row after row, by someone who learned it from someone else. Wearing it keeps that chain going one more link.</p>
-            <p>That is what this collection is for. Each piece is named for an idea worth carrying, and printed with the marks of the people who carried it first.</p>
+            <p>Each piece is named for an idea worth carrying, and printed with the marks of the people who carried it first.</p>
             <p><a class="enter" href="#shop">See all 38 pieces</a></p>
           </div>
         </section>
