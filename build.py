@@ -7,7 +7,7 @@ body=rd('body.html').replace('{{WORDMARK}}',rd('_wordmark.svg')).replace('{{MONO
 head='''<title>Vagari Vati</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Host+Grotesk:wght@400;500&family=Grenze+Gotisch:wght@300;400&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Host+Grotesk:wght@400;500&family=UnifrakturMaguntia&display=swap">
 <style>
 '''+rd('styles.css')+'''</style>
 '''
