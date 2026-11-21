@@ -1,0 +1,123 @@
+<div id="app" data-view="home">
+
+  <header class="top grid">
+    <a class="brand" href="#home" aria-label="Vagari Vati, home">{{MONO}}</a>
+    <nav class="cats" id="cats" aria-label="Categories"></nav>
+    <div class="tools">
+      <button type="button" class="tool" id="soundBtn" aria-pressed="false">Sound off</button>
+      <a href="#system" class="tool" id="sysLink">System</a>
+      <button type="button" class="tool" id="gridBtn" aria-pressed="false">Grid</button>
+      <button type="button" class="tool bagbtn" id="bagBtn" aria-haspopup="dialog">Bag <span id="bagCount">0</span></button>
+    </div>
+  </header>
+
+  <main>
+    <!-- Home: the film, then every piece -->
+    <section class="view v-home" data-name="home" aria-label="Home">
+      <div class="hero">
+        <video class="film" id="film" muted loop playsinline preload="auto" poster="media/film-poster.jpg">
+          <source src="media/film.mp4" type="video/mp4">
+        </video>
+        <div class="veil"></div>
+        <h1 class="sr">Vagari Vati</h1>
+        <div class="foot grid">
+          <p class="home-note">Streetwear in organic cotton.<br>New York City.</p>
+          <a class="enter" href="#shop">See all 38 pieces</a>
+        </div>
+      </div>
+      <div class="catalog" id="catalog">
+        <div class="fx" aria-hidden="true"><i class="fx-pat"></i><i class="fx-pat fx-slip"></i><i class="fx-grain"></i></div>
+        <div class="wall" id="wall"></div>
+        <footer class="end grid">
+          <p>&copy; 2026 Vagari Vati</p>
+          <p class="end-mid">Shipping and taxes are calculated at checkout.</p>
+          <a href="https://www.instagram.com/vagarivati" target="_blank" rel="noopener">Instagram</a>
+        </footer>
+      </div>
+    </section>
+
+    <!-- Piece: the product page -->
+    <section class="view v-piece" data-name="piece" aria-label="Piece">
+      <button type="button" class="p-photo" id="pPhoto" data-cur="Next photo" aria-label="Next photo">
+        <img id="pieceImgA" alt=""><img id="pieceImgB" alt="">
+        <span class="p-num" id="pNum"></span>
+      </button>
+      <div class="p-info">
+        <div class="p-top">
+          <a class="back" id="pieceBack" href="#shop"><i class="chev l"></i><span id="pieceBackLabel">Back</span></a>
+          <p class="crumb" id="pieceCrumb"></p>
+        </div>
+        <h2 class="title" id="pieceTitle"></h2>
+        <div class="p-spec">
+          <div class="p-buy">
+            <p class="price" id="piecePrice"></p>
+            <div class="sizes" id="sizes" role="radiogroup" aria-label="Size"></div>
+            <button type="button" class="btn solid" id="addBtn">Add to bag</button>
+            <p class="fine" id="buyNote">Shipping and taxes are calculated at checkout.</p>
+          </div>
+          <div class="desc" id="pieceDesc"></div>
+        </div>
+        <div class="p-thumbs" id="thumbs" role="tablist" aria-label="Photos"></div>
+        <div class="p-foot">
+          <a class="neighbor prev" id="piecePrev" href="#"><i class="chev l"></i><span></span></a>
+          <a class="neighbor next" id="pieceNext" href="#"><span></span><i class="chev r"></i></a>
+        </div>
+      </div>
+    </section>
+
+    <!-- System: the design system on one screen -->
+    <section class="view v-system" data-name="system" aria-label="Design system">
+      <div class="sys grid">
+        <div class="sys-col c1">
+          <h2 class="sys-h">Color</h2>
+          <ul class="swatches">
+            <li><i style="background:var(--ink)"></i><b>Ink</b><span>#000000</span><em>The wall, the header, the bag.</em></li>
+            <li><i style="background:var(--oxblood)"></i><b>Oxblood</b><span>#1A0205</span><em>The product page and this page.</em></li>
+            <li><i style="background:var(--maroon)"></i><b>Maroon</b><span>#5E0B15</span><em>The wash over the film. Nothing else.</em></li>
+            <li><i style="background:var(--blood)"></i><b>Blood</b><span>#D0112B</span><em>The one thing you are on.</em></li>
+            <li><i style="background:var(--white)"></i><b>White</b><span>#FFFFFF</span><em>Type, and the studio photographs.</em></li>
+          </ul>
+        </div>
+        <div class="sys-col c2">
+          <h2 class="sys-h">Type</h2>
+          <p class="spec-d">Yugen</p>
+          <p class="spec-n">Jacquard 24. Names only, one word each. Never a sentence, never below 24px.</p>
+          <p class="spec-t">Soft cotton, cut loose and worn open.</p>
+          <p class="spec-n">Host Grotesk. Everything you read or press. 15, 13 and 11px, sentence case.</p>
+        </div>
+        <div class="sys-col c3">
+          <h2 class="sys-h">Grid</h2>
+          <div class="minigrid" aria-hidden="true"><i></i><i></i><i></i></div>
+          <p class="spec-n">24 columns, no gutters, one margin. Text keeps to 6 columns at an edge. An open photo takes 8. What is left stays empty.</p>
+          <p class="spec-n">The film and the product page each fill one screen. Only the wall of pieces scrolls.</p>
+        </div>
+        <div class="sys-col c4">
+          <h2 class="sys-h">Wall</h2>
+          <div class="m-wall" aria-hidden="true"><i></i><i></i><i></i></div>
+          <p class="spec-n">Pieces hang on black, cut out of their background, five across, with wide margins and space between them. Behind them runs the Maitri print, faded, grainy and slipping.</p>
+          <p class="spec-n">A small cross marks every corner and the place you are. No overlays, no frames, no logo on the photographs.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div class="gridlines" id="gridlines" aria-hidden="true" hidden></div>
+
+  <div class="scrim" id="scrim" hidden></div>
+  <aside class="bag" id="bag" role="dialog" aria-modal="true" aria-label="Your bag" aria-hidden="true" inert>
+    <div class="bag-head">
+      <h2>Bag</h2>
+      <button type="button" class="tool" id="bagClose">Close</button>
+    </div>
+    <ul class="bag-list" id="bagList"></ul>
+    <p class="bag-empty" id="bagEmpty">Your bag is empty. Open a piece, pick a size and add it here.</p>
+    <div class="bag-foot" id="bagFoot">
+      <p class="sub"><span>Subtotal</span><b id="bagSub"></b></p>
+      <a class="btn solid" id="checkout" href="#" target="_blank" rel="noopener">Check out</a>
+      <p class="fine">Checkout opens on vagarivati.com with these pieces in your cart.</p>
+    </div>
+  </aside>
+
+  <div class="cur" id="cur" aria-hidden="true"></div>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+</div>
