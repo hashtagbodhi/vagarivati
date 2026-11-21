@@ -456,3 +456,15 @@ img,video,svg{display:block}
   .p-sign nav{display:flex;gap:16px;margin-top:16px;font-size:var(--t-xs)}
   .end{padding-block:26px}
 }
+
+/* a letter in a name turns red for a moment */
+.cap .nm{gap:0}
+.cap .nm::before{margin-right:8px}
+.cap .nm i{font-style:normal}
+.cap .nm i.r{color:var(--blood)}
+/* footer sign-off: the wordmark, small, with the line under it */
+.end{height:auto;padding-block:22px;align-items:end}
+.end .sign{display:grid;gap:8px;justify-items:start}
+.sign .wordmark,.p-sign .wordmark{height:22px;width:auto;fill:var(--white)}
+.sign>span:last-child,.p-sign>span:last-of-type{color:var(--ash);font-size:var(--t-xs)}
+@media (max-width:820px){.p-sign{gap:10px}.p-sign .wordmark{height:26px}.end .sign{margin-bottom:8px}}

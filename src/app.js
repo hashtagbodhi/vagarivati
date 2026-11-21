@@ -22,7 +22,7 @@
   var gl=''; for (var g=0;g<24;g++) gl+='<i></i>'; $('gridlines').innerHTML = gl;
 
   /* ---------- names: one word ---------- */
-  function nameHTML(p){ return '<span class="nm" data-t="'+esc(p.t)+'">'+esc(p.t)+'</span>' + (p.s ? '<span class="sub">'+esc(p.s)+'</span>' : ''); }
+  function nameHTML(p){ return '<span class="nm" aria-label="'+esc(p.t)+'">'+p.t.split('').map(function(ch){ return '<i aria-hidden="true">'+esc(ch)+'</i>'; }).join('')+'</span>' + (p.s ? '<span class="sub">'+esc(p.s)+'</span>' : ''); }
   function label(p){ return p.t + (p.s ? ' ' + p.s : ''); }
 
   /* ---------- the wall ---------- */
@@ -37,6 +37,15 @@
     if (S.filter !== f){ wall.classList.remove('swap'); void wall.offsetWidth; wall.classList.add('swap'); }
     S.filter = f;
   }
+  // now and then a letter or two in a name on screen turns red for a moment
+  if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) setInterval(function(){
+    if (S.view !== 'home' || document.hidden) return;
+    var hr = home.getBoundingClientRect(), vis = cells.filter(function(c){ if (c.hidden) return false; var r = c.getBoundingClientRect(); return r.bottom > hr.top && r.top < hr.bottom; });
+    if (!vis.length) return;
+    var ls = vis[Math.floor(Math.random()*vis.length)].querySelectorAll('.nm i'), n = 1 + Math.floor(Math.random()*2);
+    for (var k=0;k<n;k++){ (function(l){ l.classList.add('r'); setTimeout(function(){ l.classList.remove('r'); }, 380 + Math.random()*420); })(ls[Math.floor(Math.random()*ls.length)]); }
+  }, 520);
+
   /* ---------- the wall's surface: the Maitri print, faded, under heavy grain ---------- */
   (function(){
     var W = 240, H = 320, c = document.createElement('canvas'); c.width = W; c.height = H;
