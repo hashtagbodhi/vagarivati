@@ -731,6 +731,12 @@ img,video,svg{display:block}
   .sp-cap u{display:none}
   .wall{padding-top:44px}
 }
+
+/* opener, second pass: no text on the photographs, 20% shorter, a gentler widening */
+.splits{height:calc((var(--vh,100vh) - var(--top))*.8)}
+.sp::after,.sp:hover::after,.sp:focus-visible::after{display:none}
+@media (hover:hover){.splits .sp:hover{flex-grow:1.35}}
+.sp:focus-visible{flex-grow:1.35}
 </style>
 </head>
 <body>
@@ -1023,7 +1029,7 @@ img,video,svg{display:block}
     $('splits').innerHTML = SPLITS.map(function(h, i){
       var p = P[h];
       return '<a class="sp" href="#piece-'+h+'" aria-label="'+esc(p.f)+', '+priceOf(p)+'"><img src="'+IMG+p.i[0]+'" alt="" draggable="false"'+(i>2?' loading="lazy"':'')+'>'
-        + '<span class="sp-cap"><b>'+esc(p.t)+'</b><em>'+priceOf(p)+'</em><u>View the piece</u></span></a>';
+        + '</a>';
     }).join('');
   }
   buildSplits();

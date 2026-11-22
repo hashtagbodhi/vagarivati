@@ -720,3 +720,9 @@ img,video,svg{display:block}
   .sp-cap u{display:none}
   .wall{padding-top:44px}
 }
+
+/* opener, second pass: no text on the photographs, 20% shorter, a gentler widening */
+.splits{height:calc((var(--vh,100vh) - var(--top))*.8)}
+.sp::after,.sp:hover::after,.sp:focus-visible::after{display:none}
+@media (hover:hover){.splits .sp:hover{flex-grow:1.35}}
+.sp:focus-visible{flex-grow:1.35}

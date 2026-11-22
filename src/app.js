@@ -38,7 +38,7 @@
     $('splits').innerHTML = SPLITS.map(function(h, i){
       var p = P[h];
       return '<a class="sp" href="#piece-'+h+'" aria-label="'+esc(p.f)+', '+priceOf(p)+'"><img src="'+IMG+p.i[0]+'" alt="" draggable="false"'+(i>2?' loading="lazy"':'')+'>'
-        + '<span class="sp-cap"><b>'+esc(p.t)+'</b><em>'+priceOf(p)+'</em><u>View the piece</u></span></a>';
+        + '</a>';
     }).join('');
   }
   buildSplits();
