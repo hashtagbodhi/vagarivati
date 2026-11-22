@@ -161,49 +161,73 @@
     });
   }
 
-  /* ---------- story: the prints, sorted into four families, with one viewer ---------- */
+  /* ---------- story: eleven prints. A gallery you click, and a reader that opens ---------- */
   var FAMS = [
-    { name:'Marks', note:'Signs drawn by hand', items:['maitri','hikari','vasanta'] },
-    { name:'Bands', note:'Teeth and stripes', items:['midori','aiko'] },
-    { name:'Fields', note:'One shape, repeated', items:['padma','shunya','yashodhara'] },
-    { name:'Flora', note:'Flowers and paisley', items:['surya','darvish','mani'] }
+    { name:'Marks', items:['maitri','hikari','vasanta'] },
+    { name:'Bands', items:['midori','aiko'] },
+    { name:'Fields', items:['padma','shunya','yashodhara'] },
+    { name:'Flora', items:['surya','darvish','mani'] }
   ];
   var MARKS = {
-    maitri:{ name:'Chevron and house', see:'Off-white marks on black. Columns of arrowheads run between pointed blocks filled with short bars.', read:'We read the arrowheads as a path, and the blocks as the house it leads back to.' },
-    hikari:{ name:'Crossroads', see:'Red on cream. Bands of triangles sit beside small squares, each crossed corner to corner.', read:'We read the crossed square as a meeting place: four roads arriving at one point.' },
-    vasanta:{ name:'Diamond', see:'A black lattice of diamonds and dots running down a pale yellow edge.', read:'We read the diamond as an eye that stays open. It sits on the edge of the cloth and watches.' },
-    midori:{ name:'Tooth', see:'Brown triangles set point to edge in long bands, with rows of small diamonds between them.', read:'We read it as a guard: a border that keeps what is inside it.' },
-    aiko:{ name:'Tooth and thread', see:'The same teeth in cream on green, running between groups of fine lines.', read:'The lines are the thread. The teeth are where it is tied off.' },
-    padma:{ name:'Star', see:'Six-pointed stars set inside hexagons, purple on cream.', read:'We read it as the night sky, used the way it was first used: as a map.' },
-    shunya:{ name:'Field', see:'A grid of small squares, each filled with loose stamped marks, pink on cream.', read:'We read it as land seen from above. Every plot is the same size and planted differently.' },
-    yashodhara:{ name:'Fan', see:'Rows of overlapping fans, like shells or scales, in plum.', read:'We read it as water: one wave laid over the last.' },
-    surya:{ name:'Sun band', see:'Cream flowers on green, crossed by a blue band of circles and arcs.', read:'We read the circles as the sun, crossing from one edge of the cloth to the other.' },
-    darvish:{ name:'Paisley', see:'Teardrop shapes and flowers arranged in panels, on turquoise.', read:'Paisley is a teardrop motif that came out of Persia and India. Here it is a reminder that cloth travels, and patterns travel with it.' },
-    mani:{ name:'Sprig', see:'Small gold sprigs scattered over orange, above a banded border.', read:'We read each sprig as a seed: small, repeated, and enough to cover the whole field.' }
+    maitri:{ name:'Chevron and house', hook:'A map home, worn on the back.',
+      story:'Arrows stacked in columns, all pointing one way. Between them, small houses with bars inside: a roof, and what the roof keeps. Mud cloth makers in Mali paint marks like these by hand, one at a time. We put them on black so nobody could miss them.' },
+    hikari:{ name:'Crossroads', hook:'Four roads. One place to stand.',
+      story:'Every square is crossed corner to corner, like a junction seen from above. Every village has one: the spot where people meet, trade, argue and leave from. Printed in brick red, it runs the full length of the robe. Wear it and you are the meeting point.' },
+    vasanta:{ name:'Diamond', hook:'An eye that does not close.',
+      story:'One line of black diamonds down a pale yellow edge. That is all. The diamond is the oldest guard there is: an open eye, watching the border of the cloth. We kept the rest of the piece plain so the eye has nothing to compete with.' },
+    midori:{ name:'Tooth', hook:'A border with a bite.',
+      story:'Triangles set point to edge, row after row, like teeth. A band like this goes where things need protecting: a hem, a seam, a doorway. Here it runs head to toe in brown on cream. It is the most traditional print we make and the hardest to ignore.' },
+    aiko:{ name:'Tooth and thread', hook:'Same teeth. Louder colour.',
+      story:'The tooth band again, this time in cream on deep green, with fine lines running between like thread pulled tight. The lines hold the cloth together. The teeth mark where it is tied off. On trousers, it turns every step into a stripe.' },
+    padma:{ name:'Star', hook:'The first map anyone used.',
+      story:'Six-pointed stars, each locked inside a hexagon, repeating without a gap. Before roads, people crossed deserts by reading the sky. This is that sky, flattened and printed in purple. It looks soft from a distance. Up close it is all geometry.' },
+    shunya:{ name:'Field', hook:'The land, seen from above.',
+      story:'A grid of small squares, each stamped by hand with its own loose marks. No two are the same. It reads like farmland from the air: every plot the same size, every one planted differently. In pink, because nothing says a field has to be green.' },
+    yashodhara:{ name:'Fan', hook:'One wave laid over the last.',
+      story:'Rows of fans, overlapping like scales or shells or water coming in. The shape is the same every time. The rhythm is what you notice. On a long dress it never sits still: walk, and the whole print looks like it is moving with the tide.' },
+    surya:{ name:'Sun band', hook:'The sun, crossing the cloth.',
+      story:'Cream flowers scattered over sea green, and through the middle a hard blue band of circles and arcs. The flowers are the ground. The band is the sun going over it, edge to edge. It is the one print here that tells you what time it is.' },
+    darvish:{ name:'Paisley', hook:'A pattern that never stayed home.',
+      story:'Paisley began in Persia and India, crossed to Africa and Europe on trade ships, and has never belonged to one place since. We kept it for that reason. Teardrops, flowers and panels in turquoise and red: proof that cloth travels, and patterns travel with it.' },
+    mani:{ name:'Sprig', hook:'Small. Repeated. Enough.',
+      story:'Tiny gold sprigs woven into saffron orange, one after another, until the whole cloth is covered. Each one is a seed. On its own it is nothing. Repeated a thousand times it is a field, and a robe you can see from across the street.' }
   };
-  var ORDER = []; FAMS.forEach(function(f){ f.items.forEach(function(h){ ORDER.push(h); }); });
-  var markAt = null, story = document.querySelector('.v-story');
-  $('pgGrid').innerHTML = FAMS.map(function(f){
-    return '<div class="fam"><p class="fam-h"><b>'+f.name+'</b><span>'+f.note+'</span></p><div class="fam-row">'
-      + f.items.map(function(h){ return '<button type="button" class="sw" data-h="'+h+'" aria-label="'+MARKS[h].name+'"><img src="media/sw/'+h+'.jpg" alt="" loading="lazy"><span>'+MARKS[h].name+'</span></button>'; }).join('')
-      + '</div></div>';
+  var ORDER = [], FAMOF = {}; FAMS.forEach(function(f){ f.items.forEach(function(h){ ORDER.push(h); FAMOF[h] = f.name; }); });
+  var markAt = ORDER[0], famAt = 'All', story = document.querySelector('.v-story');
+  $('galTabs').innerHTML = '<button type="button" data-f="All">All<i>'+ORDER.length+'</i></button>' + FAMS.map(function(f){ return '<button type="button" data-f="'+f.name+'">'+f.name+'<i>'+f.items.length+'</i></button>'; }).join('');
+  $('galGrid').innerHTML = ORDER.map(function(h,i){
+    return '<button type="button" class="gt" data-h="'+h+'" data-f="'+FAMOF[h]+'"><img src="media/sw/'+h+'.jpg" alt="" loading="lazy"><span class="gt-n">'+two(i+1)+'</span><b>'+MARKS[h].name+'</b><span class="gt-go">Read the story</span></button>';
   }).join('');
-  if (narrow.matches) document.querySelector('.fam').appendChild($('pgView'));
-  function showMark(h){
-    if (h === markAt) return; markAt = h; var m = MARKS[h], p = P[h];
-    [].forEach.call(document.querySelectorAll('.sw'), function(b){ b.setAttribute('aria-pressed', b.getAttribute('data-h')===h); });
-    $('pvImg').src = 'media/sw/'+h+'.jpg'; $('pvImg').alt = m.name + ' pattern, drawn flat';
-    $('pvN').textContent = two(ORDER.indexOf(h)+1) + ' / ' + two(ORDER.length);
-    $('pvName').textContent = m.name; $('pvSee').textContent = m.see; $('pvRead').textContent = m.read;
-    $('pvCloth').href = '#piece-'+h; $('pvClothImg').src = 'media/cl/'+h+'.jpg'; $('pvClothName').textContent = p.f;
-    var sp = $('storyPat'); sp.style.backgroundImage = 'url(media/sw/'+h+'.jpg)'; sp.style.backgroundSize = '420px 420px';
+  function setFam(f){
+    famAt = f;
+    [].forEach.call($('galTabs').children, function(b){ b.setAttribute('aria-pressed', b.getAttribute('data-f')===f); });
+    [].forEach.call($('galGrid').children, function(t){ t.hidden = f!=='All' && t.getAttribute('data-f')!==f; });
   }
-  $('pgGrid').addEventListener('pointerover', function(e){ var b = e.target.closest('.sw'); if (b && e.pointerType==='mouse') showMark(b.getAttribute('data-h')); });
-  $('pgGrid').addEventListener('click', function(e){
-    var b = e.target.closest('.sw'); if (!b) return;
-    showMark(b.getAttribute('data-h')); snd('tick');
-    if (narrow.matches){ b.closest('.fam').appendChild($('pgView')); $('pgView').scrollIntoView({ behavior:'smooth', block:'nearest' }); }
-  });
+  $('galTabs').addEventListener('click', function(e){ var b = e.target.closest('button'); if (b){ setFam(b.getAttribute('data-f')); snd('tick'); } });
+  function showMark(h){
+    markAt = h; var m = MARKS[h], p = P[h], i = ORDER.indexOf(h);
+    $('rdImg').src = 'media/sw/'+h+'.jpg'; $('rdImg').alt = m.name + ' pattern';
+    $('rdN').textContent = two(i+1) + ' / ' + two(ORDER.length) + '   ' + FAMOF[h];
+    $('rdName').textContent = m.name; $('rdHook').textContent = m.hook; $('rdStory').textContent = m.story;
+    $('rdPiece').href = '#piece-'+h; $('rdCut').src = 'cut/'+h+'.webp';
+    $('rdPieceName').textContent = p.f; $('rdPiecePrice').textContent = priceOf(p);
+    var a = ORDER[(i-1+ORDER.length)%ORDER.length], b = ORDER[(i+1)%ORDER.length];
+    $('rdPrev').querySelector('span').textContent = MARKS[a].name; $('rdNext').querySelector('span').textContent = MARKS[b].name;
+    var sp = $('storyPat'); sp.style.backgroundImage = 'url(media/sw/'+h+'.jpg)'; sp.style.backgroundSize = '420px 420px';
+    $('reader').scrollTop = 0;
+  }
+  var readerEl = $('reader'), readerOpen = false;
+  function openReader(o){
+    if (o !== readerOpen) snd(o ? 'open' : 'sheet');
+    readerOpen = o; readerEl.classList.toggle('open', o); readerEl.setAttribute('aria-hidden', !o); readerEl.inert = !o;
+    if (o) $('rdClose').focus({preventScroll:true});
+  }
+  function stepMark(d){ var i = ORDER.indexOf(markAt); showMark(ORDER[(i+d+ORDER.length)%ORDER.length]); snd('tick'); }
+  $('galGrid').addEventListener('click', function(e){ var b = e.target.closest('.gt'); if (b){ showMark(b.getAttribute('data-h')); openReader(true); } });
+  $('rdClose').onclick = function(){ openReader(false); };
+  $('rdPrev').onclick = function(){ stepMark(-1); }; $('rdNext').onclick = function(){ stepMark(1); };
+  $('rdPiece').addEventListener('click', function(){ openReader(false); });
+  setFam('All');
 
   /* ---------- policies ---------- */
   var POL = {
@@ -343,6 +367,7 @@
     var h = (location.hash || '#home').slice(1), from = S.view, first = !started; started = true;
     if (bagOpen) openBag(false);
     if (menuOpen) openMenu(false);
+    if (readerOpen && h !== 'story') openReader(false);
     if (h !== 'system') S.last = h;
     if (h==='shop' || catBy[h]){
       var same = S.filter === h && (from==='piece' || from==='system') && inCatalog();
@@ -350,7 +375,7 @@
       if (!same) toCatalog(from==='home' && !first);
     } else if (h.indexOf('piece-')===0 && P[h.slice(6)]){
       S.piece = P[h.slice(6)]; buildPiece(S.piece); show('piece'); if (!first) snd('open');
-    } else if (h==='story'){ showMark(markAt || ORDER[0]); show('story'); story.scrollTop = 0; }
+    } else if (h==='story'){ if (readerOpen) openReader(false); showMark(markAt); show('story'); story.scrollTop = 0; }
     else if (POL[h]){ showPolicy(h); show('info'); }
     else if (h==='system'){ show('system'); }
     else { show('home'); home.scrollTo({ top:0, behavior: from==='home' && !first ? 'smooth' : 'auto' }); }
@@ -378,6 +403,7 @@
   document.addEventListener('keydown', function(e){
     if (e.metaKey || e.ctrlKey || e.altKey) return;
     var k = e.key;
+    if (readerOpen){ if (k==='Escape') openReader(false); else if (k==='ArrowRight') stepMark(1); else if (k==='ArrowLeft') stepMark(-1); return; }
     if (k==='Escape'){
       if (menuOpen) openMenu(false); else if (bagOpen) openBag(false); else if (S.view==='piece') go(S.list); else if (S.view==='story' || S.view==='info') go('shop'); else if (S.view==='system') go(S.last);
       return;
@@ -402,5 +428,13 @@
   }
 
   app.addEventListener('click', function(e){ var b = e.target.closest('.totop'); if (b){ var v = b.closest('.view'); (v.classList.contains('v-home') ? home : v).scrollTo({ top:0, behavior:'smooth' }); } });
+  // Add to bag flickers red at random moments
+  if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) (function flick(){
+    setTimeout(function(){
+      var b = $('addBtn');
+      if (S.view === 'piece' && !b.disabled && !document.hidden){ b.classList.add('flick'); setTimeout(function(){ b.classList.remove('flick'); }, 420); }
+      flick();
+    }, 2600 + Math.random()*5200);
+  })();
   renderBag(); setFilter('shop'); route(); playFilm();
 })();

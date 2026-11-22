@@ -31,7 +31,7 @@
         <button type="button" class="wall-now" id="wallNow"></button>
         <div class="wall" id="wall"></div>
         <footer class="end grid">
-          <p class="sign"><span class="sr">Vagari Vati</span>{{WORDMARK}}<span>Discover Destiny</span></p>
+          <p class="sign"><b class="sign-name">Vagari Vati</b><span>Discover Destiny</span></p>
           <nav class="end-links" aria-label="Policies"><a href="#shipping">Shipping</a><a href="#returns">Returns</a><a href="#privacy">Privacy</a><a href="#terms">Terms</a></nav>
           <div class="end-r"><a href="https://www.instagram.com/vagarivati" target="_blank" rel="noopener">Instagram</a><button type="button" class="totop"><i class="ic ic-sword"></i>Top</button></div>
         </footer>
@@ -67,7 +67,7 @@
           <a class="neighbor next" id="pieceNext" href="#"><span></span><i class="chev r"></i></a>
         </div>
         <footer class="p-sign">
-          <span class="sr">Vagari Vati</span>{{WORDMARK}}<span>Discover Destiny</span>
+          <b class="sign-name">Vagari Vati</b><span>Discover Destiny</span>
           <nav aria-label="Policies"><a href="#shipping">Shipping</a><a href="#returns">Returns</a><a href="#privacy">Privacy</a><a href="#terms">Terms</a></nav>
         </footer>
       </div>
@@ -87,24 +87,20 @@
         </header>
 
         <section class="st-sec" aria-label="The patterns">
-          <h3 class="st-h">Eleven prints in four families</h3>
-          <div class="st-side"><span class="ilab"><i class="ic ic-eye"></i>The patterns</span><span>Choose a print to read it</span></div>
+          <h3 class="st-h">Eleven prints. Each one says something.</h3>
+          <div class="st-side"><span class="ilab"><i class="ic ic-eye"></i>The patterns</span><span>Sorted into four families</span></div>
           <div class="st-body">
             <p>In much of West Africa, cloth is a place to keep memory. On Malian mud cloth, <i>b&ograve;g&ograve;lanfini</i>, each mark is painted by hand in fermented mud and stands for something its maker knows: a place, a saying, a passage in a life.</p>
             <p>Most of the prints here are made of the same kinds of shapes. A few, the florals and the paisley, came by other roads, and we say so where they do.</p>
           </div>
         </section>
 
-        <section class="pg" aria-label="All prints">
-          <div class="pg-grid" id="pgGrid"></div>
-          <aside class="pg-view" id="pgView">
-            <img id="pvImg" alt="">
-            <p class="mk-n" id="pvN"></p>
-            <h4 class="mk-name" id="pvName"></h4>
-            <p class="mk-see" id="pvSee"></p>
-            <p class="mk-read" id="pvRead"></p>
-            <a class="mk-cloth" id="pvCloth" href="#"><img id="pvClothImg" alt=""><span><b>On the cloth</b><span id="pvClothName"></span></span></a>
-          </aside>
+        <section class="gal" aria-label="All prints">
+          <div class="gal-bar">
+            <p class="gal-how"><i class="ic ic-eye"></i>Choose a print. Its story opens.</p>
+            <div class="gal-tabs" id="galTabs" role="group" aria-label="Families"></div>
+          </div>
+          <div class="gal-grid" id="galGrid"></div>
         </section>
 
         <section class="st-sec st-close" aria-label="Ancestry">
@@ -116,7 +112,7 @@
           </div>
         </section>
         <footer class="end grid">
-          <p class="sign"><span class="sr">Vagari Vati</span>{{WORDMARK}}<span>Discover Destiny</span></p>
+          <p class="sign"><b class="sign-name">Vagari Vati</b><span>Discover Destiny</span></p>
           <nav class="end-links" aria-label="Policies"><a href="#shipping">Shipping</a><a href="#returns">Returns</a><a href="#privacy">Privacy</a><a href="#terms">Terms</a></nav>
           <div class="end-r"><a href="https://www.instagram.com/vagarivati" target="_blank" rel="noopener">Instagram</a><button type="button" class="totop"><i class="ic ic-sword"></i>Top</button></div>
         </footer>
@@ -134,7 +130,7 @@
         </article>
       </div>
       <footer class="end grid">
-      <p class="sign"><span class="sr">Vagari Vati</span>{{WORDMARK}}<span>Discover Destiny</span></p>
+      <p class="sign"><b class="sign-name">Vagari Vati</b><span>Discover Destiny</span></p>
       <nav class="end-links" aria-label="Policies"><a href="#shipping">Shipping</a><a href="#returns">Returns</a><a href="#privacy">Privacy</a><a href="#terms">Terms</a></nav>
       <div class="end-r"><a href="https://www.instagram.com/vagarivati" target="_blank" rel="noopener">Instagram</a><button type="button" class="totop"><i class="ic ic-sword"></i>Top</button></div>
     </footer>
@@ -205,6 +201,28 @@
     <div class="menu-foot">
       <button type="button" class="tool" id="soundBtn2">Sound off</button>
       <span><a href="#shipping">Shipping</a><a href="#returns">Returns</a><a href="#privacy">Privacy</a><a href="#terms">Terms</a></span>
+    </div>
+  </aside>
+
+  <aside class="reader" id="reader" role="dialog" aria-modal="true" aria-label="Pattern story" aria-hidden="true" inert>
+    <div class="fx" aria-hidden="true"><i class="fx-grain"></i></div>
+    <button type="button" class="tool rd-close" id="rdClose">Close</button>
+    <div class="rd">
+      <img class="rd-img" id="rdImg" alt="">
+      <div class="rd-text">
+        <p class="rd-n" id="rdN"></p>
+        <h3 class="rd-name" id="rdName"></h3>
+        <p class="rd-hook" id="rdHook"></p>
+        <p class="rd-story" id="rdStory"></p>
+        <a class="rd-piece" id="rdPiece" href="#">
+          <span class="box"><img class="cut" id="rdCut" alt=""></span>
+          <span class="rd-pt"><i>Worn on</i><b id="rdPieceName"></b><em id="rdPiecePrice"></em><u>View the piece</u></span>
+        </a>
+      </div>
+    </div>
+    <div class="rd-nav">
+      <button type="button" class="neighbor" id="rdPrev"><i class="chev l"></i><span></span></button>
+      <button type="button" class="neighbor" id="rdNext"><span></span><i class="chev r"></i></button>
     </div>
   </aside>
 
