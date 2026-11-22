@@ -304,7 +304,7 @@
     'Choose a print. Its story opens.':['Elige un estampado. Se abre su historia.','Choisissez un motif. Son histoire s’ouvre.','एक प्रिंट चुनें। उसकी कहानी खुलेगी।','柄を選ぶと、その物語が開きます。'],
     'Marks':['Signos','Signes','चिह्न','しるし'], 'Bands':['Franjas','Bandes','पट्टियाँ','帯'], 'Fields':['Campos','Champs','खेत','面'], 'Flora':['Flora','Flore','फूल-पत्ती','草花'],
     'Sorted into four families':['Ordenados en cuatro familias','Classés en quatre familles','चार परिवारों में बाँटे गए','4つのグループに分類'],
-    'Vagari Vati, by Justin Titus':['Vagari Vati, por Justin Titus','Vagari Vati, par Justin Titus','Vagari Vati, जस्टिन टाइटस द्वारा','Vagari Vati、ジャスティン・タイタス'],
+    'Vagari Vati, by Jessian Titus':['Vagari Vati, por Jessian Titus','Vagari Vati, par Jessian Titus','Vagari Vati, जस्टिन टाइटस द्वारा','Vagari Vati、ジャスティン・タイタス'],
     'Worn in memory of the land before us':['En memoria de la tierra que nos precedió','En mémoire de la terre d’avant nous','हमसे पहले की धरती की याद में','私たちより前の大地を偲んで'],
     'Eleven prints. Each one says something.':['Once estampados. Cada uno dice algo.','Onze motifs. Chacun dit quelque chose.','ग्यारह प्रिंट। हर एक कुछ कहता है।','11の柄。それぞれに意味がある。'],
     'A record you can wear':['Un registro que puedes vestir','Une mémoire qui se porte','एक दस्तावेज़ जिसे आप पहन सकते हैं','身にまとえる記録'],
