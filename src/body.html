@@ -81,8 +81,15 @@
       <div class="st">
         <section class="st-film" aria-label="Film">
           <div class="sf">
-            <video id="storyFilm" playsinline preload="none" poster="media/story-poster.jpg"><source src="media/story.mp4" type="video/mp4"></video>
-            <button type="button" class="sf-play" id="sfPlay"><i></i><span>Play the film</span><em>1:09</em></button>
+            <div class="sf-frame">
+              <video id="storyFilm" playsinline preload="none" poster="media/story-poster.jpg"><source src="media/story.mp4" type="video/mp4"></video>
+              <button type="button" class="sf-hit" id="sfHit" aria-label="Play the film"><i></i></button>
+              <div class="sf-bar" id="sfBar"><b id="sfFill"></b></div>
+            </div>
+            <div class="sf-row">
+              <button type="button" class="sf-btn" id="sfPlay"><i class="ic ic-star"></i><span id="sfLabel">Play the film</span></button>
+              <p class="sf-meta"><span>Film</span><em id="sfTime">1:09</em></p>
+            </div>
           </div>
         </section>
         <header class="st-sec st-open">

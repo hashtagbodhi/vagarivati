@@ -674,6 +674,33 @@ img,video,svg{display:block}
   .v-account .pol-nav,.v-account .pol-doc{grid-column:1/25}
 }
 .sf-play span,.sf-play em{align-self:flex-end;padding-bottom:13px}
+
+/* ---------- story film, second pass: smaller, equal space above and below, its own quiet controls ---------- */
+.st{padding-top:calc(var(--top) + clamp(56px,11vh,120px))}
+.st-film{padding-bottom:clamp(56px,11vh,120px)}
+.sf{grid-column:6/16;position:static;aspect-ratio:auto;overflow:visible;background:none}
+.sf-frame{position:relative;aspect-ratio:16/9;background:var(--ink);--x:var(--line)}
+.sf-frame::before{content:"";position:absolute;inset:-7px;pointer-events:none;z-index:2;--c:linear-gradient(var(--x),var(--x));
+  background:var(--c) 0 4px/9px 1px,var(--c) 4px 0/1px 9px,var(--c) 100% 4px/9px 1px,var(--c) calc(100% - 4px) 0/1px 9px,var(--c) 0 calc(100% - 4px)/9px 1px,var(--c) 4px 100%/1px 9px,var(--c) 100% calc(100% - 4px)/9px 1px,var(--c) calc(100% - 4px) 100%/1px 9px;background-repeat:no-repeat}
+.sf.playing .sf-frame{--x:var(--blood)}
+.sf-frame video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.sf-hit{position:absolute;inset:0;display:grid;place-items:center}
+.sf-hit i{width:64px;height:64px;border-radius:50%;border:1px solid var(--white);position:relative;background:rgba(0,0,0,.25);transition:opacity .3s,background .3s,border-color .3s,transform .3s}
+.sf-hit i::after{content:"";position:absolute;left:26px;top:22px;border-style:solid;border-width:10px 0 10px 16px;border-color:transparent transparent transparent var(--white)}
+.sf-hit:hover i{background:var(--blood);border-color:var(--blood);transform:scale(1.06)}
+.sf.playing .sf-hit i{opacity:0}
+.sf-bar{position:absolute;left:0;right:0;bottom:0;height:14px;display:flex;align-items:flex-end;z-index:1}
+.sf-bar b{display:block;height:2px;width:0;background:var(--blood);transition:height .2s}
+.sf-bar:hover b{height:5px}
+.sf-row{display:flex;justify-content:space-between;align-items:center;margin-top:18px}
+.sf-btn{display:inline-flex;align-items:center;gap:10px;font-size:var(--t-m);color:var(--white)}
+.sf-btn .ic{width:18px;height:18px;color:var(--blood)}
+.sf-btn span{text-decoration:underline;text-decoration-color:transparent;text-underline-offset:5px;transition:text-decoration-color .3s}
+.sf-btn:hover span{text-decoration-color:var(--blood)}
+.sf-meta{display:flex;gap:14px;color:var(--ash);font-size:var(--t-s);font-variant-numeric:tabular-nums}
+.sf-meta em{font-style:normal;color:var(--white)}
+@media (max-width:820px){.sf{grid-column:1/25}.st{padding-top:calc(var(--top) + 28px)}.st-film{padding-bottom:48px}.sf-hit i{width:52px;height:52px}.sf-hit i::after{left:21px;top:16px}}
+.sf-hit{place-items:end start;padding:18px}.sf-hit i{width:48px;height:48px}.sf-hit i::after{left:19px;top:15px;border-width:8px 0 8px 13px}
 </style>
 </head>
 <body>
@@ -760,8 +787,15 @@ img,video,svg{display:block}
       <div class="st">
         <section class="st-film" aria-label="Film">
           <div class="sf">
-            <video id="storyFilm" playsinline preload="none" poster="media/story-poster.jpg"><source src="media/story.mp4" type="video/mp4"></video>
-            <button type="button" class="sf-play" id="sfPlay"><i></i><span>Play the film</span><em>1:09</em></button>
+            <div class="sf-frame">
+              <video id="storyFilm" playsinline preload="none" poster="media/story-poster.jpg"><source src="media/story.mp4" type="video/mp4"></video>
+              <button type="button" class="sf-hit" id="sfHit" aria-label="Play the film"><i></i></button>
+              <div class="sf-bar" id="sfBar"><b id="sfFill"></b></div>
+            </div>
+            <div class="sf-row">
+              <button type="button" class="sf-btn" id="sfPlay"><i class="ic ic-star"></i><span id="sfLabel">Play the film</span></button>
+              <p class="sf-meta"><span>Film</span><em id="sfTime">1:09</em></p>
+            </div>
           </div>
         </section>
         <header class="st-sec st-open">
@@ -1200,6 +1234,7 @@ img,video,svg{display:block}
     'Worn in memory of the land before us':['En memoria de la tierra que nos precedió','En mémoire de la terre d’avant nous','हमसे पहले की धरती की याद में','私たちより前の大地を偲んで'],
     'Eleven prints. Each one says something.':['Once estampados. Cada uno dice algo.','Onze motifs. Chacun dit quelque chose.','ग्यारह प्रिंट। हर एक कुछ कहता है।','11の柄。それぞれに意味がある。'],
     'A record you can wear':['Un registro que puedes vestir','Une mémoire qui se porte','एक दस्तावेज़ जिसे आप पहन सकते हैं','身にまとえる記録'],
+    'Pause':['Pausar','Pause','रोकें','一時停止'], 'Film':['Film','Film','फ़िल्म','フィルム'],
     'Play the film':['Ver el film','Lire le film','फ़िल्म चलाएँ','フィルムを再生'],
     'The collection and its prints':['La colección y sus estampados','La collection et ses motifs','कलेक्शन और उसके प्रिंट','コレクションと柄'],
     'Ships worldwide from India.':['Envíos a todo el mundo desde la India.','Livraison mondiale depuis l’Inde.','भारत से दुनिया भर में शिपिंग।','インドから世界中へ発送。'],
@@ -1526,10 +1561,15 @@ img,video,svg{display:block}
     }, 2600 + Math.random()*5200);
   })();
   /* the story film plays only when asked, with its own sound */
-  var sf = $('storyFilm');
-  $('sfPlay').onclick = function(){ sf.controls = true; sf.muted = false; var pr = sf.play(); if (pr && pr.catch) pr.catch(function(){}); this.hidden = true; };
-  sf.addEventListener('play', function(){ film.pause(); paintSound(); });
-  sf.addEventListener('ended', function(){ sf.controls = false; $('sfPlay').hidden = false; sf.load(); playFilm(); });
+  var sf = $('storyFilm'), sfBox = document.querySelector('.sf');
+  function mmss(t){ t = Math.max(0, Math.round(t)); return Math.floor(t/60) + ':' + two(t%60); }
+  function sfToggle(){ if (sf.paused){ sf.muted = false; var pr = sf.play(); if (pr && pr.catch) pr.catch(function(){}); } else sf.pause(); }
+  $('sfPlay').onclick = $('sfHit').onclick = sfToggle;
+  sf.addEventListener('play', function(){ film.pause(); paintSound(); sfBox.classList.add('playing'); $('sfLabel').textContent = 'Pause'; });
+  sf.addEventListener('pause', function(){ sfBox.classList.remove('playing'); $('sfLabel').textContent = 'Play the film'; });
+  sf.addEventListener('timeupdate', function(){ var d = sf.duration || 69; $('sfFill').style.width = (sf.currentTime / d * 100) + '%'; $('sfTime').textContent = mmss(d - sf.currentTime); });
+  sf.addEventListener('ended', function(){ sf.currentTime = 0; $('sfFill').style.width = '0%'; $('sfTime').textContent = mmss(sf.duration || 69); playFilm(); });
+  $('sfBar').addEventListener('click', function(e){ var r = this.getBoundingClientRect(); if (sf.duration) sf.currentTime = (e.clientX - r.left) / r.width * sf.duration; });
   paintRegion(); renderBag(); setFilter('shop'); route(); playFilm();
   if (lang !== 'en') setLang(lang);
 })();

@@ -262,6 +262,7 @@
     'Worn in memory of the land before us':['En memoria de la tierra que nos precedió','En mémoire de la terre d’avant nous','हमसे पहले की धरती की याद में','私たちより前の大地を偲んで'],
     'Eleven prints. Each one says something.':['Once estampados. Cada uno dice algo.','Onze motifs. Chacun dit quelque chose.','ग्यारह प्रिंट। हर एक कुछ कहता है।','11の柄。それぞれに意味がある。'],
     'A record you can wear':['Un registro que puedes vestir','Une mémoire qui se porte','एक दस्तावेज़ जिसे आप पहन सकते हैं','身にまとえる記録'],
+    'Pause':['Pausar','Pause','रोकें','一時停止'], 'Film':['Film','Film','फ़िल्म','フィルム'],
     'Play the film':['Ver el film','Lire le film','फ़िल्म चलाएँ','フィルムを再生'],
     'The collection and its prints':['La colección y sus estampados','La collection et ses motifs','कलेक्शन और उसके प्रिंट','コレクションと柄'],
     'Ships worldwide from India.':['Envíos a todo el mundo desde la India.','Livraison mondiale depuis l’Inde.','भारत से दुनिया भर में शिपिंग।','インドから世界中へ発送。'],
@@ -588,10 +589,15 @@
     }, 2600 + Math.random()*5200);
   })();
   /* the story film plays only when asked, with its own sound */
-  var sf = $('storyFilm');
-  $('sfPlay').onclick = function(){ sf.controls = true; sf.muted = false; var pr = sf.play(); if (pr && pr.catch) pr.catch(function(){}); this.hidden = true; };
-  sf.addEventListener('play', function(){ film.pause(); paintSound(); });
-  sf.addEventListener('ended', function(){ sf.controls = false; $('sfPlay').hidden = false; sf.load(); playFilm(); });
+  var sf = $('storyFilm'), sfBox = document.querySelector('.sf');
+  function mmss(t){ t = Math.max(0, Math.round(t)); return Math.floor(t/60) + ':' + two(t%60); }
+  function sfToggle(){ if (sf.paused){ sf.muted = false; var pr = sf.play(); if (pr && pr.catch) pr.catch(function(){}); } else sf.pause(); }
+  $('sfPlay').onclick = $('sfHit').onclick = sfToggle;
+  sf.addEventListener('play', function(){ film.pause(); paintSound(); sfBox.classList.add('playing'); $('sfLabel').textContent = 'Pause'; });
+  sf.addEventListener('pause', function(){ sfBox.classList.remove('playing'); $('sfLabel').textContent = 'Play the film'; });
+  sf.addEventListener('timeupdate', function(){ var d = sf.duration || 69; $('sfFill').style.width = (sf.currentTime / d * 100) + '%'; $('sfTime').textContent = mmss(d - sf.currentTime); });
+  sf.addEventListener('ended', function(){ sf.currentTime = 0; $('sfFill').style.width = '0%'; $('sfTime').textContent = mmss(sf.duration || 69); playFilm(); });
+  $('sfBar').addEventListener('click', function(e){ var r = this.getBoundingClientRect(); if (sf.duration) sf.currentTime = (e.clientX - r.left) / r.width * sf.duration; });
   paintRegion(); renderBag(); setFilter('shop'); route(); playFilm();
   if (lang !== 'en') setLang(lang);
 })();
