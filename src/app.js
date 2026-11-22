@@ -33,44 +33,49 @@
   wall.innerHTML = all.map(function(h){ return cellHTML(h); }).join('');
   var cells = [].slice.call(wall.children);
   /* ---------- featured: ten pieces turning in a row, with a buy card for the one in front ---------- */
-  var FEAT = ['yugen','maitri','qing','hikari','mani','ekatva','padma','dolma','darvish','yashodhara'];
+  var FEAT = ['maitri','hikari','yashodhara','midori','yun','vasanta','shinrin','milarepa','tenzin','rinchen'];
   var feat = { i:0, timer:null, held:false, paused:false, size:null };
   var featEl = $('feat'), featStage = $('featStage'), featCard = $('featCard'), featDots = $('featDots'), featN = $('featN'), featPause = $('featPause');
   var FEAT_MS = 6500, featCalm = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   function featDist(k){ var n = FEAT.length, d = ((k - feat.i) % n + n) % n; return d > n/2 ? d - n : d; }
   function featBuild(){
     featStage.innerHTML = FEAT.map(function(h,k){
-      return '<a class="fs" href="#piece-'+h+'" data-k="'+k+'" aria-label="'+esc(P[h].f)+'"><img src="'+IMG+P[h].i[0]+'" alt="" draggable="false"'+(k>2?' loading="lazy"':'')+'></a>';
+      return '<a class="fm" href="#piece-'+h+'" data-k="'+k+'" aria-label="'+esc(P[h].f)+'"><img src="model/'+h+'.webp" alt="" draggable="false"></a>';
     }).join('');
-    featDots.innerHTML = FEAT.map(function(h,k){ return '<button type="button" data-k="'+k+'" aria-label="'+esc(P[h].t)+'"></button>'; }).join('');
+    featDots.innerHTML = FEAT.map(function(h,k){ return '<button type="button" data-k="'+k+'" aria-label="'+esc(P[h].t)+'"><i>'+two(k+1)+'</i><b>'+esc(P[h].t)+'</b></button>'; }).join('');
     featPlace();
   }
+  // each model has a place on the floor; changing the look walks every one of them to a new place
   function featPlace(){
+    var w = featStage.clientWidth || 1, small = narrow.matches, reach = small ? 1 : 2, step = w * (small ? 0.36 : 0.185);
     [].forEach.call(featStage.children, function(el){
-      var d = featDist(+el.getAttribute('data-k')), a = Math.abs(d);
+      var d = featDist(+el.getAttribute('data-k')), a = Math.abs(d), on = a <= reach;
       el.classList.toggle('front', d === 0);
       el.style.zIndex = 10 - a;
-      el.style.opacity = a > 2 ? 0 : 1 - a * 0.3;
-      el.style.visibility = a > 2 ? 'hidden' : 'visible';
-      el.style.transform = 'translate3d(' + (d * 62) + '%,0,' + (-a * 180) + 'px) rotateY(' + (-d * 28) + 'deg) scale(' + (1 - a * 0.12) + ')';
+      el.style.opacity = on ? 1 : 0;
+      el.style.pointerEvents = on ? '' : 'none';
+      el.style.setProperty('--blur', a === 0 ? '0px' : a === 1 ? '.6px' : '1.6px');
+      el.style.transform = 'translateX(calc(-50% + ' + Math.round(d * step + (d ? (d > 0 ? 1 : -1) * step * 0.12 : 0)) + 'px)) scale(' + (a === 0 ? 1 : a === 1 ? 0.8 : 0.72) + ')';
       el.tabIndex = d === 0 ? 0 : -1;
     });
     [].forEach.call(featDots.children, function(b,k){ b.setAttribute('aria-current', k === feat.i); });
+    var cur = featDots.children[feat.i]; if (cur && featDots.scrollWidth > featDots.clientWidth) featDots.scrollLeft = cur.offsetLeft - featDots.clientWidth/2 + cur.offsetWidth/2;
     featN.textContent = two(feat.i + 1) + ' / ' + two(FEAT.length);
     featPause.textContent = feat.paused ? 'Play' : 'Pause';
     featRenderCard();
   }
+  window.addEventListener('resize', function(){ if (featStage.children.length) featPlace(); });
   function featRenderCard(){
     var p = P[FEAT[feat.i]], so = soldOut(p), avail = p.v.filter(function(v){ return v.a; });
     var ok = feat.size && p.v.some(function(v){ return String(v.id) === feat.size && v.a; });
     if (!ok) feat.size = avail.length === 1 ? String(avail[0].id) : null;
-    featCard.innerHTML = '<p class="fc-kind">' + KIND[p.c] + '</p>'
-      + '<h3 class="fc-name">' + esc(p.t) + '</h3>'
-      + '<p class="fc-price">' + priceOf(p) + '</p>'
+    featCard.innerHTML = '<p class="fc-top"><b>In this look</b><span>1 piece</span></p>'
+      + '<a class="fc-item" href="#piece-' + p.h + '"><span class="fc-thumb"><img src="cut2/' + p.h + '.webp" alt=""></span>'
+      + '<span class="fc-meta"><b>' + esc(p.f) + '</b><em>' + priceOf(p) + '</em></span><i class="fc-plus" aria-hidden="true"></i></a>'
       + '<p class="fc-row"><span>Size</span><span>' + (so ? 'Sold out' : feat.size ? '' : 'Select one') + '</span></p>'
       + '<div class="fc-sizes">' + p.v.map(function(v){ return '<button type="button" data-id="' + v.id + '" aria-pressed="' + (String(v.id) === feat.size) + '"' + (v.a ? '' : ' disabled') + '>' + v.s + '</button>'; }).join('') + '</div>'
-      + '<button type="button" class="btn solid fc-add" id="fcAdd"' + (so ? ' disabled' : '') + '>' + (so ? 'Sold out' : 'Add to bag') + '</button>'
-      + '<a class="link fc-view" href="#piece-' + p.h + '">View the piece</a>';
+      + '<div class="fc-foot"><p class="fc-total"><span>Total</span><b>' + priceOf(p) + '</b></p>'
+      + '<button type="button" class="fc-add" id="fcAdd"' + (so ? ' disabled' : '') + '>' + (so ? 'Sold out' : 'Add to bag') + '</button></div>';
   }
   function addLine(p, sizeId){
     var v = p.v.filter(function(x){ return String(x.id) === String(sizeId); })[0]; if (!v) return;
@@ -97,7 +102,7 @@
     }, FEAT_MS);
   }
   featStage.addEventListener('click', function(e){
-    var a = e.target.closest('.fs'); if (!a) return;
+    var a = e.target.closest('.fm'); if (!a) return;
     if (!a.classList.contains('front')){ e.preventDefault(); featGo(+a.getAttribute('data-k')); }
   });
   featDots.addEventListener('click', function(e){ var b = e.target.closest('button'); if (b) featGo(+b.getAttribute('data-k')); });
@@ -387,6 +392,7 @@
     '10% off with code':['10% de descuento con el código','-10 % avec le code','कोड के साथ 10% की छूट','コードで10%オフ'],
     'Ships worldwide from India':['Envíos a todo el mundo desde la India','Livraison mondiale depuis l’Inde','भारत से दुनिया भर में शिपिंग','インドから世界中へ発送'],
     'Copied':['Copiado','Copié','कॉपी हो गया','コピーしました'],
+    'In this look':['En este look','Dans ce look','इस लुक में','このルック'], '1 piece':['1 pieza','1 pièce','1 पीस','1点'], 'Collection 2027':['Colección 2027','Collection 2027','कलेक्शन 2027','コレクション 2027'], 'Ten looks. Tap a figure to see its piece.':['Diez looks. Toca una figura para ver su pieza.','Dix looks. Touchez une silhouette pour voir sa pièce.','दस लुक। पीस देखने के लिए किसी आकृति पर टैप करें।','10ルック。人物をタップするとアイテムが表示されます。'],
     'Size':['Talla','Taille','साइज़','サイズ'], 'Select one':['Elige una','Choisir','चुनें','選択'], 'Play':['Reproducir','Lecture','चलाएँ','再生'],
     'Discover Destiny':['Discover Destiny','Discover Destiny','Discover Destiny','Discover Destiny']
   };
