@@ -641,61 +641,23 @@ img,video,svg{display:block}
 .ords .ord{margin-top:0}
 .ord-items{flex-direction:column;gap:18px}
 
-/* ---------- story film: both rails wide, plays when asked ---------- */
 .st{padding-top:calc(var(--top) + clamp(24px,5vh,56px))}
-.st-film{display:grid;grid-template-columns:repeat(24,minmax(0,1fr));padding:0 max(var(--m),env(safe-area-inset-right,0px)) clamp(70px,14vh,150px) max(var(--m),env(safe-area-inset-left,0px))}
-.sf{grid-column:6/20;position:relative;aspect-ratio:16/9;background:var(--ink);overflow:hidden}
-.sf video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
-.sf-play{position:absolute;inset:0;display:flex;align-items:flex-end;gap:14px;padding:22px 24px;color:var(--white);font-size:var(--t-m);text-align:left;background:linear-gradient(to top,rgba(0,0,0,.6),rgba(0,0,0,0) 45%)}
-.sf-play i{width:44px;height:44px;border:1px solid var(--white);border-radius:50%;position:relative;flex:none;transition:background .3s,border-color .3s}
-.sf-play i::after{content:"";position:absolute;left:17px;top:14px;border-style:solid;border-width:8px 0 8px 13px;border-color:transparent transparent transparent var(--white)}
-.sf-play span{align-self:center;margin-bottom:0}
-.sf-play em{margin-left:auto;font-style:normal;font-size:var(--t-s);color:var(--ash);font-variant-numeric:tabular-nums;align-self:center}
-.sf-play:hover i{background:var(--blood);border-color:var(--blood)}
-.sf-play{align-items:flex-end}
-.sf-play span,.sf-play em{padding-bottom:12px}
 @media (max-width:820px){
   .end .sign{grid-column:1/25;margin-bottom:14px}
   .end-links,.end-r{grid-column:1/25;justify-content:flex-start}
   .end-r{margin-top:12px}
-  .sf{grid-column:1/25}
-  .st-film{padding-bottom:48px}
   .ords{grid-template-columns:1fr}
   .v-account .pol-nav,.v-account .pol-doc{grid-column:1/25}
 }
-.sf-play span,.sf-play em{align-self:flex-end;padding-bottom:13px}
 
-/* ---------- story film, second pass: smaller, equal space above and below, its own quiet controls ---------- */
 .st{padding-top:calc(var(--top) + clamp(56px,11vh,120px))}
-.st-film{padding-bottom:clamp(56px,11vh,120px)}
-.sf{grid-column:6/16;position:static;aspect-ratio:auto;overflow:visible;background:none}
-.sf-frame{position:relative;aspect-ratio:16/9;background:var(--ink);--x:var(--line)}
-.sf-frame::before{content:"";position:absolute;inset:-7px;pointer-events:none;z-index:2;--c:linear-gradient(var(--x),var(--x));
   background:var(--c) 0 4px/9px 1px,var(--c) 4px 0/1px 9px,var(--c) 100% 4px/9px 1px,var(--c) calc(100% - 4px) 0/1px 9px,var(--c) 0 calc(100% - 4px)/9px 1px,var(--c) 4px 100%/1px 9px,var(--c) 100% calc(100% - 4px)/9px 1px,var(--c) calc(100% - 4px) 100%/1px 9px;background-repeat:no-repeat}
-.sf.playing .sf-frame{--x:var(--blood)}
-.sf-frame video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
-.sf-hit{position:absolute;inset:0;display:grid;place-items:center}
-.sf-hit i{width:64px;height:64px;border-radius:50%;border:1px solid var(--white);position:relative;background:rgba(0,0,0,.25);transition:opacity .3s,background .3s,border-color .3s,transform .3s}
-.sf-hit i::after{content:"";position:absolute;left:26px;top:22px;border-style:solid;border-width:10px 0 10px 16px;border-color:transparent transparent transparent var(--white)}
-.sf-hit:hover i{background:var(--blood);border-color:var(--blood);transform:scale(1.06)}
-.sf.playing .sf-hit i{opacity:0}
-.sf-bar{position:absolute;left:0;right:0;bottom:0;height:14px;display:flex;align-items:flex-end;z-index:1}
-.sf-bar b{display:block;height:2px;width:0;background:var(--blood);transition:height .2s}
-.sf-bar:hover b{height:5px}
-.sf-row{display:flex;justify-content:space-between;align-items:center;margin-top:18px}
-.sf-btn{display:inline-flex;align-items:center;gap:10px;font-size:var(--t-m);color:var(--white)}
-.sf-btn .ic{width:18px;height:18px;color:var(--blood)}
-.sf-btn span{text-decoration:underline;text-decoration-color:transparent;text-underline-offset:5px;transition:text-decoration-color .3s}
-.sf-btn:hover span{text-decoration-color:var(--blood)}
-.sf-meta{display:flex;gap:14px;color:var(--ash);font-size:var(--t-s);font-variant-numeric:tabular-nums}
-.sf-meta em{font-style:normal;color:var(--white)}
-@media (max-width:820px){.sf{grid-column:1/25}.st{padding-top:calc(var(--top) + 28px)}.st-film{padding-bottom:48px}.sf-hit i{width:52px;height:52px}.sf-hit i::after{left:21px;top:16px}}
-.sf-hit{place-items:end start;padding:18px}.sf-hit i{width:48px;height:48px}.sf-hit i::after{left:19px;top:15px;border-width:8px 0 8px 13px}
+@media (max-width:820px){.st{padding-top:calc(var(--top) + 28px)}}
 
 /* speed: the lift is baked into the cutout files, so no per-image filters or extra layers */
 .box .cut,.cell:hover .box .cut{filter:none;will-change:auto}
 .cell:hover .box .cut{filter:brightness(1.08)}
-.film,.sf-frame video{will-change:auto}
+.film{will-change:auto}
 .fx i{will-change:transform}
 /* phones: frame the home film higher so its burned-in subtitles fall outside the picture */
 /* phones: the lake film sits in a half-height block, in its own proportions */
@@ -706,3 +668,8 @@ img,video,svg{display:block}
 
 /* Discover Destiny in the footer uses the gothic face */
 .vv-line{font:400 22px/1 var(--display);color:var(--white)}
+
+/* Discover Destiny: one line, bottom left of every footer, same size on desktop and phone */
+.vv-line,.vv-copy{white-space:nowrap}
+.end .sign{align-items:flex-end}
+@media (max-width:820px){.end .sign{flex-direction:column;align-items:flex-start;gap:8px}}

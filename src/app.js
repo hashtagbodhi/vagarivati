@@ -520,7 +520,6 @@
     if (bagOpen) openBag(false);
     if (menuOpen) openMenu(false);
     if (regionOpen) openRegion(false);
-    if (h !== 'story' && !sf.paused){ sf.pause(); playFilm(); }
     if (readerOpen && h !== 'story') openReader(false);
     if (h !== 'system') S.last = h;
     if (h==='shop' || catBy[h]){
@@ -529,7 +528,7 @@
       if (!same) toCatalog(from==='home' && !first);
     } else if (h.indexOf('piece-')===0 && P[h.slice(6)]){
       S.piece = P[h.slice(6)]; buildPiece(S.piece); show('piece'); if (!first) snd('open');
-    } else if (h==='story'){ if (readerOpen) openReader(false); showMark(markAt); show('story'); story.scrollTop = 0; sf.currentTime = 0; sfStart(wantSound && touched); }
+    } else if (h==='story'){ if (readerOpen) openReader(false); showMark(markAt); show('story'); story.scrollTop = 0; }
     else if (POL[h]){ showPolicy(h); show('info'); }
     else if (h==='account'){ renderAccount(); show('account'); document.querySelector('.v-account').scrollTop = 0; }
     else if (h==='system'){ show('system'); }
@@ -591,22 +590,6 @@
       flick();
     }, 2600 + Math.random()*5200);
   })();
-  /* the story film plays only when asked, with its own sound */
-  var sf = $('storyFilm'), sfBox = document.querySelector('.sf');
-  function mmss(t){ t = Math.max(0, Math.round(t)); return Math.floor(t/60) + ':' + two(t%60); }
-  var touched = false; ['pointerdown','keydown'].forEach(function(ev){ window.addEventListener(ev, function(){ touched = true; }, { once:true, capture:true }); });
-  function sfLabel(){ $('sfLabel').textContent = sf.paused ? 'Play the film' : sf.muted ? 'Turn sound on' : 'Pause'; sfBox.classList.toggle('playing', !sf.paused); }
-  function sfStart(withSound){
-    sf.muted = !withSound; var pr = sf.play();
-    if (pr && pr.catch) pr.catch(function(){ sf.muted = true; var p2 = sf.play(); if (p2 && p2.catch) p2.catch(function(){}); });
-  }
-  function sfToggle(){ if (sf.paused) sfStart(true); else if (sf.muted){ sf.muted = false; film.pause(); paintSound(); sfLabel(); } else sf.pause(); }
-  $('sfPlay').onclick = $('sfHit').onclick = sfToggle;
-  sf.addEventListener('play', function(){ if (!sf.muted){ film.pause(); paintSound(); } sfLabel(); });
-  sf.addEventListener('pause', sfLabel); sf.addEventListener('volumechange', sfLabel);
-  sf.addEventListener('timeupdate', function(){ var d = sf.duration || 69; $('sfFill').style.width = (sf.currentTime / d * 100) + '%'; $('sfTime').textContent = mmss(d - sf.currentTime); });
-  sf.addEventListener('ended', function(){ sf.currentTime = 0; $('sfFill').style.width = '0%'; $('sfTime').textContent = mmss(sf.duration || 69); playFilm(); });
-  $('sfBar').addEventListener('click', function(e){ var r = this.getBoundingClientRect(); if (sf.duration) sf.currentTime = (e.clientX - r.left) / r.width * sf.duration; });
   paintRegion(); renderBag(); setFilter('shop'); route(); playFilm();
   if (lang !== 'en') setLang(lang);
 })();
