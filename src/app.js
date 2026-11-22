@@ -123,17 +123,27 @@
   var film = $('film'), wantSound = true, soundBtn = $('soundBtn');
   // phones play the lake film, full length
   if (narrow.matches){ film.removeAttribute('poster'); film.poster = 'media/hero-m-poster.jpg'; film.src = 'media/hero-m.mp4'; film.load(); }
-  function paintSound(){ var on = !film.muted && !film.paused; soundBtn.textContent = $('soundBtn2').textContent = on ? 'Sound on' : 'Sound off'; soundBtn.setAttribute('aria-pressed', on); }
-  function playFilm(){
-    film.muted = !wantSound;
-    var pr = film.play();
-    if (pr && pr.catch) pr.then(paintSound).catch(function(){ film.muted = true; var p2 = film.play(); if (p2 && p2.catch) p2.catch(function(){}); paintSound(); });
+  // one soundtrack in its own element; navigation never touches it, so it plays on from the first visit to the last
+  var track = $('track'); track.volume = 0.9; film.muted = true;   // the film is picture only
+  function paintSound(){ var on = !track.paused && !track.muted; soundBtn.textContent = $('soundBtn2').textContent = on ? 'Sound on' : 'Sound off'; soundBtn.setAttribute('aria-pressed', on); }
+  function startTrack(){
+    track.muted = !wantSound;
+    var pr = track.play();
+    if (pr && pr.catch) pr.then(paintSound).catch(function(){ track.muted = true; var p2 = track.play(); if (p2 && p2.catch) p2.catch(function(){}); paintSound(); });
     else paintSound();
   }
-  function firstTouch(){ if (wantSound && (film.muted || film.paused)) playFilm(); }
-  ['pointerdown','keydown'].forEach(function(ev){ window.addEventListener(ev, firstTouch, { once:true, capture:true }); });
-  soundBtn.onclick = $('soundBtn2').onclick = function(){ wantSound = film.muted || film.paused; playFilm(); };
-  film.addEventListener('volumechange', paintSound);
+  function playFilm(){
+    if (film.paused){ var pv = film.play(); if (pv && pv.catch) pv.catch(function(){}); }
+    if (track.paused) startTrack();
+  }
+  // the browser allows sound only after a visitor's first touch; until then the track waits silently
+  function firstTouch(){ if (wantSound && (track.muted || track.paused)) startTrack(); }
+  ['pointerdown','keydown'].forEach(function(ev){ window.addEventListener(ev, firstTouch, { capture:true }); });
+  soundBtn.onclick = $('soundBtn2').onclick = function(){
+    if (track.paused){ wantSound = true; startTrack(); }
+    else { wantSound = track.muted; track.muted = !track.muted; paintSound(); }
+  };
+  track.addEventListener('play', paintSound); track.addEventListener('pause', paintSound); track.addEventListener('volumechange', paintSound);
 
   /* ---------- piece ---------- */
   var KIND = { kimonos:'Kimono', dresses:'Dress', tops:'Top', bottoms:'Bottom', layers:'Layer' };
@@ -492,7 +502,6 @@
   ['pointerdown','keydown'].forEach(function(ev){ window.addEventListener(ev, function(){
     try { if (!actx){ var AC = window.AudioContext || window.webkitAudioContext; if (AC) actx = new AC(); } if (actx && actx.state === 'suspended') actx.resume(); } catch(e){}
   }, { capture:true }); });
-  $('cats').addEventListener('click', function(){ snd('tick'); });
 
   /* ---------- bag ---------- */
   var bag = [];
@@ -530,7 +539,7 @@
   };
   var menuEl = $('menu'), menuOpen = false;
   function openMenu(o){
-    if (o !== menuOpen) snd('sheet');
+    if (o && o !== menuOpen) snd('sheet');
     menuOpen = o; menuEl.classList.toggle('open', o); menuEl.setAttribute('aria-hidden', !o); menuEl.inert = !o;
     $('scrim').hidden = !o && !bagOpen;
     if (o) $('menuClose').focus({preventScroll:true});
@@ -540,7 +549,7 @@
   menuEl.addEventListener('click', function(e){ if (e.target.closest('a')) openMenu(false); });
   var bagEl = $('bag'), bagOpen = false, lastFocus = null;
   function openBag(o){
-    if (o !== bagOpen) snd('sheet');
+    if (o && o !== bagOpen) snd('sheet');
     bagOpen = o; bagEl.classList.toggle('open', o); $('scrim').hidden = !o;
     bagEl.setAttribute('aria-hidden', !o); bagEl.inert = !o;
     if (o){ lastFocus = document.activeElement; $('bagClose').focus({preventScroll:true}); } else if (lastFocus && lastFocus.focus) lastFocus.focus({preventScroll:true});
@@ -575,7 +584,7 @@
       setFilter(h); S.list = h; show('home');
       if (!same) toCatalog(from==='home' && !first);
     } else if (h.indexOf('piece-')===0 && P[h.slice(6)]){
-      S.piece = P[h.slice(6)]; buildPiece(S.piece); show('piece'); if (!first) snd('open');
+      S.piece = P[h.slice(6)]; buildPiece(S.piece); show('piece');
     } else if (h==='story'){ if (readerOpen) openReader(false); showMark(markAt); show('story'); story.scrollTop = 0; }
     else if (POL[h]){ showPolicy(h); show('info'); }
     else if (h==='account'){ renderAccount(); show('account'); document.querySelector('.v-account').scrollTop = 0; }
