@@ -36,7 +36,6 @@
     var c = catBy[f];
     cells.forEach(function(t){ t.hidden = !!c && t.getAttribute('data-cat')!==f; });
     var shown = cells.filter(function(t){ return !t.hidden; }).length;
-    $('wallNow').innerHTML = '<b>'+(c ? c.name : 'All pieces')+'</b><span>'+shown+' pieces</span><i>Change</i>';
     if (S.filter !== f){ wall.classList.remove('swap'); void wall.offsetWidth; wall.classList.add('swap'); }
     S.filter = f;
   }
@@ -75,7 +74,7 @@
   function fit(){ app.style.setProperty('--vh', home.clientHeight + 'px'); }
   fit(); window.addEventListener('resize', fit);
 
-  function inCatalog(){ return home.scrollTop > home.clientHeight * .5; }
+  function inCatalog(){ return true; }   // the home page now opens on the pieces
   function syncChrome(){
     var list = S.view==='home' && inCatalog();
     app.classList.toggle('solid', S.view==='home' && home.scrollTop > home.clientHeight - 80);
@@ -487,7 +486,7 @@
     $('scrim').hidden = !o && !bagOpen;
     if (o) $('menuClose').focus({preventScroll:true});
   }
-  $('menuBtn').onclick = $('wallNow').onclick = function(){ openMenu(true); };
+  $('menuBtn').onclick = function(){ openMenu(true); };
   $('menuClose').onclick = function(){ openMenu(false); };
   menuEl.addEventListener('click', function(e){ if (e.target.closest('a')) openMenu(false); });
   var bagEl = $('bag'), bagOpen = false, lastFocus = null;
@@ -532,7 +531,7 @@
     else if (POL[h]){ showPolicy(h); show('info'); }
     else if (h==='account'){ renderAccount(); show('account'); document.querySelector('.v-account').scrollTop = 0; }
     else if (h==='system'){ show('system'); }
-    else { show('home'); home.scrollTo({ top:0, behavior: from==='home' && !first ? 'smooth' : 'auto' }); }
+    else { setFilter('shop'); S.list = 'shop'; show('home'); home.scrollTo({ top:0, behavior: from==='home' && !first ? 'smooth' : 'auto' }); }
   }
   window.addEventListener('hashchange', route);
   function go(h){ if (location.hash === '#'+h) route(); else location.hash = h; }

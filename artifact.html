@@ -679,6 +679,17 @@ img,video,svg{display:block}
 .vv-line,.vv-copy{white-space:nowrap}
 .end .sign{align-items:flex-end}
 @media (max-width:820px){.end .sign{flex-direction:column;align-items:flex-start;gap:8px}}
+
+/* ---------- home: the pieces first; then film and footer on phones, footer and film on desktop ---------- */
+#app[data-view="home"] .top{background:var(--ink)}
+.catalog>.fx{order:0}.catalog>.wall{order:1}.catalog>.end{order:2}.catalog>.hero{order:3}
+.catalog>.hero{position:relative;z-index:1;flex:none;height:var(--vh,100vh);overflow:hidden}
+@media (max-width:820px){
+  .catalog>.hero{order:2;height:calc(var(--vh,100vh)*.5)}
+  .catalog>.end{order:3}
+  .hero .film{inset:0;top:0;height:100%;transform:none}
+  .wall{padding-top:calc(var(--top) + 24px)}
+}
 </style>
 <div id="app" data-view="home">
 
@@ -697,23 +708,21 @@ img,video,svg{display:block}
   </header>
 
   <main>
-    <!-- Home: the film, then every piece -->
+    <!-- Home: every piece, then the film and the footer -->
     <section class="view v-home" data-name="home" aria-label="Home">
-      <div class="hero">
-        <video class="film" id="film" muted loop playsinline preload="auto" poster="media/film-poster.jpg">
-          <source src="media/film.mp4" type="video/mp4">
-        </video>
-        <div class="shade"></div>
-        <h1 class="sr">Vagari Vati</h1>
-        <div class="foot grid">
-          <a class="descend" href="#shop" aria-label="Go to the pieces"><i class="ic ic-sword"></i></a>
-          <p class="home-note">Streetwear in organic textiles.<br>New York City.</p>
-        </div>
-      </div>
       <div class="catalog" id="catalog">
         <div class="fx" aria-hidden="true"><i class="fx-pat"></i><i class="fx-pat fx-slip"></i><i class="fx-grain"></i></div>
-        <button type="button" class="wall-now" id="wallNow"></button>
         <div class="wall" id="wall"></div>
+        <div class="hero">
+          <video class="film" id="film" muted loop playsinline preload="auto" poster="media/film-poster.jpg">
+            <source src="media/film.mp4" type="video/mp4">
+          </video>
+          <div class="shade"></div>
+          <h1 class="sr">Vagari Vati</h1>
+          <div class="foot grid">
+            <p class="home-note">Streetwear in organic textiles.<br>New York City.</p>
+          </div>
+        </div>
         <footer class="end grid">
           <div class="sign"><p class="vv-line">Discover Destiny</p><p class="vv-copy">&copy; Vagari Vati 2027. All rights reserved.</p></div>
           <nav class="end-links" aria-label="Policies"><a href="#shipping">Shipping</a><a href="#returns">Returns</a><a href="#privacy">Privacy</a><a href="#terms">Terms</a><a href="#account">Account</a></nav>
@@ -971,7 +980,6 @@ img,video,svg{display:block}
     var c = catBy[f];
     cells.forEach(function(t){ t.hidden = !!c && t.getAttribute('data-cat')!==f; });
     var shown = cells.filter(function(t){ return !t.hidden; }).length;
-    $('wallNow').innerHTML = '<b>'+(c ? c.name : 'All pieces')+'</b><span>'+shown+' pieces</span><i>Change</i>';
     if (S.filter !== f){ wall.classList.remove('swap'); void wall.offsetWidth; wall.classList.add('swap'); }
     S.filter = f;
   }
@@ -1010,7 +1018,7 @@ img,video,svg{display:block}
   function fit(){ app.style.setProperty('--vh', home.clientHeight + 'px'); }
   fit(); window.addEventListener('resize', fit);
 
-  function inCatalog(){ return home.scrollTop > home.clientHeight * .5; }
+  function inCatalog(){ return true; }   // the home page now opens on the pieces
   function syncChrome(){
     var list = S.view==='home' && inCatalog();
     app.classList.toggle('solid', S.view==='home' && home.scrollTop > home.clientHeight - 80);
@@ -1422,7 +1430,7 @@ img,video,svg{display:block}
     $('scrim').hidden = !o && !bagOpen;
     if (o) $('menuClose').focus({preventScroll:true});
   }
-  $('menuBtn').onclick = $('wallNow').onclick = function(){ openMenu(true); };
+  $('menuBtn').onclick = function(){ openMenu(true); };
   $('menuClose').onclick = function(){ openMenu(false); };
   menuEl.addEventListener('click', function(e){ if (e.target.closest('a')) openMenu(false); });
   var bagEl = $('bag'), bagOpen = false, lastFocus = null;
@@ -1467,7 +1475,7 @@ img,video,svg{display:block}
     else if (POL[h]){ showPolicy(h); show('info'); }
     else if (h==='account'){ renderAccount(); show('account'); document.querySelector('.v-account').scrollTop = 0; }
     else if (h==='system'){ show('system'); }
-    else { show('home'); home.scrollTo({ top:0, behavior: from==='home' && !first ? 'smooth' : 'auto' }); }
+    else { setFilter('shop'); S.list = 'shop'; show('home'); home.scrollTo({ top:0, behavior: from==='home' && !first ? 'smooth' : 'auto' }); }
   }
   window.addEventListener('hashchange', route);
   function go(h){ if (location.hash === '#'+h) route(); else location.hash = h; }
