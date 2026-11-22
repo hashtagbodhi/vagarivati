@@ -94,7 +94,7 @@
     });
   }
   home.addEventListener('scroll', syncChrome, { passive:true });
-  function toCatalog(smooth){ home.scrollTo({ top:Math.max(0, wall.offsetTop - document.querySelector('.top').offsetHeight), behavior: smooth ? 'smooth' : 'auto' }); }
+  function toCatalog(smooth){ home.scrollTo({ top:Math.max(0, wall.offsetTop - document.querySelector('.top').offsetHeight - 44), behavior: smooth ? 'smooth' : 'auto' }); }
 
   /* ---------- sound: the film carries the music ---------- */
   var film = $('film'), wantSound = true, soundBtn = $('soundBtn');
