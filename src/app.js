@@ -37,11 +37,34 @@
   function buildSplits(){
     $('splits').innerHTML = SPLITS.map(function(h, i){
       var p = P[h];
-      return '<a class="sp" href="#piece-'+h+'" aria-label="'+esc(p.f)+', '+priceOf(p)+'"><img src="'+IMG+p.i[0]+'" alt="" draggable="false"'+(i>2?' loading="lazy"':'')+'>'
+      return '<a class="sp" data-h="'+h+'" href="#piece-'+h+'" aria-label="'+esc(p.f)+', '+priceOf(p)+'"><img src="'+IMG+p.i[0]+'" alt="" draggable="false"'+(i>2?' loading="lazy"':'')+'>'
         + '</a>';
     }).join('');
   }
   buildSplits();
+  // every five seconds two of the six photographs change, in random order, to another piece
+  var SP_POOL = ['yugen','maitri','qing','hikari','mani','ekatva','midori','padma','dolma','darvish','yashodhara','satya','tenzin','yun','vasanta','pema','shinrin','vajra'];
+  function swapSplit(el, h){
+    var p = P[h], im = new Image();
+    im.onload = function(){
+      if (!el.isConnected) return;
+      var old = el.querySelector('img'); im.alt = ''; im.draggable = false; im.className = 'in';
+      el.appendChild(im); void im.offsetWidth; im.className = '';
+      el.href = '#piece-' + h; el.setAttribute('data-h', h); el.setAttribute('aria-label', p.f + ', ' + priceOf(p));
+      setTimeout(function(){ if (old && old.parentNode) old.parentNode.removeChild(old); }, 750);
+    };
+    im.src = IMG + p.i[0];
+  }
+  if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) setInterval(function(){
+    if (S.view !== 'home' || document.hidden || home.scrollTop > $('splits').offsetHeight) return;
+    var els = [].slice.call($('splits').children), shown = els.map(function(e){ return e.getAttribute('data-h'); });
+    var free = els.filter(function(e){ return !e.matches(':hover') && !e.matches(':focus'); }).sort(function(){ return Math.random() - .5; }).slice(0, 2);
+    free.forEach(function(el, k){
+      var pool = SP_POOL.filter(function(h){ return shown.indexOf(h) < 0; }); if (!pool.length) return;
+      var h = pool[Math.floor(Math.random() * pool.length)]; shown.push(h);
+      setTimeout(function(){ swapSplit(el, h); }, k * 350);
+    });
+  }, 5000);
   function setFilter(f){
     var c = catBy[f];
     cells.forEach(function(t){ t.hidden = !!c && t.getAttribute('data-cat')!==f; });
@@ -284,6 +307,10 @@
     'Prices come from the store. Checkout confirms the final amount.':['Los precios vienen de la tienda. El pago confirma el importe final.','Les prix viennent de la boutique. Le paiement confirme le montant final.','कीमतें स्टोर से आती हैं। अंतिम राशि चेकआउट पर तय होती है।','価格はストアのものです。最終金額は購入手続きで確定します。'],
     '© Vagari Vati 2027. All rights reserved.':['© Vagari Vati 2027. Todos los derechos reservados.','© Vagari Vati 2027. Tous droits réservés.','© Vagari Vati 2027. सर्वाधिकार सुरक्षित।','© Vagari Vati 2027. 無断転載を禁じます。'],
     'Example data. This prototype is not connected to real accounts yet.':['Datos de ejemplo. Este prototipo aún no está conectado a cuentas reales.','Données d’exemple. Ce prototype n’est pas encore relié à de vrais comptes.','उदाहरण डेटा। यह प्रोटोटाइप अभी असली खातों से जुड़ा नहीं है।','サンプルデータです。この試作版は実際のアカウントに接続されていません。'],
+    'End of season sale':['Rebajas de fin de temporada','Soldes de fin de saison','सीज़न के अंत की सेल','シーズン終了セール'],
+    '10% off with code':['10% de descuento con el código','-10 % avec le code','कोड के साथ 10% की छूट','コードで10%オフ'],
+    'Ships worldwide from India':['Envíos a todo el mundo desde la India','Livraison mondiale depuis l’Inde','भारत से दुनिया भर में शिपिंग','インドから世界中へ発送'],
+    'Copied':['Copiado','Copié','कॉपी हो गया','コピーしました'],
     'Discover Destiny':['Discover Destiny','Discover Destiny','Discover Destiny','Discover Destiny']
   };
   var KTR = { Kimono:['Kimono','Kimono','किमोनो','キモノ'], Dress:['Vestido','Robe','ड्रेस','ドレス'], Top:['Top','Haut','टॉप','トップ'], Bottom:['Pantalón','Bas','बॉटम','ボトム'], Layer:['Capa','Veste','लेयर','アウター'] };
@@ -589,13 +616,14 @@
   }
 
   app.addEventListener('click', function(e){ var b = e.target.closest('.totop'); if (b){ var v = b.closest('.view'); (v.classList.contains('v-home') ? home : v).scrollTo({ top:0, behavior:'smooth' }); } });
-  // the trident flickers between red, white and near-black at random moments
+  // the trident's three blades flicker one after another, never together
   if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) (function tri(){
     setTimeout(function(){
-      var t = document.querySelector('.sigil .ic');
-      if (S.view === 'home' && !document.hidden){ t.classList.remove('flick'); void t.offsetWidth; t.classList.add('flick'); }
+      if (S.view === 'home' && !document.hidden) [].forEach.call(document.querySelectorAll('.sigil .tri i'), function(t, k){
+        setTimeout(function(){ t.classList.remove('flick'); void t.offsetWidth; t.classList.add('flick'); }, k * 460);
+      });
       tri();
-    }, 1800 + Math.random()*4200);
+    }, 2600 + Math.random()*3600);
   })();
   // Add to bag flickers red at random moments
   if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) (function flick(){
@@ -605,6 +633,13 @@
       flick();
     }, 2600 + Math.random()*5200);
   })();
+  /* announcement bar: tap the code to copy it; the cross closes the bar */
+  $('ann').addEventListener('click', function(e){
+    var c = e.target.closest('.ann-code'); if (!c) return;
+    var done = function(){ c.textContent = 'Copied'; snd('tick'); setTimeout(function(){ c.textContent = 'DESTINY10'; }, 1400); };
+    try { navigator.clipboard.writeText('DESTINY10').then(done, done); } catch(err){ done(); }
+  });
+  $('annX').onclick = function(){ $('ann').hidden = true; app.style.setProperty('--ann', '0px'); fit(); };
   paintRegion(); renderBag(); setFilter('shop'); route(); playFilm();
   if (lang !== 'en') setLang(lang);
 })();
