@@ -234,19 +234,6 @@
   }
   app.addEventListener('pointerover', warm, { passive:true }); app.addEventListener('touchstart', warm, { passive:true });
 
-  /* a cutout turns a little toward the pointer as it crosses the piece */
-  if (window.matchMedia('(hover:hover) and (pointer:fine)').matches){
-    app.addEventListener('pointermove', function(e){
-      var c = e.target.closest('.cell'); if (!c) return;
-      var r = c.getBoundingClientRect(), k = Math.max(-1, Math.min(1, ((e.clientX - r.left) / r.width - .5) * 2)), img = c.querySelector('.cut');
-      img.style.setProperty('--ry', (k * 24).toFixed(1) + 'deg'); img.style.setProperty('--tx', (k * 10).toFixed(1) + 'px'); img.style.setProperty('--rz', (k * 1.5).toFixed(2) + 'deg');
-    });
-    app.addEventListener('pointerout', function(e){
-      var c = e.target.closest('.cell'); if (!c || c.contains(e.relatedTarget)) return;
-      var img = c.querySelector('.cut'); img.style.setProperty('--ry','0deg'); img.style.setProperty('--tx','0px'); img.style.setProperty('--rz','0deg');
-    });
-  }
-
   /* ---------- story: eleven prints. A gallery you click, and a reader that opens ---------- */
   var FAMS = [
     { name:'Marks', items:['maitri','hikari','vasanta'] },
@@ -701,6 +688,12 @@
     $(id).innerHTML = THEMES.map(function(x){ return '<button type="button" data-t="'+x[0]+'" title="'+x[1]+'" aria-label="'+x[1]+' lighting"></button>'; }).join('');
     $(id).addEventListener('click', function(e){ var b = e.target.closest('button'); if (b){ setTheme(b.getAttribute('data-t')); snd('tick'); } });
   });
+  // review control: three hover directions for the product wall, to compare
+  var HOVERS = [['zoom','Zoom'],['lift','Lift'],['focus','Focus']];
+  function setHover(hv){ app.setAttribute('data-hover', hv); [].forEach.call($('hoverBar').querySelectorAll('button'), function(b){ b.setAttribute('aria-pressed', b.getAttribute('data-h') === hv); }); }
+  $('hoverBar').innerHTML = '<span>Hover</span>' + HOVERS.map(function(x){ return '<button type="button" data-h="'+x[0]+'">'+x[1]+'</button>'; }).join('');
+  $('hoverBar').addEventListener('click', function(e){ var b = e.target.closest('button'); if (b) setHover(b.getAttribute('data-h')); });
+  setHover('zoom');
   var t0; try { t0 = localStorage.getItem('vv-theme'); } catch(e){}
   setTheme(t0 || 'night');
   paintRegion(); renderBag(); setFilter('shop'); route(); playFilm();
