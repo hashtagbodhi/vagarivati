@@ -61,6 +61,7 @@
           <div class="p-buy">
             <p class="price" id="piecePrice"></p>
             <div class="sizes" id="sizes" role="radiogroup" aria-label="Size"></div>
+            <button type="button" class="link sg-open" id="sgOpen" aria-haspopup="dialog">Size guide</button>
             <button type="button" class="btn solid" id="addBtn">Add to bag</button>
             <p class="fine" id="buyNote">Ships worldwide from India. <a class="link" href="#returns">14-day returns</a>.</p>
           </div>
@@ -251,6 +252,20 @@
   </aside>
 
   <div class="hoverbar" id="hoverBar" role="group" aria-label="Hover style (review)"></div>
+  <aside class="guide" id="guide" role="dialog" aria-modal="true" aria-label="Size guide" aria-hidden="true" inert>
+    <div class="sg-head"><p class="bag-t">Size guide</p><button type="button" class="tool" id="sgClose">Close</button></div>
+    <div class="sg-body">
+      <p class="sg-for" id="sgFor"></p>
+      <p class="sg-fit" id="sgFit"></p>
+      <div class="sg-units" id="sgUnits" role="group" aria-label="Units"><button type="button" data-u="in">in</button><button type="button" data-u="cm">cm</button></div>
+      <table class="sg-table" id="sgTable"></table>
+      <p class="sg-kind" id="sgKind"></p>
+      <h3 class="sg-h">How to measure</h3>
+      <dl class="sg-how" id="sgHow"></dl>
+      <p class="fine">Pieces are cut and finished by hand in small batches, so a measurement can vary by up to 1 in (2.5 cm).</p>
+    </div>
+  </aside>
+
   <div class="cur" id="cur" aria-hidden="true"></div>
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
 </div>

@@ -883,3 +883,30 @@ img,video,svg{display:block}
 .hoverbar button[aria-pressed="true"]{background:var(--white);color:var(--ink)}
 #app:not([data-view="home"]) .hoverbar{display:none}
 @media (max-width:820px),(hover:none){.hoverbar{display:none}}
+
+/* ---------- size guide: a panel from the right ---------- */
+.sg-open{justify-self:start;font-size:var(--t-s);margin-top:-4px}
+.guide{position:absolute;inset:0 0 0 auto;width:min(100%,480px);z-index:84;background:var(--ink);border-left:1px solid var(--line);display:flex;flex-direction:column;transform:translateX(102%);transition:transform .6s var(--ease);visibility:hidden}
+.guide.open{transform:none;visibility:visible}
+.sg-head{flex:none;height:var(--top);display:flex;align-items:center;justify-content:space-between;padding:0 clamp(18px,2.2vw,32px);border-bottom:1px solid var(--line)}
+.sg-body{flex:1;overflow-y:auto;padding:clamp(20px,3.4vh,34px) clamp(18px,2.2vw,32px) 32px;scrollbar-width:thin}
+.sg-for{font-size:20px;font-weight:500;line-height:1.2}
+.sg-fit{margin-top:10px;color:var(--ash);line-height:1.6;max-width:44ch}
+.sg-units{display:inline-flex;margin-top:22px;border:1px solid var(--line)}
+.sg-units button{width:44px;height:32px;color:var(--ash);font-size:var(--t-s);transition:background .2s,color .2s}
+.sg-units button[aria-pressed="true"]{background:var(--white);color:var(--ink)}
+.sg-table{width:100%;margin-top:16px;border-collapse:collapse;font-variant-numeric:tabular-nums;font-size:var(--t-m)}
+.sg-table th,.sg-table td{padding:13px 8px;text-align:center;border-bottom:1px solid var(--line);font-weight:400}
+.sg-table thead th{color:var(--ash);font-size:var(--t-xs);font-weight:400;padding-top:8px;padding-bottom:10px}
+.sg-table th:first-child{text-align:left;padding-left:0;color:var(--ash);font-size:var(--t-s)}
+.sg-table thead th:not(:first-child){color:var(--white);font-size:var(--t-m);font-weight:500}
+.sg-table .on{background:rgba(208,17,43,.14);color:var(--white)}
+.sg-table thead .on{box-shadow:inset 0 2px 0 var(--blood)}
+.sg-kind{margin-top:12px;color:var(--ash);font-size:var(--t-xs);line-height:1.5}
+.sg-h{margin-top:30px;font-size:var(--t-m);font-weight:500;padding-bottom:10px;border-bottom:1px solid var(--line)}
+.sg-how{margin:0;display:grid;grid-template-columns:96px 1fr;font-size:var(--t-s);line-height:1.55}
+.sg-how dt,.sg-how dd{margin:0;padding:11px 0;border-bottom:1px solid var(--line)}
+.sg-how dt{color:var(--white)}
+.sg-how dd{color:var(--ash)}
+.sg-body .fine{margin-top:18px;line-height:1.5}
+#app[data-theme="blood"] .guide{background:var(--pitch)}

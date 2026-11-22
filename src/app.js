@@ -348,6 +348,7 @@
     '10% off with code':['10% de descuento con el código','-10 % avec le code','कोड के साथ 10% की छूट','コードで10%オフ'],
     'Ships worldwide from India':['Envíos a todo el mundo desde la India','Livraison mondiale depuis l’Inde','भारत से दुनिया भर में शिपिंग','インドから世界中へ発送'],
     'Copied':['Copiado','Copié','कॉपी हो गया','コピーしました'],
+    'Size guide':['Guía de tallas','Guide des tailles','साइज़ गाइड','サイズガイド'], 'How to measure':['Cómo medir','Comment mesurer','कैसे नापें','測り方'],
     'Discover Destiny':['Discover Destiny','Discover Destiny','Discover Destiny','Discover Destiny']
   };
   var KTR = { Kimono:['Kimono','Kimono','किमोनो','キモノ'], Dress:['Vestido','Robe','ड्रेस','ドレス'], Top:['Top','Haut','टॉप','トップ'], Bottom:['Pantalón','Bas','बॉटम','ボトム'], Layer:['Capa','Veste','लेयर','アウター'] };
@@ -567,7 +568,7 @@
     bagEl.setAttribute('aria-hidden', !o); bagEl.inert = !o;
     if (o){ lastFocus = document.activeElement; $('bagClose').focus({preventScroll:true}); } else if (lastFocus && lastFocus.focus) lastFocus.focus({preventScroll:true});
   }
-  $('bagBtn').onclick = function(){ openBag(true); }; $('bagClose').onclick = function(){ openBag(false); }; $('scrim').onclick = function(){ if (regionOpen) openRegion(false); if (menuOpen) openMenu(false); if (bagOpen) openBag(false); };
+  $('bagBtn').onclick = function(){ openBag(true); }; $('bagClose').onclick = function(){ openBag(false); }; $('scrim').onclick = function(){ if (guideOpen) openGuide(false); if (regionOpen) openRegion(false); if (menuOpen) openMenu(false); if (bagOpen) openBag(false); };
   var toastT; function toast(t){ var el = $('toast'); el.textContent = t; el.classList.add('on'); clearTimeout(toastT); toastT = setTimeout(function(){ el.classList.remove('on'); }, 1600); }
 
   /* ---------- grid overlay ---------- */
@@ -590,6 +591,7 @@
     if (bagOpen) openBag(false);
     if (menuOpen) openMenu(false);
     if (regionOpen) openRegion(false);
+    if (guideOpen) openGuide(false);
     if (readerOpen && h !== 'story') openReader(false);
     if (h !== 'system') S.last = h;
     if (h==='shop' || catBy[h]){
@@ -630,7 +632,7 @@
     var k = e.key;
     if (readerOpen){ if (k==='Escape') openReader(false); else if (k==='ArrowRight') stepMark(1); else if (k==='ArrowLeft') stepMark(-1); return; }
     if (k==='Escape'){
-      if (regionOpen) openRegion(false); else if (menuOpen) openMenu(false); else if (bagOpen) openBag(false); else if (S.view==='piece') go(S.list); else if (S.view==='story' || S.view==='info' || S.view==='account') go('shop'); else if (S.view==='system') go(S.last);
+      if (guideOpen) openGuide(false); else if (regionOpen) openRegion(false); else if (menuOpen) openMenu(false); else if (bagOpen) openBag(false); else if (S.view==='piece') go(S.list); else if (S.view==='story' || S.view==='info' || S.view==='account') go('shop'); else if (S.view==='system') go(S.last);
       return;
     }
     if (bagOpen) return;
@@ -677,6 +679,66 @@
     try { navigator.clipboard.writeText('DESTINY10').then(done, done); } catch(err){ done(); }
   });
   $('annX').onclick = function(){ $('ann').hidden = true; app.style.setProperty('--ann', '0px'); fit(); };
+  /* ---------- size guide: one chart per kind of garment ---------- */
+  var SG = {
+    'robe-long':  { label:'Long kimono', garment:true, fit:'Cut loose and worn open or belted. One size covers a wide range; choose by length and how much room you want.',
+      rows:[['Chest',[44,47,50]],['Length',[48,49,50]],['Sleeve',[14,14.5,15]]] },
+    'robe-short': { label:'Short kimono', garment:true, fit:'Cut boxy and worn open. Choose your usual size, or one down for a closer fit.',
+      rows:[['Chest',[44,47,50]],['Length',[34,35,36]],['Sleeve',[13,13.5,14]]] },
+    'dress-long': { label:'Long dress', garment:false, fit:'Fitted at the bust, loose from the waist down. Choose by your bust measurement.',
+      rows:[['Bust',['32-34','35-37','38-40']],['Waist',['25-27','28-30','31-33']],['Hip',['35-37','38-40','41-43']],['Dress length',[52,53,54]]] },
+    'dress-short':{ label:'Short dress', garment:false, fit:'Loose through the body. Choose by your bust measurement.',
+      rows:[['Bust',['32-34','35-37','38-40']],['Waist',['25-27','28-30','31-33']],['Hip',['35-37','38-40','41-43']],['Dress length',[34,35,36]]] },
+    'top':        { label:'T-shirt and top', garment:true, fit:'A relaxed fit. Choose your usual size.',
+      rows:[['Chest',[40,43,46]],['Length',[23,24,25]],['Shoulder',[17,18,19]]] },
+    'shirt':      { label:'Shirt', garment:true, fit:'A relaxed fit with room in the body. Choose your usual size.',
+      rows:[['Chest',[42,45,48]],['Length',[28,29,30]],['Sleeve',[23.5,24,24.5]]] },
+    'pant':       { label:'Trousers', garment:false, fit:'Tie or elastic waist, so each size covers a range. Choose by your waist.',
+      rows:[['Waist',['26-30','30-34','34-38']],['Hip',['36-40','40-44','44-48']],['Inseam',[27,28,29]],['Outseam',[38,39,40]]] },
+    'shorts':     { label:'Shorts', garment:false, fit:'Drawstring waist, loose in the leg. Choose by your waist.',
+      rows:[['Waist',['26-30','30-34','34-38']],['Hip',['36-40','40-44','44-48']],['Inseam',[4,4.5,5]],['Outseam',[14,15,16]]] },
+    'layer':      { label:'Jacket and shrug', garment:true, fit:'Cut wide to sit over other pieces. Choose your usual size.',
+      rows:[['Chest',[46,49,52]],['Length',[26,27,28]],['Sleeve',[16,16.5,17]]] }
+  };
+  var SG_HOW = {
+    Chest:'Lay the piece flat and measure straight across, just under the arms. The chart shows that doubled.',
+    Length:'From the highest point of the shoulder down to the hem.', 'Dress length':'From the highest point of the shoulder down to the hem.',
+    Sleeve:'From the shoulder seam to the end of the sleeve.', Shoulder:'Straight across the back, seam to seam.',
+    Bust:'Around the fullest part of your chest, tape level.', Waist:'Around your natural waist, the narrowest part.',
+    Hip:'Around the fullest part of your hips.', Inseam:'From the crotch seam down the inside leg to the hem.', Outseam:'From the top of the waistband down the outside leg to the hem.'
+  };
+  var SG_SHORT = { padma:1, surya:1, yeshe:1, milarepa:1 }, SG_SHIRT = { satya:1, dao:1, indra:1, tenzin:1 }, SG_SHORTS = { kiya:1, layla:1, jing:1 };
+  function sgKey(p){
+    if (p.c === 'kimonos') return SG_SHORT[p.h] ? 'robe-short' : 'robe-long';
+    if (p.c === 'dresses') return SG_SHORT[p.h] ? 'dress-short' : 'dress-long';
+    if (p.c === 'tops') return SG_SHIRT[p.h] ? 'shirt' : 'top';
+    if (p.c === 'bottoms') return SG_SHORTS[p.h] ? 'shorts' : 'pant';
+    return p.h === 'pema' ? 'robe-long' : 'layer';
+  }
+  var sgUnit = 'in', guideEl = $('guide'), guideOpen = false;
+  function sgVal(v){
+    var f = function(n){ n = +n; return sgUnit === 'cm' ? String(Math.round(n * 2.54)) : String(n); };
+    return String(v).indexOf('-') > 0 ? String(v).split('-').map(f).join(' to ') : f(v);
+  }
+  function renderGuide(){
+    var p = S.piece; if (!p) return; var g = SG[sgKey(p)], all = ['S','M','L'];
+    var cols = all.map(function(s, k){ return { s:s, k:k, v:p.v.filter(function(v){ return v.s === s; })[0] }; }).filter(function(c){ return c.v; });
+    $('sgFor').textContent = p.f; $('sgFit').textContent = g.fit;
+    [].forEach.call($('sgUnits').children, function(b){ b.setAttribute('aria-pressed', b.getAttribute('data-u') === sgUnit); });
+    $('sgTable').innerHTML = '<thead><tr><th scope="col">' + (sgUnit === 'cm' ? 'Centimetres' : 'Inches') + '</th>' + cols.map(function(c){ return '<th scope="col"' + (String(c.v.id) === S.size ? ' class="on"' : '') + '>' + c.s + '</th>'; }).join('') + '</tr></thead><tbody>'
+      + g.rows.map(function(r){ return '<tr><th scope="row">' + r[0] + '</th>' + cols.map(function(c){ return '<td' + (String(c.v.id) === S.size ? ' class="on"' : '') + '>' + sgVal(r[1][c.k]) + '</td>'; }).join('') + '</tr>'; }).join('') + '</tbody>';
+    $('sgKind').textContent = g.label + '. ' + (g.garment ? 'These are the measurements of the piece itself, laid flat.' : 'Body measurements the size is made to fit; lengths are of the piece itself.');
+    $('sgHow').innerHTML = g.rows.map(function(r){ return '<dt>' + r[0] + '</dt><dd>' + SG_HOW[r[0]] + '</dd>'; }).join('');
+  }
+  function openGuide(o){
+    if (o){ renderGuide(); snd('sheet'); }
+    guideOpen = o; guideEl.classList.toggle('open', o); guideEl.setAttribute('aria-hidden', !o); guideEl.inert = !o;
+    $('scrim').hidden = !o && !bagOpen && !menuOpen && !regionOpen;
+    if (o) $('sgClose').focus({preventScroll:true}); else $('sgOpen').focus({preventScroll:true});
+  }
+  $('sgOpen').onclick = function(){ openGuide(true); }; $('sgClose').onclick = function(){ openGuide(false); };
+  $('sgUnits').addEventListener('click', function(e){ var b = e.target.closest('button'); if (b){ sgUnit = b.getAttribute('data-u'); renderGuide(); snd('tick'); } });
+
   /* lighting: four ways to light the same room */
   var THEMES = [['night','Night'],['bone','Bone'],['chapel','Chapel'],['blood','Blood']];
   function setTheme(t){
