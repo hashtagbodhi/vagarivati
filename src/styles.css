@@ -799,3 +799,46 @@ img,video,svg{display:block}
 .p-photo:not(:has(img.on))::after{content:"";position:absolute;left:50%;top:50%;width:15px;height:15px;margin:-7px 0 0 -7px;animation:wait .7s ease-in-out infinite alternate;
   background:linear-gradient(var(--blood),var(--blood)) center/1px 100% no-repeat,linear-gradient(var(--blood),var(--blood)) center/100% 1px no-repeat}
 @keyframes wait{from{opacity:.25;transform:rotate(0)}to{opacity:1;transform:rotate(90deg)}}
+
+/* ---------- featured carousel: ten pieces turning in a row, a buy card for the one in front ---------- */
+.catalog>.feat{order:1}
+.feat{position:relative;z-index:1;flex:none;margin-top:var(--top);height:calc((var(--vh,100vh) - var(--top))*.8);display:grid;grid-template-columns:minmax(0,1fr) 28%;grid-template-rows:minmax(0,1fr) auto;background:var(--ink);overflow:hidden}
+.feat-stage{grid-column:1;grid-row:1;position:relative;perspective:1100px;perspective-origin:50% 45%;overflow:hidden}
+.feat-stage::after{content:"";position:absolute;inset:0;pointer-events:none;z-index:20;background:linear-gradient(to right,var(--ink),rgba(0,0,0,0) 14%,rgba(0,0,0,0) 86%,var(--ink))}
+.fs{position:absolute;left:50%;top:0;bottom:0;width:40%;margin-left:-20%;transform-style:preserve-3d;display:block;background:var(--ink);transition:transform 1s var(--ease),opacity 1s ease}
+.fs img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 12%;filter:brightness(.42) grayscale(.6);transition:filter 1s ease}
+.fs.front img{filter:none}
+.fs:not(.front):hover img{filter:brightness(.6) grayscale(.2)}
+.feat-card{grid-column:2;grid-row:1;border-left:1px solid var(--line);padding:clamp(22px,4.4vh,48px) clamp(20px,2.2vw,36px);display:flex;flex-direction:column;align-items:flex-start;gap:14px;min-width:0;overflow:auto;scrollbar-width:none}
+.fc-kind{color:var(--ash);font-size:var(--t-xs)}
+.fc-name{font:400 clamp(44px,4.4vw,72px)/.9 var(--display);color:var(--blood)}
+.fc-price{font-size:20px;font-weight:500;font-variant-numeric:tabular-nums}
+.fc-row{display:flex;justify-content:space-between;width:100%;max-width:320px;color:var(--ash);font-size:var(--t-s);margin-top:12px}
+.fc-sizes{display:flex;gap:8px;flex-wrap:wrap}
+.fc-sizes button{width:48px;height:48px;border:1px solid var(--line);transition:background .2s,color .2s,border-color .2s}
+.fc-sizes button:hover{border-color:var(--white)}
+.fc-sizes button[aria-pressed="true"]{background:var(--white);color:var(--ink);border-color:var(--white)}
+.fc-sizes button[disabled]{color:var(--ash);text-decoration:line-through;cursor:not-allowed;border-color:var(--line)}
+.fc-add{height:54px;width:100%;max-width:320px;margin-top:4px}
+.fc-view{margin-top:2px;font-size:var(--t-s)}
+.feat-bar{grid-column:1/-1;grid-row:2;display:flex;align-items:center;gap:14px;padding:12px max(var(--m),env(safe-area-inset-right,0px)) 12px max(var(--m),env(safe-area-inset-left,0px));border-top:1px solid var(--line);font-size:var(--t-s)}
+.fb-arrow{width:40px;height:40px;display:grid;place-items:center;color:var(--ash);transition:color .25s}
+.fb-arrow:hover{color:var(--white)}
+.fb-arrow .chev{width:8px;height:8px}
+.feat-dots{flex:1;display:flex;justify-content:center;align-items:center;gap:7px;flex-wrap:wrap}
+.feat-dots button{width:24px;height:10px;position:relative}
+.feat-dots button::after{content:"";position:absolute;left:0;right:0;top:4px;height:1px;background:var(--line);transition:background .3s,height .3s,top .3s}
+.feat-dots button:hover::after{background:var(--white)}
+.feat-dots button[aria-current="true"]::after{background:var(--blood);height:3px;top:3px}
+.feat-n{color:var(--ash);font-variant-numeric:tabular-nums}
+.fb-pause{color:var(--white);text-decoration:underline;text-decoration-color:var(--blood);text-underline-offset:4px;padding:4px 0}
+@media (max-width:820px){
+  .feat{height:auto;grid-template-columns:minmax(0,1fr);grid-template-rows:auto auto auto}
+  .feat-stage{grid-column:1;grid-row:1;height:58vh}
+  .fs{width:74%;margin-left:-37%}
+  .fs img{object-position:50% 14%}
+  .feat-stage::after{background:linear-gradient(to right,var(--ink),rgba(0,0,0,0) 8%,rgba(0,0,0,0) 92%,var(--ink))}
+  .feat-card{grid-column:1;grid-row:2;border-left:0;border-top:1px solid var(--line);padding:18px max(16px,env(safe-area-inset-right,0px)) 18px max(16px,env(safe-area-inset-left,0px))}
+  .fc-name{font-size:44px}
+  .feat-bar{grid-column:1;grid-row:3;padding:10px 16px}
+}

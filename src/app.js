@@ -32,39 +32,91 @@
   var home = document.querySelector('.v-home'), catalog = $('catalog'), wall = $('wall');
   wall.innerHTML = all.map(function(h){ return cellHTML(h); }).join('');
   var cells = [].slice.call(wall.children);
-  // the opener: six model photographs, edge to edge, each one a door into its piece
-  var SPLITS = ['yugen','maitri','qing','hikari','mani','ekatva'];
-  function buildSplits(){
-    $('splits').innerHTML = SPLITS.map(function(h, i){
-      var p = P[h];
-      return '<a class="sp" data-h="'+h+'" href="#piece-'+h+'" aria-label="'+esc(p.f)+', '+priceOf(p)+'"><img src="'+IMG+p.i[0]+'" alt="" draggable="false"'+(i>2?' loading="lazy"':'')+'>'
-        + '</a>';
+  /* ---------- featured: ten pieces turning in a row, with a buy card for the one in front ---------- */
+  var FEAT = ['yugen','maitri','qing','hikari','mani','ekatva','padma','dolma','darvish','yashodhara'];
+  var feat = { i:0, timer:null, held:false, paused:false, size:null };
+  var featEl = $('feat'), featStage = $('featStage'), featCard = $('featCard'), featDots = $('featDots'), featN = $('featN'), featPause = $('featPause');
+  var FEAT_MS = 6500, featCalm = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  function featDist(k){ var n = FEAT.length, d = ((k - feat.i) % n + n) % n; return d > n/2 ? d - n : d; }
+  function featBuild(){
+    featStage.innerHTML = FEAT.map(function(h,k){
+      return '<a class="fs" href="#piece-'+h+'" data-k="'+k+'" aria-label="'+esc(P[h].f)+'"><img src="'+IMG+P[h].i[0]+'" alt="" draggable="false"'+(k>2?' loading="lazy"':'')+'></a>';
     }).join('');
+    featDots.innerHTML = FEAT.map(function(h,k){ return '<button type="button" data-k="'+k+'" aria-label="'+esc(P[h].t)+'"></button>'; }).join('');
+    featPlace();
   }
-  buildSplits();
-  // every five seconds two of the six photographs change, in random order, to another piece
-  var SP_POOL = ['yugen','maitri','qing','hikari','mani','ekatva','midori','padma','dolma','darvish','yashodhara','satya','tenzin','yun','vasanta','pema','shinrin','vajra'];
-  function swapSplit(el, h){
-    var p = P[h], im = new Image();
-    im.onload = function(){
-      if (!el.isConnected) return;
-      var old = el.querySelector('img'); im.alt = ''; im.draggable = false; im.className = 'in';
-      el.appendChild(im); void im.offsetWidth; im.className = '';
-      el.href = '#piece-' + h; el.setAttribute('data-h', h); el.setAttribute('aria-label', p.f + ', ' + priceOf(p));
-      setTimeout(function(){ if (old && old.parentNode) old.parentNode.removeChild(old); }, 750);
-    };
-    im.src = IMG + p.i[0];
-  }
-  if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) setInterval(function(){
-    if (S.view !== 'home' || document.hidden || home.scrollTop > $('splits').offsetHeight) return;
-    var els = [].slice.call($('splits').children), shown = els.map(function(e){ return e.getAttribute('data-h'); });
-    var free = els.filter(function(e){ return !e.matches(':hover') && !e.matches(':focus'); }).sort(function(){ return Math.random() - .5; }).slice(0, 2);
-    free.forEach(function(el, k){
-      var pool = SP_POOL.filter(function(h){ return shown.indexOf(h) < 0; }); if (!pool.length) return;
-      var h = pool[Math.floor(Math.random() * pool.length)]; shown.push(h);
-      setTimeout(function(){ swapSplit(el, h); }, k * 350);
+  function featPlace(){
+    [].forEach.call(featStage.children, function(el){
+      var d = featDist(+el.getAttribute('data-k')), a = Math.abs(d);
+      el.classList.toggle('front', d === 0);
+      el.style.zIndex = 10 - a;
+      el.style.opacity = a > 2 ? 0 : 1 - a * 0.3;
+      el.style.visibility = a > 2 ? 'hidden' : 'visible';
+      el.style.transform = 'translate3d(' + (d * 62) + '%,0,' + (-a * 180) + 'px) rotateY(' + (-d * 28) + 'deg) scale(' + (1 - a * 0.12) + ')';
+      el.tabIndex = d === 0 ? 0 : -1;
     });
-  }, 5000);
+    [].forEach.call(featDots.children, function(b,k){ b.setAttribute('aria-current', k === feat.i); });
+    featN.textContent = two(feat.i + 1) + ' / ' + two(FEAT.length);
+    featPause.textContent = feat.paused ? 'Play' : 'Pause';
+    featRenderCard();
+  }
+  function featRenderCard(){
+    var p = P[FEAT[feat.i]], so = soldOut(p), avail = p.v.filter(function(v){ return v.a; });
+    var ok = feat.size && p.v.some(function(v){ return String(v.id) === feat.size && v.a; });
+    if (!ok) feat.size = avail.length === 1 ? String(avail[0].id) : null;
+    featCard.innerHTML = '<p class="fc-kind">' + KIND[p.c] + '</p>'
+      + '<h3 class="fc-name">' + esc(p.t) + '</h3>'
+      + '<p class="fc-price">' + priceOf(p) + '</p>'
+      + '<p class="fc-row"><span>Size</span><span>' + (so ? 'Sold out' : feat.size ? '' : 'Select one') + '</span></p>'
+      + '<div class="fc-sizes">' + p.v.map(function(v){ return '<button type="button" data-id="' + v.id + '" aria-pressed="' + (String(v.id) === feat.size) + '"' + (v.a ? '' : ' disabled') + '>' + v.s + '</button>'; }).join('') + '</div>'
+      + '<button type="button" class="btn solid fc-add" id="fcAdd"' + (so ? ' disabled' : '') + '>' + (so ? 'Sold out' : 'Add to bag') + '</button>'
+      + '<a class="link fc-view" href="#piece-' + p.h + '">View the piece</a>';
+  }
+  function addLine(p, sizeId){
+    var v = p.v.filter(function(x){ return String(x.id) === String(sizeId); })[0]; if (!v) return;
+    var line = bag.filter(function(l){ return String(l.id) === String(sizeId); })[0];
+    if (line) line.q++; else bag.push({ h:p.h, id:v.id, s:v.s, q:1 });
+    renderBag(); snd('toll'); openBag(true);
+  }
+  featCard.addEventListener('click', function(e){
+    var sz = e.target.closest('.fc-sizes button');
+    if (sz && !sz.disabled){ feat.size = sz.getAttribute('data-id'); snd('tick'); featRenderCard(); return; }
+    if (e.target.closest('#fcAdd')){
+      var p = P[FEAT[feat.i]]; if (soldOut(p)) return;
+      if (!feat.size){ $('fcAdd').textContent = 'Pick a size first'; return; }
+      addLine(p, feat.size);
+    }
+  });
+  function featGo(k){ var n = FEAT.length; feat.i = ((k % n) + n) % n; feat.size = null; featPlace(); featTick(); }
+  function featIn(){ return S.view === 'home' && !document.hidden && home.scrollTop < featEl.offsetHeight * 0.6; }
+  function featTick(){
+    clearTimeout(feat.timer);
+    if (featCalm) return;
+    feat.timer = setTimeout(function(){
+      if (!feat.held && !feat.paused && featIn()) featGo(feat.i + 1); else featTick();
+    }, FEAT_MS);
+  }
+  featStage.addEventListener('click', function(e){
+    var a = e.target.closest('.fs'); if (!a) return;
+    if (!a.classList.contains('front')){ e.preventDefault(); featGo(+a.getAttribute('data-k')); }
+  });
+  featDots.addEventListener('click', function(e){ var b = e.target.closest('button'); if (b) featGo(+b.getAttribute('data-k')); });
+  $('featPrev').onclick = function(){ featGo(feat.i - 1); };
+  $('featNext').onclick = function(){ featGo(feat.i + 1); };
+  featPause.onclick = function(){ feat.paused = !feat.paused; featPlace(); featTick(); };
+  featEl.addEventListener('pointerenter', function(e){ if (e.pointerType === 'mouse') feat.held = true; });
+  featEl.addEventListener('pointerleave', function(e){ if (e.pointerType === 'mouse') feat.held = false; });
+  featEl.addEventListener('keydown', function(e){
+    if (e.key === 'ArrowLeft'){ e.preventDefault(); featGo(feat.i - 1); }
+    else if (e.key === 'ArrowRight'){ e.preventDefault(); featGo(feat.i + 1); }
+  });
+  var fx0 = null;
+  featStage.addEventListener('touchstart', function(e){ fx0 = e.touches[0].clientX; feat.held = true; }, { passive:true });
+  featStage.addEventListener('touchend', function(e){
+    feat.held = false; if (fx0 == null) return;
+    var dx = e.changedTouches[0].clientX - fx0; fx0 = null;
+    if (Math.abs(dx) > 40){ e.preventDefault(); featGo(feat.i + (dx < 0 ? 1 : -1)); }
+  }, { passive:false });
   function setFilter(f){
     var c = catBy[f];
     cells.forEach(function(t){ t.hidden = !!c && t.getAttribute('data-cat')!==f; });
@@ -335,6 +387,7 @@
     '10% off with code':['10% de descuento con el código','-10 % avec le code','कोड के साथ 10% की छूट','コードで10%オフ'],
     'Ships worldwide from India':['Envíos a todo el mundo desde la India','Livraison mondiale depuis l’Inde','भारत से दुनिया भर में शिपिंग','インドから世界中へ発送'],
     'Copied':['Copiado','Copié','कॉपी हो गया','コピーしました'],
+    'Size':['Talla','Taille','साइज़','サイズ'], 'Select one':['Elige una','Choisir','चुनें','選択'], 'Play':['Reproducir','Lecture','चलाएँ','再生'],
     'Discover Destiny':['Discover Destiny','Discover Destiny','Discover Destiny','Discover Destiny']
   };
   var KTR = { Kimono:['Kimono','Kimono','किमोनो','キモノ'], Dress:['Vestido','Robe','ड्रेस','ドレス'], Top:['Top','Haut','टॉप','トップ'], Bottom:['Pantalón','Bas','बॉटम','ボトム'], Layer:['Capa','Veste','लेयर','アウター'] };
@@ -384,7 +437,7 @@
   }
   function setCur(c){
     cur = c; try { localStorage.setItem('vv-cur', c); } catch(e){}
-    wall.innerHTML = all.map(function(h){ return cellHTML(h); }).join(''); cells = [].slice.call(wall.children); setFilter(S.filter); buildSplits();
+    wall.innerHTML = all.map(function(h){ return cellHTML(h); }).join(''); cells = [].slice.call(wall.children); setFilter(S.filter); featRenderCard();
     renderBag(); paintRegion(); renderAccount();
     if (S.piece) $('piecePrice').textContent = priceOf(S.piece);
     if (readerOpen) showMark(markAt);
@@ -663,6 +716,7 @@
     try { navigator.clipboard.writeText('DESTINY10').then(done, done); } catch(err){ done(); }
   });
   $('annX').onclick = function(){ $('ann').hidden = true; app.style.setProperty('--ann', '0px'); fit(); };
+  featBuild(); featTick();
   paintRegion(); renderBag(); setFilter('shop'); route(); playFilm();
   if (lang !== 'en') setLang(lang);
 })();
