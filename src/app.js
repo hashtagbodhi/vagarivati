@@ -121,7 +121,7 @@
 
   /* ---------- sound: the film carries the music ---------- */
   var film = $('film'), wantSound = true, soundBtn = $('soundBtn');
-  // phones open with the lake film, as a 24-second portrait loop
+  // phones play the lake film, full length
   if (narrow.matches){ film.removeAttribute('poster'); film.poster = 'media/hero-m-poster.jpg'; film.src = 'media/hero-m.mp4'; film.load(); }
   function paintSound(){ var on = !film.muted && !film.paused; soundBtn.textContent = $('soundBtn2').textContent = on ? 'Sound on' : 'Sound off'; soundBtn.setAttribute('aria-pressed', on); }
   function playFilm(){
@@ -146,10 +146,14 @@
   var imgA = $('pieceImgA'), imgB = $('pieceImgB'), front = imgA, thumbs = $('thumbs');
   function showImg(i, instant){
     var p = S.piece; S.img = (i + p.i.length) % p.i.length;
-    var next = front === imgA ? imgB : imgA, f = front;
-    var done = function(){ f.classList.remove('on'); next.classList.add('on'); };
-    next.onload = null; next.src = IMG + p.i[S.img]; next.alt = p.f + ', photo ' + (S.img+1);
-    if (instant || next.complete) done(); else next.onload = done;
+    var next = front === imgA ? imgB : imgA, f = front, src = IMG + p.i[S.img];
+    imgA.onload = imgB.onload = null;
+    // a new piece: clear what the last piece left behind, so its photo can never show here
+    if (instant){ imgA.classList.remove('on'); imgB.classList.remove('on'); f.removeAttribute('src'); next.removeAttribute('src'); }
+    var done = function(){ if (next.getAttribute('data-want') !== src) return; f.classList.remove('on'); next.classList.add('on'); };
+    next.setAttribute('data-want', src); next.alt = p.f + ', photo ' + (S.img+1);
+    next.onload = done; next.src = src;
+    if (next.complete && next.naturalWidth) done();
     front = next;
     $('pNum').textContent = two(S.img+1) + ' / ' + two(p.i.length);
     [].forEach.call(thumbs.children, function(b,k){ b.setAttribute('aria-selected', k===S.img); });
@@ -184,6 +188,15 @@
   thumbs.addEventListener('click', function(e){ var b = e.target.closest('button'); if (b) showImg(+b.getAttribute('data-i')); });
   $('pPhoto').addEventListener('click', function(){ showImg(S.img+1); });
 
+
+  // start loading a piece's first photograph the moment it is pointed at or touched
+  var warmed = {};
+  function warm(e){
+    var a = e.target.closest && e.target.closest('a[href^="#piece-"]'); if (!a) return;
+    var h = a.getAttribute('href').slice(7), p = P[h]; if (!p || warmed[h]) return;
+    warmed[h] = 1; new Image().src = IMG + p.i[0];
+  }
+  app.addEventListener('pointerover', warm, { passive:true }); app.addEventListener('touchstart', warm, { passive:true });
 
   /* a cutout turns a little toward the pointer as it crosses the piece */
   if (window.matchMedia('(hover:hover) and (pointer:fine)').matches){
@@ -243,10 +256,11 @@
   $('galTabs').addEventListener('click', function(e){ var b = e.target.closest('button'); if (b){ setFam(b.getAttribute('data-f')); snd('tick'); } });
   function showMark(h){
     markAt = h; var m = MARKS[h], p = P[h], i = ORDER.indexOf(h);
+    if ($('rdImg').getAttribute('src') !== 'media/sw/'+h+'.jpg') $('rdImg').removeAttribute('src');
     $('rdImg').src = 'media/sw/'+h+'.jpg'; $('rdImg').alt = m.name + ' pattern';
     $('rdN').textContent = two(i+1) + ' / ' + two(ORDER.length) + '   ' + FAMOF[h];
     $('rdName').textContent = m.name; $('rdHook').textContent = m.hook; $('rdStory').textContent = m.story;
-    $('rdPiece').href = '#piece-'+h; $('rdCut').src = 'cut2/'+h+'.webp';
+    $('rdPiece').href = '#piece-'+h; if ($('rdCut').getAttribute('src') !== 'cut2/'+h+'.webp') $('rdCut').removeAttribute('src'); $('rdCut').src = 'cut2/'+h+'.webp';
     $('rdPieceName').textContent = p.f; $('rdPiecePrice').textContent = priceOf(p);
     var a = ORDER[(i-1+ORDER.length)%ORDER.length], b = ORDER[(i+1)%ORDER.length];
     $('rdPrev').querySelector('span').textContent = MARKS[a].name; $('rdNext').querySelector('span').textContent = MARKS[b].name;

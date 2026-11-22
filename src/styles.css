@@ -794,3 +794,8 @@ img,video,svg{display:block}
 /* opener: a changing photograph fades in over the old one, quickly */
 .sp img{transition:filter .6s ease,transform 1.2s var(--ease),opacity .7s ease}
 .sp img.in{opacity:0;transform:scale(1.05)}
+/* product photo: while it loads, a small red cross pulses on a dark ground instead of a white flash */
+.p-photo{background:var(--oxblood)}
+.p-photo:not(:has(img.on))::after{content:"";position:absolute;left:50%;top:50%;width:15px;height:15px;margin:-7px 0 0 -7px;animation:wait .7s ease-in-out infinite alternate;
+  background:linear-gradient(var(--blood),var(--blood)) center/1px 100% no-repeat,linear-gradient(var(--blood),var(--blood)) center/100% 1px no-repeat}
+@keyframes wait{from{opacity:.25;transform:rotate(0)}to{opacity:1;transform:rotate(90deg)}}
