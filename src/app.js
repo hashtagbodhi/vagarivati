@@ -253,8 +253,6 @@
     'Track':['Seguir','Suivre','ट्रैक करें','追跡'], 'Start a return':['Iniciar una devolución','Faire un retour','वापसी शुरू करें','返品を申し込む'], 'Total':['Total','Total','कुल','合計'],
     'On its way':['En camino','En route','रास्ते में','配送中'], 'Delivered':['Entregado','Livré','डिलीवर हो गया','配達済み'], 'Name':['Nombre','Nom','नाम','名前'], 'Phone':['Teléfono','Téléphone','फ़ोन','電話番号'],
     'Not added yet':['Aún sin añadir','Pas encore ajouté','अभी नहीं जोड़ा गया','未登録'],
-    'Streetwear in organic textiles.':['Streetwear en tejidos orgánicos.','Streetwear en textiles biologiques.','ऑर्गेनिक कपड़ों में स्ट्रीटवियर।','オーガニック素材のストリートウェア。'],
-    'New York City.':['Nueva York.','New York.','न्यूयॉर्क सिटी।','ニューヨーク。'],
     'The collection':['La colección','La collection','कलेक्शन','コレクション'], 'The patterns':['Los estampados','Les motifs','पैटर्न','柄'], 'Ancestry':['Ascendencia','Ascendance','वंश','ルーツ'],
     'Choose a print. Its story opens.':['Elige un estampado. Se abre su historia.','Choisissez un motif. Son histoire s’ouvre.','एक प्रिंट चुनें। उसकी कहानी खुलेगी।','柄を選ぶと、その物語が開きます。'],
     'Marks':['Signos','Signes','चिह्न','しるし'], 'Bands':['Franjas','Bandes','पट्टियाँ','帯'], 'Fields':['Campos','Champs','खेत','面'], 'Flora':['Flora','Flore','फूल-पत्ती','草花'],
