@@ -89,6 +89,8 @@
 
   /* ---------- sound: the film carries the music ---------- */
   var film = $('film'), wantSound = true, soundBtn = $('soundBtn');
+  // phones open with the lake film, as a 24-second portrait loop
+  if (narrow.matches){ film.removeAttribute('poster'); film.poster = 'media/hero-m-poster.jpg'; film.src = 'media/hero-m.mp4'; film.load(); }
   function paintSound(){ var on = !film.muted && !film.paused; soundBtn.textContent = $('soundBtn2').textContent = on ? 'Sound on' : 'Sound off'; soundBtn.setAttribute('aria-pressed', on); }
   function playFilm(){
     film.muted = !wantSound;

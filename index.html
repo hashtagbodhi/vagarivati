@@ -709,7 +709,14 @@ img,video,svg{display:block}
 .film,.sf-frame video{will-change:auto}
 .fx i{will-change:transform}
 /* phones: frame the home film higher so its burned-in subtitles fall outside the picture */
-@media (max-width:820px){.hero .film{height:126%;object-position:50% 0}}
+/* phones: the lake film sits in a half-height block, in its own proportions */
+@media (max-width:820px){
+  .hero{background:var(--ink)}
+  .hero .film{inset:auto 0;top:50%;height:50%;transform:translateY(-50%);object-position:50% 50%}
+}
+
+/* Discover Destiny in the footer uses the gothic face */
+.vv-line{font:400 22px/1 var(--display);color:var(--white)}
 </style>
 </head>
 <body>
@@ -1070,6 +1077,8 @@ img,video,svg{display:block}
 
   /* ---------- sound: the film carries the music ---------- */
   var film = $('film'), wantSound = true, soundBtn = $('soundBtn');
+  // phones open with the lake film, as a 24-second portrait loop
+  if (narrow.matches){ film.removeAttribute('poster'); film.poster = 'media/hero-m-poster.jpg'; film.src = 'media/hero-m.mp4'; film.load(); }
   function paintSound(){ var on = !film.muted && !film.paused; soundBtn.textContent = $('soundBtn2').textContent = on ? 'Sound on' : 'Sound off'; soundBtn.setAttribute('aria-pressed', on); }
   function playFilm(){
     film.muted = !wantSound;
