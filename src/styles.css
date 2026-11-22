@@ -614,3 +614,53 @@ img,video,svg{display:block}
   .ord header,.ord footer{padding:12px 14px}
   .ord-items{padding:18px 14px}
 }
+
+/* ---------- footer: one row, everything sitting on the same bottom line ---------- */
+.end{align-items:end;padding-block:26px;flex:none}
+.end .sign{grid-column:1/10;display:flex;align-items:flex-end;gap:clamp(18px,2.4vw,40px);justify-items:initial}
+.end .vv-copy{line-height:1.25}
+.end-links{grid-column:10/17;align-items:flex-end;line-height:1.25}
+.end-r{grid-column:17/25;align-items:flex-end;gap:clamp(12px,1.6vw,24px);line-height:1.25}
+.end .vv-soc{margin:0;gap:12px}
+.end .vv-soc a{width:20px;height:16px;align-items:end}
+.end .vv-soc svg{width:17px;height:17px}
+.end .regionBtn{padding:0;border:0;color:var(--ash);font-size:var(--t-xs)}
+.end .regionBtn:hover{color:var(--white)}
+.totop{line-height:1.25}
+.totop .ic{width:14px;height:14px}
+/* short pages keep their footer at the bottom of the screen */
+.v-info.on,.v-account.on{display:flex;flex-direction:column}
+.v-info .pol,.v-account .pol{flex:1 0 auto;min-height:0;align-content:start}
+
+/* ---------- account: nav on the left rail, content wide ---------- */
+.v-account .pol{padding-top:calc(var(--top) + clamp(36px,8vh,90px))}
+.v-account .pol-nav{grid-column:4/8}
+.v-account .pol-doc{grid-column:8/22}
+.v-account .pol-nav:empty+.pol-doc{grid-column:8/16}
+.ords{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:calc(var(--col)*.75);margin-top:26px;align-items:start}
+.ords .ord{margin-top:0}
+.ord-items{flex-direction:column;gap:18px}
+
+/* ---------- story film: both rails wide, plays when asked ---------- */
+.st{padding-top:calc(var(--top) + clamp(24px,5vh,56px))}
+.st-film{display:grid;grid-template-columns:repeat(24,minmax(0,1fr));padding:0 max(var(--m),env(safe-area-inset-right,0px)) clamp(70px,14vh,150px) max(var(--m),env(safe-area-inset-left,0px))}
+.sf{grid-column:6/20;position:relative;aspect-ratio:16/9;background:var(--ink);overflow:hidden}
+.sf video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.sf-play{position:absolute;inset:0;display:flex;align-items:flex-end;gap:14px;padding:22px 24px;color:var(--white);font-size:var(--t-m);text-align:left;background:linear-gradient(to top,rgba(0,0,0,.6),rgba(0,0,0,0) 45%)}
+.sf-play i{width:44px;height:44px;border:1px solid var(--white);border-radius:50%;position:relative;flex:none;transition:background .3s,border-color .3s}
+.sf-play i::after{content:"";position:absolute;left:17px;top:14px;border-style:solid;border-width:8px 0 8px 13px;border-color:transparent transparent transparent var(--white)}
+.sf-play span{align-self:center;margin-bottom:0}
+.sf-play em{margin-left:auto;font-style:normal;font-size:var(--t-s);color:var(--ash);font-variant-numeric:tabular-nums;align-self:center}
+.sf-play:hover i{background:var(--blood);border-color:var(--blood)}
+.sf-play{align-items:flex-end}
+.sf-play span,.sf-play em{padding-bottom:12px}
+@media (max-width:820px){
+  .end .sign{grid-column:1/25;margin-bottom:14px}
+  .end-links,.end-r{grid-column:1/25;justify-content:flex-start}
+  .end-r{margin-top:12px}
+  .sf{grid-column:1/25}
+  .st-film{padding-bottom:48px}
+  .ords{grid-template-columns:1fr}
+  .v-account .pol-nav,.v-account .pol-doc{grid-column:1/25}
+}
+.sf-play span,.sf-play em{align-self:flex-end;padding-bottom:13px}

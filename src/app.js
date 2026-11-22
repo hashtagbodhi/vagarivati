@@ -232,13 +232,89 @@
   $('rdPiece').addEventListener('click', function(){ openReader(false); });
   setFam('All');
 
+  /* ---------- languages: the interface is translated; long copy stays in English for now ---------- */
+  var LANGS = [['en','English'],['es','Español'],['fr','Français'],['hi','हिन्दी'],['ja','日本語']];
+  var IDX = { es:0, fr:1, hi:2, ja:3 };
+  var TR = {
+    'All':['Todo','Tout','सभी','すべて'], 'Kimonos':['Kimonos','Kimonos','किमोनो','キモノ'], 'Dresses':['Vestidos','Robes','ड्रेस','ドレス'],
+    'Tops':['Tops','Hauts','टॉप','トップス'], 'Bottoms':['Pantalones','Bas','बॉटम','ボトムス'], 'Layers':['Capas','Vestes','लेयर','アウター'],
+    'Story':['Historia','Histoire','कहानी','ストーリー'], 'Menu':['Menú','Menu','मेनू','メニュー'], 'Bag':['Bolsa','Panier','बैग','バッグ'],
+    'Account':['Cuenta','Compte','खाता','アカウント'], 'Sound on':['Sonido activado','Son activé','ध्वनि चालू','サウンド オン'], 'Sound off':['Sonido apagado','Son coupé','ध्वनि बंद','サウンド オフ'],
+    'Close':['Cerrar','Fermer','बंद करें','閉じる'], 'Add to bag':['Añadir a la bolsa','Ajouter au panier','बैग में डालें','バッグに追加'], 'Sold out':['Agotado','Épuisé','स्टॉक खत्म','売り切れ'],
+    'Pick a size first':['Elige una talla primero','Choisissez d’abord une taille','पहले साइज़ चुनें','先にサイズを選択'], 'Check out':['Pagar','Commander','चेकआउट','購入手続きへ'],
+    'Subtotal':['Subtotal','Sous-total','उप-योग','小計'], 'Your bag':['Tu bolsa','Votre panier','आपका बैग','バッグ'], 'Remove':['Quitar','Retirer','हटाएँ','削除'],
+    'Change':['Cambiar','Modifier','बदलें','変更'], 'Top':['Arriba','Haut','ऊपर','トップへ'], 'Shipping':['Envíos','Livraison','शिपिंग','配送'], 'Returns':['Devoluciones','Retours','वापसी','返品'],
+    'Privacy':['Privacidad','Confidentialité','गोपनीयता','プライバシー'], 'Terms':['Términos','Conditions','शर्तें','利用規約'], 'All pieces':['Todas las piezas','Toutes les pièces','सभी पीस','すべてのアイテム'],
+    'Read the story':['Leer la historia','Lire l’histoire','कहानी पढ़ें','ストーリーを読む'], 'View the piece':['Ver la pieza','Voir la pièce','पीस देखें','アイテムを見る'], 'Worn on':['Se lleva en','Porté sur','इस पर','使用アイテム'],
+    'Currency':['Moneda','Devise','मुद्रा','通貨'], 'Language':['Idioma','Langue','भाषा','言語'], 'Selected':['Seleccionado','Sélectionné','चुनी गई','選択中'],
+    'Orders':['Pedidos','Commandes','ऑर्डर','注文'], 'Details':['Datos','Informations','विवरण','登録情報'], 'Addresses':['Direcciones','Adresses','पते','住所'], 'Sign out':['Cerrar sesión','Se déconnecter','साइन आउट','ログアウト'],
+    'Email':['Correo electrónico','E-mail','ईमेल','メールアドレス'], 'Send sign-in code':['Enviar código de acceso','Envoyer le code de connexion','साइन-इन कोड भेजें','ログインコードを送信'],
+    'Track':['Seguir','Suivre','ट्रैक करें','追跡'], 'Start a return':['Iniciar una devolución','Faire un retour','वापसी शुरू करें','返品を申し込む'], 'Total':['Total','Total','कुल','合計'],
+    'On its way':['En camino','En route','रास्ते में','配送中'], 'Delivered':['Entregado','Livré','डिलीवर हो गया','配達済み'], 'Name':['Nombre','Nom','नाम','名前'], 'Phone':['Teléfono','Téléphone','फ़ोन','電話番号'],
+    'Not added yet':['Aún sin añadir','Pas encore ajouté','अभी नहीं जोड़ा गया','未登録'],
+    'Streetwear in organic textiles.':['Streetwear en tejidos orgánicos.','Streetwear en textiles biologiques.','ऑर्गेनिक कपड़ों में स्ट्रीटवियर।','オーガニック素材のストリートウェア。'],
+    'New York City.':['Nueva York.','New York.','न्यूयॉर्क सिटी।','ニューヨーク。'],
+    'The collection':['La colección','La collection','कलेक्शन','コレクション'], 'The patterns':['Los estampados','Les motifs','पैटर्न','柄'], 'Ancestry':['Ascendencia','Ascendance','वंश','ルーツ'],
+    'Choose a print. Its story opens.':['Elige un estampado. Se abre su historia.','Choisissez un motif. Son histoire s’ouvre.','एक प्रिंट चुनें। उसकी कहानी खुलेगी।','柄を選ぶと、その物語が開きます。'],
+    'Marks':['Signos','Signes','चिह्न','しるし'], 'Bands':['Franjas','Bandes','पट्टियाँ','帯'], 'Fields':['Campos','Champs','खेत','面'], 'Flora':['Flora','Flore','फूल-पत्ती','草花'],
+    'Sorted into four families':['Ordenados en cuatro familias','Classés en quatre familles','चार परिवारों में बाँटे गए','4つのグループに分類'],
+    'Vagari Vati, by Justin Titus':['Vagari Vati, por Justin Titus','Vagari Vati, par Justin Titus','Vagari Vati, जस्टिन टाइटस द्वारा','Vagari Vati、ジャスティン・タイタス'],
+    'Worn in memory of the land before us':['En memoria de la tierra que nos precedió','En mémoire de la terre d’avant nous','हमसे पहले की धरती की याद में','私たちより前の大地を偲んで'],
+    'Eleven prints. Each one says something.':['Once estampados. Cada uno dice algo.','Onze motifs. Chacun dit quelque chose.','ग्यारह प्रिंट। हर एक कुछ कहता है।','11の柄。それぞれに意味がある。'],
+    'A record you can wear':['Un registro que puedes vestir','Une mémoire qui se porte','एक दस्तावेज़ जिसे आप पहन सकते हैं','身にまとえる記録'],
+    'Play the film':['Ver el film','Lire le film','फ़िल्म चलाएँ','フィルムを再生'],
+    'The collection and its prints':['La colección y sus estampados','La collection et ses motifs','कलेक्शन और उसके प्रिंट','コレクションと柄'],
+    'Ships worldwide from India.':['Envíos a todo el mundo desde la India.','Livraison mondiale depuis l’Inde.','भारत से दुनिया भर में शिपिंग।','インドから世界中へ発送。'],
+    '14-day returns':['Devoluciones en 14 días','Retours sous 14 jours','14 दिन में वापसी','14日以内返品可'],
+    'Your bag is empty. Open a piece, pick a size and add it here.':['Tu bolsa está vacía. Abre una pieza, elige una talla y añádela aquí.','Votre panier est vide. Ouvrez une pièce, choisissez une taille et ajoutez-la ici.','आपका बैग खाली है। कोई पीस खोलें, साइज़ चुनें और यहाँ जोड़ें।','バッグは空です。アイテムを開き、サイズを選んで追加してください。'],
+    'Shipping and taxes are calculated at checkout, which opens on vagarivati.com.':['El envío y los impuestos se calculan al pagar, en vagarivati.com.','La livraison et les taxes sont calculées au paiement, sur vagarivati.com.','शिपिंग और टैक्स चेकआउट पर जोड़े जाते हैं, जो vagarivati.com पर खुलता है।','送料と税金は vagarivati.com の購入手続きで計算されます。'],
+    'Sign in to see your orders, track a delivery or start a return.':['Inicia sesión para ver tus pedidos, seguir una entrega o iniciar una devolución.','Connectez-vous pour voir vos commandes, suivre une livraison ou faire un retour.','अपने ऑर्डर देखने, डिलीवरी ट्रैक करने या वापसी शुरू करने के लिए साइन इन करें।','ログインすると、注文の確認、配送の追跡、返品の申し込みができます。'],
+    'We email you a six-digit code. No password to remember.':['Te enviamos un código de seis dígitos. Sin contraseñas.','Nous vous envoyons un code à six chiffres. Aucun mot de passe.','हम आपको छह अंकों का कोड ईमेल करते हैं। कोई पासवर्ड नहीं।','6桁のコードをメールでお送りします。パスワードは不要です。'],
+    'Prices come from the store. Checkout confirms the final amount.':['Los precios vienen de la tienda. El pago confirma el importe final.','Les prix viennent de la boutique. Le paiement confirme le montant final.','कीमतें स्टोर से आती हैं। अंतिम राशि चेकआउट पर तय होती है।','価格はストアのものです。最終金額は購入手続きで確定します。'],
+    '© Vagari Vati 2027. All rights reserved.':['© Vagari Vati 2027. Todos los derechos reservados.','© Vagari Vati 2027. Tous droits réservés.','© Vagari Vati 2027. सर्वाधिकार सुरक्षित।','© Vagari Vati 2027. 無断転載を禁じます。'],
+    'Example data. This prototype is not connected to real accounts yet.':['Datos de ejemplo. Este prototipo aún no está conectado a cuentas reales.','Données d’exemple. Ce prototype n’est pas encore relié à de vrais comptes.','उदाहरण डेटा। यह प्रोटोटाइप अभी असली खातों से जुड़ा नहीं है।','サンプルデータです。この試作版は実際のアカウントに接続されていません。'],
+    'Discover Destiny':['Discover Destiny','Discover Destiny','Discover Destiny','Discover Destiny']
+  };
+  var KTR = { Kimono:['Kimono','Kimono','किमोनो','キモノ'], Dress:['Vestido','Robe','ड्रेस','ドレス'], Top:['Top','Haut','टॉप','トップ'], Bottom:['Pantalón','Bas','बॉटम','ボトム'], Layer:['Capa','Veste','लेयर','アウター'] };
+  var PIECES = { es:'piezas', fr:'pièces', hi:'पीस', ja:'点' }, SIZE = { es:'talla', fr:'taille', hi:'साइज़', ja:'サイズ' };
+  var lang = 'en'; try { var sl = localStorage.getItem('vv-lang'); if (sl && (sl === 'en' || IDX[sl] != null)) lang = sl; } catch(e){}
+  function tr(s){
+    if (lang === 'en') return s;
+    var k = IDX[lang], hit = TR[s]; if (hit) return hit[k];
+    var m = /^(\d+) pieces$/.exec(s); if (m) return m[1] + ' ' + PIECES[lang];
+    m = /^(Kimono|Dress|Top|Bottom|Layer), size (\w+)$/.exec(s); if (m) return KTR[m[1]][k] + ', ' + SIZE[lang] + ' ' + m[2];
+    return null;
+  }
+  function trNode(n){
+    var v = n.nodeValue; if (n._out === v) return;              // our own write
+    n._en = v; var core = v.trim(); if (!core){ return; }
+    var at = v.indexOf(core), t = tr(core), out = t == null ? v : v.slice(0, at) + t + v.slice(at + core.length);
+    n._out = out; if (out !== v) n.nodeValue = out;
+  }
+  function trAll(root){
+    var w = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, null), n, list = [];
+    while ((n = w.nextNode())) list.push(n);
+    list.forEach(function(n){ if (n._en != null && n._out === n.nodeValue){ n._out = null; n.nodeValue = n._en; } trNode(n); });
+  }
+  new MutationObserver(function(ms){
+    if (lang === 'en') return;
+    ms.forEach(function(m){
+      if (m.type === 'characterData') trNode(m.target);
+      else [].forEach.call(m.addedNodes, function(a){ if (a.nodeType === 3) trNode(a); else if (a.nodeType === 1) trAll(a); });
+    });
+  }).observe(app, { childList:true, subtree:true, characterData:true });
+  function setLang(l){
+    lang = l; try { localStorage.setItem('vv-lang', l); } catch(e){}
+    document.documentElement.lang = l; app.setAttribute('data-lang', l);
+    trAll(app); paintRegion();
+  }
+
   /* ---------- currency and language ---------- */
   var regionEl = $('region'), regionOpen = false;
-  var LANGS = [['English',true],['Español',false],['Français',false],['हिन्दी',false],['日本語',false]];
   function paintRegion(){
-    [].forEach.call(document.querySelectorAll('.regionBtn'), function(b){ b.textContent = cur + ' / EN'; });
+    [].forEach.call(document.querySelectorAll('.regionBtn'), function(b){ b.textContent = cur + ' / ' + lang.toUpperCase(); });
     $('rgCur').innerHTML = CURS.map(function(c){ return '<button type="button" data-c="'+c[0]+'" aria-pressed="'+(c[0]===cur)+'"><b>'+c[0]+'</b><span>'+c[1]+'</span></button>'; }).join('');
-    $('rgLang').innerHTML = LANGS.map(function(l){ return '<button type="button" aria-pressed="'+l[1]+'"'+(l[1]?'':' disabled')+'><b>'+l[0]+'</b><span>'+(l[1]?'Selected':'Coming soon')+'</span></button>'; }).join('');
+    $('rgLang').innerHTML = LANGS.map(function(l){ return '<button type="button" data-l="'+l[0]+'" aria-pressed="'+(l[0]===lang)+'"><b>'+l[1]+'</b><span>'+(l[0]===lang?'Selected':'')+'</span></button>'; }).join('');
   }
   function openRegion(o){
     regionOpen = o; regionEl.classList.toggle('open', o); regionEl.setAttribute('aria-hidden', !o); regionEl.inert = !o;
@@ -253,6 +329,7 @@
   }
   app.addEventListener('click', function(e){ if (e.target.closest('.regionBtn')){ if (menuOpen) openMenu(false); openRegion(!regionOpen); } });
   $('rgClose').onclick = function(){ openRegion(false); };
+  $('rgLang').addEventListener('click', function(e){ var b = e.target.closest('button'); if (b){ setLang(b.getAttribute('data-l')); snd('tick'); openRegion(false); } });
   $('rgCur').addEventListener('click', function(e){ var b = e.target.closest('button'); if (b){ setCur(b.getAttribute('data-c')); snd('tick'); openRegion(false); } });
 
   /* ---------- account (prototype: sign-in is not wired up, the orders are examples) ---------- */
@@ -280,12 +357,12 @@
     nav.innerHTML = tabs.map(function(t){ return '<a href="#account" data-t="'+t[0]+'" aria-current="'+(t[0]===accTab)+'">'+t[1]+'</a>'; }).join('') + '<a href="#account" data-t="out">Sign out</a>';
     var note = '<p class="pol-draft">Example data. This prototype is not connected to real accounts yet.</p>', h = '';
     if (accTab === 'orders'){
-      h = '<h2 class="pol-h">Orders</h2>' + note + EX.map(function(o){
+      h = '<h2 class="pol-h">Orders</h2>' + note + '<div class="ords">' + EX.map(function(o){
         var total = o.items.reduce(function(s,i){ return s + i[2]*price(P[i[0]]); }, 0);
         return '<section class="ord"><header><p><b>'+o.n+'</b><span>'+o.date+'</span></p><p class="ord-st'+(o.status==='Delivered'?'':' live')+'">'+o.status+'</p></header>'
           + '<div class="ord-items">'+o.items.map(function(i){ var p = P[i[0]]; return '<a href="#piece-'+p.h+'" class="ord-it"><span class="box"><img class="cut" src="cut/'+p.h+'.webp" alt=""></span><span><b>'+esc(label(p))+'</b><i>'+KIND[p.c]+', size '+i[1]+'</i><i>'+money(price(p))+'</i></span></a>'; }).join('')+'</div>'
           + '<footer><p>'+o.note+'</p><p><span>Total</span><b>'+money(total)+'</b></p><p class="ord-act"><a class="link" href="#shipping">Track</a><a class="link" href="#returns">Start a return</a></p></footer></section>';
-      }).join('');
+      }).join('') + '</div>';
     } else if (accTab === 'details'){
       h = '<h2 class="pol-h">Details</h2>' + note + '<dl class="acc-dl"><dt>Email</dt><dd>'+esc(signed)+'</dd><dt>Name</dt><dd>Not added yet</dd><dt>Phone</dt><dd>Not added yet</dd><dt>Currency</dt><dd>'+cur+' <button type="button" class="link regionBtn2">Change</button></dd></dl>';
     } else {
@@ -439,6 +516,7 @@
     if (bagOpen) openBag(false);
     if (menuOpen) openMenu(false);
     if (regionOpen) openRegion(false);
+    if (h !== 'story' && !sf.paused){ sf.pause(); playFilm(); }
     if (readerOpen && h !== 'story') openReader(false);
     if (h !== 'system') S.last = h;
     if (h==='shop' || catBy[h]){
@@ -509,5 +587,11 @@
       flick();
     }, 2600 + Math.random()*5200);
   })();
+  /* the story film plays only when asked, with its own sound */
+  var sf = $('storyFilm');
+  $('sfPlay').onclick = function(){ sf.controls = true; sf.muted = false; var pr = sf.play(); if (pr && pr.catch) pr.catch(function(){}); this.hidden = true; };
+  sf.addEventListener('play', function(){ film.pause(); paintSound(); });
+  sf.addEventListener('ended', function(){ sf.controls = false; $('sfPlay').hidden = false; sf.load(); playFilm(); });
   paintRegion(); renderBag(); setFilter('shop'); route(); playFilm();
+  if (lang !== 'en') setLang(lang);
 })();
