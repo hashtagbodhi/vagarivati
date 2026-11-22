@@ -115,9 +115,35 @@
       var k = a.getAttribute('data-cat');
       a.setAttribute('aria-current', (list && k===S.filter) || (S.view==='piece' && S.piece && k===S.piece.c) || (S.view==='story' && k==='story'));
     });
+    if (typeof markHome === 'function') markHome();
   }
   home.addEventListener('scroll', syncChrome, { passive:true });
-  function toCatalog(smooth){ home.scrollTo({ top:Math.max(0, wall.offsetTop - document.querySelector('.top').offsetHeight - 44), behavior: smooth ? 'smooth' : 'auto' }); }
+  // an eased glide in place of the browser's own scroll, so every jump moves the same way
+  var glideId = 0;
+  function glide(el, to, on){
+    var from = el.scrollTop, id = ++glideId; to = Math.max(0, to);
+    if (!on || calmNav || Math.abs(to - from) < 2){ el.scrollTop = to; return; }
+    var t0 = performance.now(), ms = Math.min(1100, 520 + Math.abs(to - from) * 0.35);
+    (function step(now){
+      if (id !== glideId) return;
+      var k = Math.min(1, (now - t0) / ms), e = k < .5 ? 4*k*k*k : 1 - Math.pow(-2*k + 2, 3) / 2;
+      el.scrollTop = from + (to - from) * e; if (k < 1) requestAnimationFrame(step);
+    })(t0);
+  }
+  var calmNav = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  ['wheel','touchstart','pointerdown'].forEach(function(ev){ home.addEventListener(ev, function(){ glideId++; }, { passive:true }); });
+  function toCatalog(smooth){ glide(home, wall.offsetTop - document.querySelector('.top').offsetHeight - 44, smooth); }
+  // one marker in the navigation slides to the link you point at, and back to the page you are on
+  var catsEl = $('cats');
+  function markTo(a){
+    if (!a){ catsEl.style.setProperty('--mo', 0); return; }
+    catsEl.style.setProperty('--mx', a.offsetLeft + 'px'); catsEl.style.setProperty('--mw', a.offsetWidth + 'px'); catsEl.style.setProperty('--mo', 1);
+  }
+  function markHome(){ markTo(catsEl.querySelector('a[aria-current="true"]')); }
+  catsEl.addEventListener('pointerover', function(e){ var a = e.target.closest('a'); if (a && e.pointerType === 'mouse') markTo(a); });
+  catsEl.addEventListener('pointerleave', markHome);
+  window.addEventListener('resize', markHome);
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(markHome);
 
   /* ---------- sound: the film carries the music ---------- */
   var film = $('film'), wantSound = true, soundBtn = $('soundBtn');
@@ -583,13 +609,14 @@
       var same = S.filter === h && (from==='piece' || from==='system') && inCatalog();
       setFilter(h); S.list = h; show('home');
       if (!same) toCatalog(from==='home' && !first);
+      cells.filter(function(c){ return !c.hidden; }).forEach(function(c, k){ c.style.animationDelay = Math.min(k, 11) * 45 + 'ms'; });
     } else if (h.indexOf('piece-')===0 && P[h.slice(6)]){
       S.piece = P[h.slice(6)]; buildPiece(S.piece); show('piece');
     } else if (h==='story'){ if (readerOpen) openReader(false); showMark(markAt); show('story'); story.scrollTop = 0; }
     else if (POL[h]){ showPolicy(h); show('info'); }
     else if (h==='account'){ renderAccount(); show('account'); document.querySelector('.v-account').scrollTop = 0; }
     else if (h==='system'){ show('system'); }
-    else { setFilter('shop'); S.list = 'shop'; show('home'); home.scrollTo({ top:0, behavior: from==='home' && !first ? 'smooth' : 'auto' }); }
+    else { setFilter('shop'); S.list = 'shop'; show('home'); glide(home, 0, from==='home' && !first); }
   }
   window.addEventListener('hashchange', route);
   function go(h){ if (location.hash === '#'+h) route(); else location.hash = h; }
