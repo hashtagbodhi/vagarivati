@@ -32,6 +32,16 @@
   var home = document.querySelector('.v-home'), catalog = $('catalog'), wall = $('wall');
   wall.innerHTML = all.map(function(h){ return cellHTML(h); }).join('');
   var cells = [].slice.call(wall.children);
+  // the opener: six model photographs, edge to edge, each one a door into its piece
+  var SPLITS = ['yugen','maitri','qing','hikari','mani','ekatva'];
+  function buildSplits(){
+    $('splits').innerHTML = SPLITS.map(function(h, i){
+      var p = P[h];
+      return '<a class="sp" href="#piece-'+h+'" aria-label="'+esc(p.f)+', '+priceOf(p)+'"><img src="'+IMG+p.i[0]+'" alt="" draggable="false"'+(i>2?' loading="lazy"':'')+'>'
+        + '<span class="sp-cap"><b>'+esc(p.t)+'</b><em>'+priceOf(p)+'</em><u>View the piece</u></span></a>';
+    }).join('');
+  }
+  buildSplits();
   function setFilter(f){
     var c = catBy[f];
     cells.forEach(function(t){ t.hidden = !!c && t.getAttribute('data-cat')!==f; });
@@ -84,7 +94,7 @@
     });
   }
   home.addEventListener('scroll', syncChrome, { passive:true });
-  function toCatalog(smooth){ home.scrollTo({ top:catalog.offsetTop, behavior: smooth ? 'smooth' : 'auto' }); }
+  function toCatalog(smooth){ home.scrollTo({ top:Math.max(0, wall.offsetTop - document.querySelector('.top').offsetHeight), behavior: smooth ? 'smooth' : 'auto' }); }
 
   /* ---------- sound: the film carries the music ---------- */
   var film = $('film'), wantSound = true, soundBtn = $('soundBtn');
@@ -323,7 +333,7 @@
   }
   function setCur(c){
     cur = c; try { localStorage.setItem('vv-cur', c); } catch(e){}
-    wall.innerHTML = all.map(function(h){ return cellHTML(h); }).join(''); cells = [].slice.call(wall.children); setFilter(S.filter);
+    wall.innerHTML = all.map(function(h){ return cellHTML(h); }).join(''); cells = [].slice.call(wall.children); setFilter(S.filter); buildSplits();
     renderBag(); paintRegion(); renderAccount();
     if (S.piece) $('piecePrice').textContent = priceOf(S.piece);
     if (readerOpen) showMark(markAt);
