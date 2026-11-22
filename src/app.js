@@ -663,6 +663,19 @@
     try { navigator.clipboard.writeText('DESTINY10').then(done, done); } catch(err){ done(); }
   });
   $('annX').onclick = function(){ $('ann').hidden = true; app.style.setProperty('--ann', '0px'); fit(); };
+  /* lighting: four ways to light the same room */
+  var THEMES = [['night','Night'],['bone','Bone'],['chapel','Chapel'],['blood','Blood']];
+  function setTheme(t){
+    if (!THEMES.some(function(x){ return x[0] === t; })) t = 'night';
+    app.setAttribute('data-theme', t); try { localStorage.setItem('vv-theme', t); } catch(e){}
+    [].forEach.call(document.querySelectorAll('.themes button'), function(b){ b.setAttribute('aria-pressed', b.getAttribute('data-t') === t); });
+  }
+  ['themeBar','themeBar2'].forEach(function(id){
+    $(id).innerHTML = THEMES.map(function(x){ return '<button type="button" data-t="'+x[0]+'" title="'+x[1]+'" aria-label="'+x[1]+' lighting"></button>'; }).join('');
+    $(id).addEventListener('click', function(e){ var b = e.target.closest('button'); if (b){ setTheme(b.getAttribute('data-t')); snd('tick'); } });
+  });
+  var t0; try { t0 = localStorage.getItem('vv-theme'); } catch(e){}
+  setTheme(t0 || 'night');
   paintRegion(); renderBag(); setFilter('shop'); route(); playFilm();
   if (lang !== 'en') setLang(lang);
 })();

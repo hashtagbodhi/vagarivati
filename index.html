@@ -406,7 +406,7 @@ img,video,svg{display:block}
 @media (min-width:1101px){.wall{grid-template-columns:repeat(4,calc(var(--col)*3.6));column-gap:calc(var(--col)*1.2);row-gap:calc(var(--col)*1.7)}}
 
 /* ---------- products carry the light: brighter, larger, with a soft pool behind ---------- */
-.wall .box,.bag-list .box{background:radial-gradient(closest-side,rgba(255,255,255,.10),rgba(255,255,255,.03) 60%,rgba(255,255,255,0))}
+.wall .box,.bag-list .box{background:radial-gradient(closest-side,var(--glow,rgba(255,255,255,.10)),var(--glow2,rgba(255,255,255,.03)) 60%,rgba(255,255,255,0))}
 .box .cut{inset:4%;width:92%;height:92%;filter:brightness(1.16) contrast(1.06) saturate(1.15) drop-shadow(0 18px 22px rgba(0,0,0,.55))}
 .cell:hover .box .cut{filter:brightness(1.26) contrast(1.06) saturate(1.2) drop-shadow(0 18px 22px rgba(0,0,0,.55))}
 .catalog .fx-pat{opacity:.2}
@@ -810,6 +810,35 @@ img,video,svg{display:block}
 .p-photo:not(:has(img.on))::after{content:"";position:absolute;left:50%;top:50%;width:15px;height:15px;margin:-7px 0 0 -7px;animation:wait .7s ease-in-out infinite alternate;
   background:linear-gradient(var(--blood),var(--blood)) center/1px 100% no-repeat,linear-gradient(var(--blood),var(--blood)) center/100% 1px no-repeat}
 @keyframes wait{from{opacity:.25;transform:rotate(0)}to{opacity:1;transform:rotate(90deg)}}
+
+/* ---------- lighting: Night (default), Bone, Chapel, Blood ---------- */
+#app[data-theme="bone"]{--ink:#e9e2d4;--white:#150d0b;--ash:rgba(21,13,11,.62);--line:rgba(21,13,11,.2);--oxblood:#ded5c4;--maroon:#cfc4b0;--blood:#b30d22;--glow:rgba(60,40,20,.10);--glow2:rgba(60,40,20,.03);color-scheme:light}
+#app[data-theme="chapel"]{--ink:#f6f5f2;--white:#0c0c0d;--ash:rgba(12,12,13,.58);--line:rgba(12,12,13,.15);--oxblood:#ecebe7;--maroon:#dddbd6;--blood:#c8102e;--glow:rgba(0,0,0,.07);--glow2:rgba(0,0,0,.02);color-scheme:light}
+#app[data-theme="blood"]{--ink:#7d0b18;--white:#f3e9d8;--ash:rgba(243,233,216,.7);--line:rgba(243,233,216,.3);--oxblood:#5e0812;--maroon:#4a060e;--blood:#0b0304;--glow:rgba(255,220,200,.14);--glow2:rgba(255,220,200,.04)}
+#app{color:var(--white)}
+/* the print and the grain are drawn light; on a light ground they are flipped to dark */
+#app[data-theme="bone"] .fx,#app[data-theme="chapel"] .fx{filter:invert(1)}
+#app[data-theme="chapel"] .fx-grain{display:none}
+#app[data-theme="chapel"] .catalog .fx-pat{opacity:.12}
+#app[data-theme="blood"] .fx-grain{opacity:.22}
+/* things that stay as they are in every light */
+.ann{--white:#fff}
+#app[data-theme="bone"] .ann,#app[data-theme="chapel"] .ann{--blood:#b30d22}
+.p-photo,.p-thumbs button{background:#fff}
+.scrim{background:rgba(0,0,0,.6)}
+#app[data-theme="bone"] .cur,#app[data-theme="chapel"] .cur{color:#fff}
+/* the switch: four small swatches */
+.themes{display:inline-flex;align-items:center;gap:7px;padding:8px 0}
+.themes button{width:13px;height:13px;border-radius:50%;border:1px solid var(--ash);position:relative;transition:transform .2s}
+.themes button[data-t="night"]{background:#000}
+.themes button[data-t="bone"]{background:#e9e2d4}
+.themes button[data-t="chapel"]{background:#fff}
+.themes button[data-t="blood"]{background:#7d0b18}
+.themes button:hover{transform:scale(1.25)}
+.themes button[aria-pressed="true"]::after{content:"";position:absolute;inset:-5px;border:1px solid var(--white);border-radius:50%}
+.tools{gap:clamp(12px,1.5vw,24px)}
+@media (max-width:820px){.top .themes{display:none}.menu-foot .themes{gap:10px}.menu-foot .themes button{width:18px;height:18px}}
+@media (min-width:821px) and (max-width:1100px){.top .themes{display:none}}
 </style>
 </head>
 <body>
@@ -824,6 +853,7 @@ img,video,svg{display:block}
     <a class="brand" href="#home" aria-label="Vagari Vati, home"><i class="logo"></i></a>
     <nav class="cats" id="cats" aria-label="Categories"></nav>
     <div class="tools">
+      <div class="themes" id="themeBar" role="group" aria-label="Lighting"></div>
       <button type="button" class="tool" id="menuBtn" aria-haspopup="dialog">Menu</button>
       <button type="button" class="tool" id="soundBtn" aria-pressed="false">Sound off</button>
       <a href="#system" class="tool" id="sysLink">System</a>
@@ -1032,7 +1062,7 @@ img,video,svg{display:block}
     </div>
     <nav class="menu-list" id="menuList" aria-label="Sections"></nav>
     <div class="menu-foot">
-      <button type="button" class="tool" id="soundBtn2">Sound off</button><a class="tool" href="#account">Account</a><button type="button" class="tool regionBtn"></button>
+      <div class="themes" id="themeBar2" role="group" aria-label="Lighting"></div><button type="button" class="tool" id="soundBtn2">Sound off</button><a class="tool" href="#account">Account</a><button type="button" class="tool regionBtn"></button>
     </div>
   </aside>
 
@@ -1734,6 +1764,19 @@ img,video,svg{display:block}
     try { navigator.clipboard.writeText('DESTINY10').then(done, done); } catch(err){ done(); }
   });
   $('annX').onclick = function(){ $('ann').hidden = true; app.style.setProperty('--ann', '0px'); fit(); };
+  /* lighting: four ways to light the same room */
+  var THEMES = [['night','Night'],['bone','Bone'],['chapel','Chapel'],['blood','Blood']];
+  function setTheme(t){
+    if (!THEMES.some(function(x){ return x[0] === t; })) t = 'night';
+    app.setAttribute('data-theme', t); try { localStorage.setItem('vv-theme', t); } catch(e){}
+    [].forEach.call(document.querySelectorAll('.themes button'), function(b){ b.setAttribute('aria-pressed', b.getAttribute('data-t') === t); });
+  }
+  ['themeBar','themeBar2'].forEach(function(id){
+    $(id).innerHTML = THEMES.map(function(x){ return '<button type="button" data-t="'+x[0]+'" title="'+x[1]+'" aria-label="'+x[1]+' lighting"></button>'; }).join('');
+    $(id).addEventListener('click', function(e){ var b = e.target.closest('button'); if (b){ setTheme(b.getAttribute('data-t')); snd('tick'); } });
+  });
+  var t0; try { t0 = localStorage.getItem('vv-theme'); } catch(e){}
+  setTheme(t0 || 'night');
   paintRegion(); renderBag(); setFilter('shop'); route(); playFilm();
   if (lang !== 'en') setLang(lang);
 })();
