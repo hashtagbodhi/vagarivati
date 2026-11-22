@@ -747,3 +747,8 @@ img,video,svg{display:block}
   .end .sign{align-items:center}
   .end-links,.end-r{justify-content:center}
 }
+
+/* the trident is red, and its colour glitches now and then */
+.sigil .ic{color:var(--blood)}
+.sigil .ic.flick{animation:triflick .5s step-end 1}
+@keyframes triflick{0%{color:var(--white)}18%{color:var(--blood)}30%{color:#3a0509}44%{color:var(--white)}58%{color:var(--blood)}72%{color:#3a0509}84%{color:var(--white)}100%{color:var(--blood)}}

@@ -589,6 +589,14 @@
   }
 
   app.addEventListener('click', function(e){ var b = e.target.closest('.totop'); if (b){ var v = b.closest('.view'); (v.classList.contains('v-home') ? home : v).scrollTo({ top:0, behavior:'smooth' }); } });
+  // the trident flickers between red, white and near-black at random moments
+  if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) (function tri(){
+    setTimeout(function(){
+      var t = document.querySelector('.sigil .ic');
+      if (S.view === 'home' && !document.hidden){ t.classList.remove('flick'); void t.offsetWidth; t.classList.add('flick'); }
+      tri();
+    }, 1800 + Math.random()*4200);
+  })();
   // Add to bag flickers red at random moments
   if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) (function flick(){
     setTimeout(function(){
