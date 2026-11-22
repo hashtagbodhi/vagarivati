@@ -5,14 +5,17 @@
   var cats = D.cats, P = D.products;
   var catBy = {}; cats.forEach(function(c,i){ c.index=i; catBy[c.slug]=c; });
   var all = []; cats.forEach(function(c){ c.items.forEach(function(h){ all.push(h); }); });
-  var money = function(n){ return '$' + n; };
+  var CURS = [['USD','US dollar'],['EUR','Euro'],['GBP','British pound'],['INR','Indian rupee'],['CAD','Canadian dollar'],['AUD','Australian dollar'],['AED','UAE dirham'],['JPY','Japanese yen']];
+  var cur = 'USD'; try { var sc = localStorage.getItem('vv-cur'); if (sc && CURS.some(function(c){ return c[0]===sc; })) cur = sc; } catch(e){}
+  function price(p){ return p.pr[cur]; }
+  var money = function(n){ try { return new Intl.NumberFormat('en', { style:'currency', currency:cur, minimumFractionDigits: n % 1 ? 2 : 0, maximumFractionDigits: n % 1 ? 2 : 0 }).format(n); } catch(e){ return cur + ' ' + n; } };
   var two = function(n){ return (n<10?'0':'') + n; };
   var IMG = 'img/';
   var S = { view:'home', filter:'shop', piece:null, img:0, size:null, last:'home', list:'shop' };
   var narrow = window.matchMedia('(max-width:820px)');
   function esc(t){ return String(t).replace(/[&<>"]/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); }
   function soldOut(p){ return !p.v.some(function(v){ return v.a; }); }
-  function priceOf(p){ return soldOut(p) ? 'Sold out' : money(p.p); }
+  function priceOf(p){ return soldOut(p) ? 'Sold out' : money(price(p)); }
 
   /* ---------- static parts ---------- */
   $('cats').innerHTML = '<a href="#shop" data-cat="shop">All</a>' + cats.map(function(c){ return '<a href="#'+c.slug+'" data-cat="'+c.slug+'">'+c.name+'</a>'; }).join('') + '<a href="#story" data-cat="story">Story</a>';
@@ -229,6 +232,74 @@
   $('rdPiece').addEventListener('click', function(){ openReader(false); });
   setFam('All');
 
+  /* ---------- currency and language ---------- */
+  var regionEl = $('region'), regionOpen = false;
+  var LANGS = [['English',true],['Español',false],['Français',false],['हिन्दी',false],['日本語',false]];
+  function paintRegion(){
+    [].forEach.call(document.querySelectorAll('.regionBtn'), function(b){ b.textContent = cur + ' / EN'; });
+    $('rgCur').innerHTML = CURS.map(function(c){ return '<button type="button" data-c="'+c[0]+'" aria-pressed="'+(c[0]===cur)+'"><b>'+c[0]+'</b><span>'+c[1]+'</span></button>'; }).join('');
+    $('rgLang').innerHTML = LANGS.map(function(l){ return '<button type="button" aria-pressed="'+l[1]+'"'+(l[1]?'':' disabled')+'><b>'+l[0]+'</b><span>'+(l[1]?'Selected':'Coming soon')+'</span></button>'; }).join('');
+  }
+  function openRegion(o){
+    regionOpen = o; regionEl.classList.toggle('open', o); regionEl.setAttribute('aria-hidden', !o); regionEl.inert = !o;
+    $('scrim').hidden = !o && !bagOpen && !menuOpen; if (o){ snd('sheet'); $('rgClose').focus({preventScroll:true}); }
+  }
+  function setCur(c){
+    cur = c; try { localStorage.setItem('vv-cur', c); } catch(e){}
+    wall.innerHTML = all.map(function(h){ return cellHTML(h); }).join(''); cells = [].slice.call(wall.children); setFilter(S.filter);
+    renderBag(); paintRegion(); renderAccount();
+    if (S.piece) $('piecePrice').textContent = priceOf(S.piece);
+    if (readerOpen) showMark(markAt);
+  }
+  app.addEventListener('click', function(e){ if (e.target.closest('.regionBtn')){ if (menuOpen) openMenu(false); openRegion(!regionOpen); } });
+  $('rgClose').onclick = function(){ openRegion(false); };
+  $('rgCur').addEventListener('click', function(e){ var b = e.target.closest('button'); if (b){ setCur(b.getAttribute('data-c')); snd('tick'); openRegion(false); } });
+
+  /* ---------- account (prototype: sign-in is not wired up, the orders are examples) ---------- */
+  var signed = false, accTab = 'orders';
+  var EX = [
+    { n:'VV-1042', date:'12 November 2026', status:'On its way', note:'Left India on 14 November. Tracking updates by email.', items:[['maitri','M',1],['sora','M',1]] },
+    { n:'VV-1017', date:'3 October 2026', status:'Delivered', note:'Delivered on 15 October.', items:[['yugen','L',1]] }
+  ];
+  function renderAccount(){
+    var nav = $('accNav'), doc = $('accDoc');
+    if (!signed){
+      nav.innerHTML = '';
+      doc.innerHTML = '<h2 class="pol-h">Account</h2><p class="acc-lead">Sign in to see your orders, track a delivery or start a return.</p>'
+        + '<form class="acc-form" id="accForm" novalidate><label for="accEmail">Email</label><input id="accEmail" type="email" autocomplete="email" placeholder="you@example.com" required>'
+        + '<p class="acc-err" id="accErr" hidden>Enter the email you ordered with, like name@example.com.</p>'
+        + '<button type="submit" class="btn solid">Send sign-in code</button><p class="fine">We email you a six-digit code. No password to remember.</p></form>';
+      $('accForm').addEventListener('submit', function(e){
+        e.preventDefault(); var v = $('accEmail').value.trim();
+        if (!/^\S+@\S+\.\S+$/.test(v)){ $('accErr').hidden = false; $('accEmail').focus(); return; }
+        signed = v; snd('open'); renderAccount();
+      });
+      return;
+    }
+    var tabs = [['orders','Orders'],['details','Details'],['addresses','Addresses']];
+    nav.innerHTML = tabs.map(function(t){ return '<a href="#account" data-t="'+t[0]+'" aria-current="'+(t[0]===accTab)+'">'+t[1]+'</a>'; }).join('') + '<a href="#account" data-t="out">Sign out</a>';
+    var note = '<p class="pol-draft">Example data. This prototype is not connected to real accounts yet.</p>', h = '';
+    if (accTab === 'orders'){
+      h = '<h2 class="pol-h">Orders</h2>' + note + EX.map(function(o){
+        var total = o.items.reduce(function(s,i){ return s + i[2]*price(P[i[0]]); }, 0);
+        return '<section class="ord"><header><p><b>'+o.n+'</b><span>'+o.date+'</span></p><p class="ord-st'+(o.status==='Delivered'?'':' live')+'">'+o.status+'</p></header>'
+          + '<div class="ord-items">'+o.items.map(function(i){ var p = P[i[0]]; return '<a href="#piece-'+p.h+'" class="ord-it"><span class="box"><img class="cut" src="cut/'+p.h+'.webp" alt=""></span><span><b>'+esc(label(p))+'</b><i>'+KIND[p.c]+', size '+i[1]+'</i><i>'+money(price(p))+'</i></span></a>'; }).join('')+'</div>'
+          + '<footer><p>'+o.note+'</p><p><span>Total</span><b>'+money(total)+'</b></p><p class="ord-act"><a class="link" href="#shipping">Track</a><a class="link" href="#returns">Start a return</a></p></footer></section>';
+      }).join('');
+    } else if (accTab === 'details'){
+      h = '<h2 class="pol-h">Details</h2>' + note + '<dl class="acc-dl"><dt>Email</dt><dd>'+esc(signed)+'</dd><dt>Name</dt><dd>Not added yet</dd><dt>Phone</dt><dd>Not added yet</dd><dt>Currency</dt><dd>'+cur+' <button type="button" class="link regionBtn2">Change</button></dd></dl>';
+    } else {
+      h = '<h2 class="pol-h">Addresses</h2>' + note + '<p class="acc-lead">No saved addresses yet. Your address is saved here after your first order.</p>';
+    }
+    doc.innerHTML = h;
+  }
+  $('accNav').addEventListener('click', function(e){
+    var a = e.target.closest('a'); if (!a) return; e.preventDefault();
+    var t = a.getAttribute('data-t'); if (t === 'out'){ signed = false; accTab = 'orders'; } else accTab = t;
+    snd('tick'); renderAccount();
+  });
+  $('accDoc').addEventListener('click', function(e){ if (e.target.closest('.regionBtn2')) openRegion(true); });
+
   /* ---------- policies ---------- */
   var POL = {
     shipping:{ t:'Shipping', html:
@@ -299,14 +370,14 @@
   try { bag = JSON.parse(localStorage.getItem('vv-bag') || '[]').filter(function(l){ return P[l.h]; }); } catch(e){ bag = []; }
   function saveBag(){ try { localStorage.setItem('vv-bag', JSON.stringify(bag)); } catch(e){} }
   function renderBag(){
-    var n = bag.reduce(function(s,l){ return s+l.q; }, 0), sub = bag.reduce(function(s,l){ return s + l.q*P[l.h].p; }, 0);
+    var n = bag.reduce(function(s,l){ return s+l.q; }, 0), sub = bag.reduce(function(s,l){ return s + l.q*price(P[l.h]); }, 0);
     $('bagCount').textContent = n; $('bagBtn').classList.toggle('has', n>0);
     $('bagEmpty').hidden = n>0; $('bagFoot').hidden = n===0; $('bagList').hidden = n===0;
     $('bagN').textContent = n ? ' (' + n + ')' : '';
     $('bagList').innerHTML = bag.map(function(l,i){
       var p = P[l.h];
       return '<li><a class="box" href="#piece-'+p.h+'"><img class="cut" src="cut/'+p.h+'.webp" alt=""></a>'
-        + '<p class="b-row"><b>'+esc(label(p))+'</b><span>'+money(l.q*p.p)+'</span></p><p class="meta">'+KIND[p.c]+', size '+l.s+'</p>'
+        + '<p class="b-row"><b>'+esc(label(p))+'</b><span>'+money(l.q*price(p))+'</span></p><p class="meta">'+KIND[p.c]+', size '+l.s+'</p>'
         + '<p class="b-row"><span class="qty"><button type="button" data-act="dec" data-i="'+i+'" aria-label="One fewer">&minus;</button><span>'+l.q+'</span><button type="button" data-act="inc" data-i="'+i+'" aria-label="One more">+</button></span>'
         + '<button type="button" class="rm" data-act="rm" data-i="'+i+'">Remove</button></p></li>';
     }).join('');
@@ -345,7 +416,7 @@
     bagEl.setAttribute('aria-hidden', !o); bagEl.inert = !o;
     if (o){ lastFocus = document.activeElement; $('bagClose').focus({preventScroll:true}); } else if (lastFocus && lastFocus.focus) lastFocus.focus({preventScroll:true});
   }
-  $('bagBtn').onclick = function(){ openBag(true); }; $('bagClose').onclick = function(){ openBag(false); }; $('scrim').onclick = function(){ if (menuOpen) openMenu(false); if (bagOpen) openBag(false); };
+  $('bagBtn').onclick = function(){ openBag(true); }; $('bagClose').onclick = function(){ openBag(false); }; $('scrim').onclick = function(){ if (regionOpen) openRegion(false); if (menuOpen) openMenu(false); if (bagOpen) openBag(false); };
   var toastT; function toast(t){ var el = $('toast'); el.textContent = t; el.classList.add('on'); clearTimeout(toastT); toastT = setTimeout(function(){ el.classList.remove('on'); }, 1600); }
 
   /* ---------- grid overlay ---------- */
@@ -360,13 +431,14 @@
     $('sysLink').setAttribute('aria-pressed', name==='system');
     $('sysLink').href = name==='system' ? '#'+S.last : '#system';
     $('sysLink').textContent = name==='system' ? 'Close system' : 'System';
-    cur.classList.remove('on'); syncChrome();
+    tip.classList.remove('on'); syncChrome();
   }
   var started = false;
   function route(){
     var h = (location.hash || '#home').slice(1), from = S.view, first = !started; started = true;
     if (bagOpen) openBag(false);
     if (menuOpen) openMenu(false);
+    if (regionOpen) openRegion(false);
     if (readerOpen && h !== 'story') openReader(false);
     if (h !== 'system') S.last = h;
     if (h==='shop' || catBy[h]){
@@ -377,6 +449,7 @@
       S.piece = P[h.slice(6)]; buildPiece(S.piece); show('piece'); if (!first) snd('open');
     } else if (h==='story'){ if (readerOpen) openReader(false); showMark(markAt); show('story'); story.scrollTop = 0; }
     else if (POL[h]){ showPolicy(h); show('info'); }
+    else if (h==='account'){ renderAccount(); show('account'); document.querySelector('.v-account').scrollTop = 0; }
     else if (h==='system'){ show('system'); }
     else { show('home'); home.scrollTo({ top:0, behavior: from==='home' && !first ? 'smooth' : 'auto' }); }
   }
@@ -405,7 +478,7 @@
     var k = e.key;
     if (readerOpen){ if (k==='Escape') openReader(false); else if (k==='ArrowRight') stepMark(1); else if (k==='ArrowLeft') stepMark(-1); return; }
     if (k==='Escape'){
-      if (menuOpen) openMenu(false); else if (bagOpen) openBag(false); else if (S.view==='piece') go(S.list); else if (S.view==='story' || S.view==='info') go('shop'); else if (S.view==='system') go(S.last);
+      if (regionOpen) openRegion(false); else if (menuOpen) openMenu(false); else if (bagOpen) openBag(false); else if (S.view==='piece') go(S.list); else if (S.view==='story' || S.view==='info' || S.view==='account') go('shop'); else if (S.view==='system') go(S.last);
       return;
     }
     if (bagOpen) return;
@@ -417,14 +490,14 @@
   });
 
   /* ---------- pointer label ---------- */
-  var cur = $('cur');
+  var tip = $('cur');
   if (window.matchMedia('(hover:hover) and (pointer:fine)').matches){
     app.addEventListener('pointermove', function(e){
       var el = e.target.closest('[data-cur]'), t = el && el.getAttribute('data-cur');
-      if (t){ cur.textContent = t; cur.style.transform = 'translate('+(e.clientX+16)+'px,'+(e.clientY+18)+'px)'; cur.classList.add('on'); }
-      else cur.classList.remove('on');
+      if (t){ tip.textContent = t; tip.style.transform = 'translate('+(e.clientX+16)+'px,'+(e.clientY+18)+'px)'; tip.classList.add('on'); }
+      else tip.classList.remove('on');
     });
-    app.addEventListener('pointerleave', function(){ cur.classList.remove('on'); });
+    app.addEventListener('pointerleave', function(){ tip.classList.remove('on'); });
   }
 
   app.addEventListener('click', function(e){ var b = e.target.closest('.totop'); if (b){ var v = b.closest('.view'); (v.classList.contains('v-home') ? home : v).scrollTo({ top:0, behavior:'smooth' }); } });
@@ -436,5 +509,5 @@
       flick();
     }, 2600 + Math.random()*5200);
   })();
-  renderBag(); setFilter('shop'); route(); playFilm();
+  paintRegion(); renderBag(); setFilter('shop'); route(); playFilm();
 })();
