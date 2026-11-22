@@ -173,12 +173,16 @@
 
   /* ---------- piece ---------- */
   var KIND = { kimonos:'Kimono', dresses:'Dress', tops:'Top', bottoms:'Bottom', layers:'Layer' };
+  var viewMode;   // 'cutout' or 'model', set from site settings
   function cellHTML(h){
-    var p = P[h];
+    var p = P[h], pic = viewMode === 'model'
+      ? '<span class="frame"><img class="shot" src="'+IMG+p.i[0]+'" alt="" loading="lazy" decoding="async" draggable="false"></span>'
+      : '<img class="cut" src="cut2/'+h+'.webp" alt="" loading="lazy" decoding="async" draggable="false">';
     return '<a class="cell" href="#piece-'+h+'" data-cat="'+p.c+'" aria-label="'+esc(p.f)+', '+priceOf(p)+'">'
-      + '<div class="box"><img class="cut" src="cut2/'+h+'.webp" alt="" loading="lazy" decoding="async" draggable="false"></div>'
+      + '<div class="box">'+pic+'</div>'
       + '<div class="cap">'+nameHTML(p)+'<span class="pr">'+priceOf(p)+'</span></div></a>';
   }
+
   var imgA = $('pieceImgA'), imgB = $('pieceImgB'), front = imgA, thumbs = $('thumbs');
   function showImg(i, instant){
     var p = S.piece; S.img = (i + p.i.length) % p.i.length;
@@ -632,7 +636,7 @@
     var k = e.key;
     if (readerOpen){ if (k==='Escape') openReader(false); else if (k==='ArrowRight') stepMark(1); else if (k==='ArrowLeft') stepMark(-1); return; }
     if (k==='Escape'){
-      if (guideOpen) openGuide(false); else if (regionOpen) openRegion(false); else if (menuOpen) openMenu(false); else if (bagOpen) openBag(false); else if (S.view==='piece') go(S.list); else if (S.view==='story' || S.view==='info' || S.view==='account') go('shop'); else if (S.view==='system') go(S.last);
+      if (setOpen) openSet(false); else if (guideOpen) openGuide(false); else if (regionOpen) openRegion(false); else if (menuOpen) openMenu(false); else if (bagOpen) openBag(false); else if (S.view==='piece') go(S.list); else if (S.view==='story' || S.view==='info' || S.view==='account') go('shop'); else if (S.view==='system') go(S.last);
       return;
     }
     if (bagOpen) return;
@@ -739,25 +743,29 @@
   $('sgOpen').onclick = function(){ openGuide(true); }; $('sgClose').onclick = function(){ openGuide(false); };
   $('sgUnits').addEventListener('click', function(e){ var b = e.target.closest('button'); if (b){ sgUnit = b.getAttribute('data-u'); renderGuide(); snd('tick'); } });
 
-  /* lighting: four ways to light the same room */
-  var THEMES = [['night','Night'],['bone','Bone'],['chapel','Chapel'],['blood','Blood']];
-  function setTheme(t){
-    if (!THEMES.some(function(x){ return x[0] === t; })) t = 'night';
-    app.setAttribute('data-theme', t); try { localStorage.setItem('vv-theme', t); } catch(e){}
-    [].forEach.call(document.querySelectorAll('.themes button'), function(b){ b.setAttribute('aria-pressed', b.getAttribute('data-t') === t); });
+  /* ---------- site settings: lighting, how products are shown, hover effect ---------- */
+  var SET = { theme:'night', mode:'cutout', hover:'zoom' }, setEl = $('settings'), setOpen = false;
+  var SET_OK = { theme:['night','bone','chapel','blood'], mode:['cutout','model'], hover:['zoom','lift','focus'] };
+  function applySet(k, v, quiet){
+    if (SET_OK[k].indexOf(v) < 0) v = SET_OK[k][0];
+    var changed = SET[k] !== v; SET[k] = v; try { localStorage.setItem('vv-' + k, v); } catch(e){}
+    if (k === 'theme') app.setAttribute('data-theme', v);
+    if (k === 'hover') app.setAttribute('data-hover', v);
+    if (k === 'mode'){
+      viewMode = v; app.setAttribute('data-mode', v);
+      if (changed || !quiet){ wall.innerHTML = all.map(function(h){ return cellHTML(h); }).join(''); cells = [].slice.call(wall.children); wall.classList.toggle('models', v === 'model'); setFilter(S.filter); }
+    }
+    [].forEach.call(setEl.querySelectorAll('.seg[data-set="' + k + '"] button'), function(b){ b.setAttribute('aria-pressed', b.getAttribute('data-v') === v); });
   }
-  ['themeBar','themeBar2'].forEach(function(id){
-    $(id).innerHTML = THEMES.map(function(x){ return '<button type="button" data-t="'+x[0]+'" title="'+x[1]+'" aria-label="'+x[1]+' lighting"></button>'; }).join('');
-    $(id).addEventListener('click', function(e){ var b = e.target.closest('button'); if (b){ setTheme(b.getAttribute('data-t')); snd('tick'); } });
-  });
-  // review control: three hover directions for the product wall, to compare
-  var HOVERS = [['zoom','Zoom'],['lift','Lift'],['focus','Focus']];
-  function setHover(hv){ app.setAttribute('data-hover', hv); [].forEach.call($('hoverBar').querySelectorAll('button'), function(b){ b.setAttribute('aria-pressed', b.getAttribute('data-h') === hv); }); }
-  $('hoverBar').innerHTML = '<span>Hover</span>' + HOVERS.map(function(x){ return '<button type="button" data-h="'+x[0]+'">'+x[1]+'</button>'; }).join('');
-  $('hoverBar').addEventListener('click', function(e){ var b = e.target.closest('button'); if (b) setHover(b.getAttribute('data-h')); });
-  setHover('zoom');
-  var t0; try { t0 = localStorage.getItem('vv-theme'); } catch(e){}
-  setTheme(t0 || 'night');
+  function openSet(o){
+    setOpen = o; setEl.classList.toggle('open', o); setEl.setAttribute('aria-hidden', !o); setEl.inert = !o; $('setBtn').setAttribute('aria-expanded', o);
+    if (o){ snd('sheet'); if (menuOpen) openMenu(false); if (regionOpen) openRegion(false); }
+  }
+  $('setBtn').onclick = function(e){ e.stopPropagation(); openSet(!setOpen); };
+  $('setClose').onclick = function(){ openSet(false); };
+  setEl.addEventListener('click', function(e){ var b = e.target.closest('.seg button'); if (b){ applySet(b.parentNode.getAttribute('data-set'), b.getAttribute('data-v')); snd('tick'); } });
+  document.addEventListener('pointerdown', function(e){ if (setOpen && !e.target.closest('#settings, #setBtn')) openSet(false); });
+  Object.keys(SET).forEach(function(k){ var v = null; try { v = localStorage.getItem('vv-' + k); } catch(e){} applySet(k, v || SET[k], true); });
   paintRegion(); renderBag(); setFilter('shop'); route(); playFilm();
   if (lang !== 'en') setLang(lang);
 })();

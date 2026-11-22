@@ -921,6 +921,33 @@ img,video,svg{display:block}
 .sg-how dd{color:var(--ash)}
 .sg-body .fine{margin-top:18px;line-height:1.5}
 #app[data-theme="blood"] .guide{background:var(--pitch)}
+
+/* ---------- site settings ---------- */
+.setbtn{display:inline-grid;place-items:center;width:28px;height:28px;padding:0;color:var(--white)}
+.setbtn svg{width:19px;height:19px;fill:none;stroke:currentColor;stroke-width:1.4;stroke-linecap:round}
+.setbtn circle{fill:var(--ink)}
+.setbtn[aria-expanded="true"]{color:var(--blood)}
+.settings{position:absolute;top:calc(var(--ann) + var(--top));right:max(var(--m),env(safe-area-inset-right,0px));z-index:88;width:min(360px,calc(100% - 32px));background:var(--ink);border:1px solid var(--line);border-top-color:var(--blood);padding:20px 20px 14px;display:grid;gap:20px;opacity:0;visibility:hidden;transform:translateY(-8px);transition:opacity .25s,transform .25s,visibility 0s .25s}
+.settings.open{opacity:1;visibility:visible;transform:none;transition-delay:0s}
+.seg{display:flex;border:1px solid var(--line);margin-top:10px}
+.seg button{flex:1;height:38px;display:inline-flex;align-items:center;justify-content:center;gap:7px;color:var(--ash);font-size:var(--t-s);transition:background .2s,color .2s}
+.seg button+button{border-left:1px solid var(--line)}
+.seg button:hover{color:var(--white)}
+.seg button[aria-pressed="true"]{background:var(--white);color:var(--ink)}
+.seg button i{width:10px;height:10px;border-radius:50%;border:1px solid var(--ash);flex:none}
+.st-close{justify-self:end;color:var(--white)}
+#app[data-theme="blood"] .settings{background:var(--pitch)}
+@media (max-width:820px),(hover:none){.st-hov{display:none}}
+@media (max-width:820px){.settings{left:16px;right:16px;width:auto;top:calc(var(--ann) + var(--top) + 4px)}.seg button{font-size:var(--t-xs);gap:5px}}
+/* ---------- products on models ---------- */
+.wall.models .box{aspect-ratio:3/4;background:none}
+.frame{position:absolute;inset:0;overflow:hidden;display:block;transition:transform .8s cubic-bezier(.45,0,.15,1)}
+.shot{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 14%;transition:transform .9s cubic-bezier(.45,0,.15,1)}
+@media (hover:hover){
+  #app[data-hover="zoom"] .wall .cell:hover .shot{transform:scale(1.08)}
+  #app[data-hover="lift"] .wall .cell:hover .frame{transform:translateY(-3%)}
+  #app[data-hover="focus"] .wall .cell:hover .shot{transform:scale(1.03)}
+}
 </style>
 </head>
 <body>
@@ -935,13 +962,13 @@ img,video,svg{display:block}
     <a class="brand" href="#home" aria-label="Vagari Vati, home"><i class="logo"></i></a>
     <nav class="cats" id="cats" aria-label="Categories"></nav>
     <div class="tools">
-      <div class="themes" id="themeBar" role="group" aria-label="Lighting"></div>
       <button type="button" class="tool" id="menuBtn" aria-haspopup="dialog">Menu</button>
       <button type="button" class="tool" id="soundBtn" aria-pressed="false">Sound off</button>
       <a href="#system" class="tool" id="sysLink">System</a>
       <button type="button" class="tool" id="gridBtn" aria-pressed="false">Grid</button>
       <button type="button" class="tool regionBtn" id="regionTop"></button>
       <a href="#account" class="tool" id="accLink">Account</a>
+      <button type="button" class="tool setbtn" id="setBtn" aria-haspopup="dialog" aria-expanded="false" aria-label="Site settings"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M2 5.5h8M14 5.5h4M2 14.5h4M10 14.5h8"/><circle cx="12" cy="5.5" r="2"/><circle cx="8" cy="14.5" r="2"/></svg></button>
       <button type="button" class="tool bagbtn" id="bagBtn" aria-haspopup="dialog">Bag <span id="bagCount">0</span></button>
     </div>
   </header>
@@ -1145,7 +1172,7 @@ img,video,svg{display:block}
     </div>
     <nav class="menu-list" id="menuList" aria-label="Sections"></nav>
     <div class="menu-foot">
-      <div class="themes" id="themeBar2" role="group" aria-label="Lighting"></div><button type="button" class="tool" id="soundBtn2">Sound off</button><a class="tool" href="#account">Account</a><button type="button" class="tool regionBtn"></button>
+      <button type="button" class="tool" id="soundBtn2">Sound off</button><a class="tool" href="#account">Account</a><button type="button" class="tool regionBtn"></button>
     </div>
   </aside>
 
@@ -1177,7 +1204,6 @@ img,video,svg{display:block}
     <button type="button" class="tool rg-close" id="rgClose">Close</button>
   </aside>
 
-  <div class="hoverbar" id="hoverBar" role="group" aria-label="Hover style (review)"></div>
   <aside class="guide" id="guide" role="dialog" aria-modal="true" aria-label="Size guide" aria-hidden="true" inert>
     <div class="sg-head"><p class="bag-t">Size guide</p><button type="button" class="tool" id="sgClose">Close</button></div>
     <div class="sg-body">
@@ -1190,6 +1216,13 @@ img,video,svg{display:block}
       <dl class="sg-how" id="sgHow"></dl>
       <p class="fine">Pieces are cut and finished by hand in small batches, so a measurement can vary by up to 1 in (2.5 cm).</p>
     </div>
+  </aside>
+
+  <aside class="settings" id="settings" role="dialog" aria-label="Site settings" aria-hidden="true" inert>
+    <div class="st-grp"><p class="rg-h">Lighting</p><div class="seg" data-set="theme"><button type="button" data-v="night"><i style="background:#000"></i>Night</button><button type="button" data-v="bone"><i style="background:#e9e2d4"></i>Bone</button><button type="button" data-v="chapel"><i style="background:#fff"></i>Chapel</button><button type="button" data-v="blood"><i style="background:#4a060e"></i>Blood</button></div></div>
+    <div class="st-grp"><p class="rg-h">Products shown as</p><div class="seg" data-set="mode"><button type="button" data-v="cutout">Cutouts</button><button type="button" data-v="model">On models</button></div></div>
+    <div class="st-grp st-hov"><p class="rg-h">Hover effect</p><div class="seg" data-set="hover"><button type="button" data-v="zoom">Zoom</button><button type="button" data-v="lift">Lift</button><button type="button" data-v="focus">Focus</button></div></div>
+    <button type="button" class="tool st-close" id="setClose">Close</button>
   </aside>
 
   <div class="cur" id="cur" aria-hidden="true"></div>
@@ -1372,12 +1405,16 @@ img,video,svg{display:block}
 
   /* ---------- piece ---------- */
   var KIND = { kimonos:'Kimono', dresses:'Dress', tops:'Top', bottoms:'Bottom', layers:'Layer' };
+  var viewMode;   // 'cutout' or 'model', set from site settings
   function cellHTML(h){
-    var p = P[h];
+    var p = P[h], pic = viewMode === 'model'
+      ? '<span class="frame"><img class="shot" src="'+IMG+p.i[0]+'" alt="" loading="lazy" decoding="async" draggable="false"></span>'
+      : '<img class="cut" src="cut2/'+h+'.webp" alt="" loading="lazy" decoding="async" draggable="false">';
     return '<a class="cell" href="#piece-'+h+'" data-cat="'+p.c+'" aria-label="'+esc(p.f)+', '+priceOf(p)+'">'
-      + '<div class="box"><img class="cut" src="cut2/'+h+'.webp" alt="" loading="lazy" decoding="async" draggable="false"></div>'
+      + '<div class="box">'+pic+'</div>'
       + '<div class="cap">'+nameHTML(p)+'<span class="pr">'+priceOf(p)+'</span></div></a>';
   }
+
   var imgA = $('pieceImgA'), imgB = $('pieceImgB'), front = imgA, thumbs = $('thumbs');
   function showImg(i, instant){
     var p = S.piece; S.img = (i + p.i.length) % p.i.length;
@@ -1831,7 +1868,7 @@ img,video,svg{display:block}
     var k = e.key;
     if (readerOpen){ if (k==='Escape') openReader(false); else if (k==='ArrowRight') stepMark(1); else if (k==='ArrowLeft') stepMark(-1); return; }
     if (k==='Escape'){
-      if (guideOpen) openGuide(false); else if (regionOpen) openRegion(false); else if (menuOpen) openMenu(false); else if (bagOpen) openBag(false); else if (S.view==='piece') go(S.list); else if (S.view==='story' || S.view==='info' || S.view==='account') go('shop'); else if (S.view==='system') go(S.last);
+      if (setOpen) openSet(false); else if (guideOpen) openGuide(false); else if (regionOpen) openRegion(false); else if (menuOpen) openMenu(false); else if (bagOpen) openBag(false); else if (S.view==='piece') go(S.list); else if (S.view==='story' || S.view==='info' || S.view==='account') go('shop'); else if (S.view==='system') go(S.last);
       return;
     }
     if (bagOpen) return;
@@ -1938,25 +1975,29 @@ img,video,svg{display:block}
   $('sgOpen').onclick = function(){ openGuide(true); }; $('sgClose').onclick = function(){ openGuide(false); };
   $('sgUnits').addEventListener('click', function(e){ var b = e.target.closest('button'); if (b){ sgUnit = b.getAttribute('data-u'); renderGuide(); snd('tick'); } });
 
-  /* lighting: four ways to light the same room */
-  var THEMES = [['night','Night'],['bone','Bone'],['chapel','Chapel'],['blood','Blood']];
-  function setTheme(t){
-    if (!THEMES.some(function(x){ return x[0] === t; })) t = 'night';
-    app.setAttribute('data-theme', t); try { localStorage.setItem('vv-theme', t); } catch(e){}
-    [].forEach.call(document.querySelectorAll('.themes button'), function(b){ b.setAttribute('aria-pressed', b.getAttribute('data-t') === t); });
+  /* ---------- site settings: lighting, how products are shown, hover effect ---------- */
+  var SET = { theme:'night', mode:'cutout', hover:'zoom' }, setEl = $('settings'), setOpen = false;
+  var SET_OK = { theme:['night','bone','chapel','blood'], mode:['cutout','model'], hover:['zoom','lift','focus'] };
+  function applySet(k, v, quiet){
+    if (SET_OK[k].indexOf(v) < 0) v = SET_OK[k][0];
+    var changed = SET[k] !== v; SET[k] = v; try { localStorage.setItem('vv-' + k, v); } catch(e){}
+    if (k === 'theme') app.setAttribute('data-theme', v);
+    if (k === 'hover') app.setAttribute('data-hover', v);
+    if (k === 'mode'){
+      viewMode = v; app.setAttribute('data-mode', v);
+      if (changed || !quiet){ wall.innerHTML = all.map(function(h){ return cellHTML(h); }).join(''); cells = [].slice.call(wall.children); wall.classList.toggle('models', v === 'model'); setFilter(S.filter); }
+    }
+    [].forEach.call(setEl.querySelectorAll('.seg[data-set="' + k + '"] button'), function(b){ b.setAttribute('aria-pressed', b.getAttribute('data-v') === v); });
   }
-  ['themeBar','themeBar2'].forEach(function(id){
-    $(id).innerHTML = THEMES.map(function(x){ return '<button type="button" data-t="'+x[0]+'" title="'+x[1]+'" aria-label="'+x[1]+' lighting"></button>'; }).join('');
-    $(id).addEventListener('click', function(e){ var b = e.target.closest('button'); if (b){ setTheme(b.getAttribute('data-t')); snd('tick'); } });
-  });
-  // review control: three hover directions for the product wall, to compare
-  var HOVERS = [['zoom','Zoom'],['lift','Lift'],['focus','Focus']];
-  function setHover(hv){ app.setAttribute('data-hover', hv); [].forEach.call($('hoverBar').querySelectorAll('button'), function(b){ b.setAttribute('aria-pressed', b.getAttribute('data-h') === hv); }); }
-  $('hoverBar').innerHTML = '<span>Hover</span>' + HOVERS.map(function(x){ return '<button type="button" data-h="'+x[0]+'">'+x[1]+'</button>'; }).join('');
-  $('hoverBar').addEventListener('click', function(e){ var b = e.target.closest('button'); if (b) setHover(b.getAttribute('data-h')); });
-  setHover('zoom');
-  var t0; try { t0 = localStorage.getItem('vv-theme'); } catch(e){}
-  setTheme(t0 || 'night');
+  function openSet(o){
+    setOpen = o; setEl.classList.toggle('open', o); setEl.setAttribute('aria-hidden', !o); setEl.inert = !o; $('setBtn').setAttribute('aria-expanded', o);
+    if (o){ snd('sheet'); if (menuOpen) openMenu(false); if (regionOpen) openRegion(false); }
+  }
+  $('setBtn').onclick = function(e){ e.stopPropagation(); openSet(!setOpen); };
+  $('setClose').onclick = function(){ openSet(false); };
+  setEl.addEventListener('click', function(e){ var b = e.target.closest('.seg button'); if (b){ applySet(b.parentNode.getAttribute('data-set'), b.getAttribute('data-v')); snd('tick'); } });
+  document.addEventListener('pointerdown', function(e){ if (setOpen && !e.target.closest('#settings, #setBtn')) openSet(false); });
+  Object.keys(SET).forEach(function(k){ var v = null; try { v = localStorage.getItem('vv-' + k); } catch(e){} applySet(k, v || SET[k], true); });
   paintRegion(); renderBag(); setFilter('shop'); route(); playFilm();
   if (lang !== 'en') setLang(lang);
 })();

@@ -9,13 +9,13 @@
     <a class="brand" href="#home" aria-label="Vagari Vati, home"><i class="logo"></i></a>
     <nav class="cats" id="cats" aria-label="Categories"></nav>
     <div class="tools">
-      <div class="themes" id="themeBar" role="group" aria-label="Lighting"></div>
       <button type="button" class="tool" id="menuBtn" aria-haspopup="dialog">Menu</button>
       <button type="button" class="tool" id="soundBtn" aria-pressed="false">Sound off</button>
       <a href="#system" class="tool" id="sysLink">System</a>
       <button type="button" class="tool" id="gridBtn" aria-pressed="false">Grid</button>
       <button type="button" class="tool regionBtn" id="regionTop"></button>
       <a href="#account" class="tool" id="accLink">Account</a>
+      <button type="button" class="tool setbtn" id="setBtn" aria-haspopup="dialog" aria-expanded="false" aria-label="Site settings"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M2 5.5h8M14 5.5h4M2 14.5h4M10 14.5h8"/><circle cx="12" cy="5.5" r="2"/><circle cx="8" cy="14.5" r="2"/></svg></button>
       <button type="button" class="tool bagbtn" id="bagBtn" aria-haspopup="dialog">Bag <span id="bagCount">0</span></button>
     </div>
   </header>
@@ -219,7 +219,7 @@
     </div>
     <nav class="menu-list" id="menuList" aria-label="Sections"></nav>
     <div class="menu-foot">
-      <div class="themes" id="themeBar2" role="group" aria-label="Lighting"></div><button type="button" class="tool" id="soundBtn2">Sound off</button><a class="tool" href="#account">Account</a><button type="button" class="tool regionBtn"></button>
+      <button type="button" class="tool" id="soundBtn2">Sound off</button><a class="tool" href="#account">Account</a><button type="button" class="tool regionBtn"></button>
     </div>
   </aside>
 
@@ -251,7 +251,6 @@
     <button type="button" class="tool rg-close" id="rgClose">Close</button>
   </aside>
 
-  <div class="hoverbar" id="hoverBar" role="group" aria-label="Hover style (review)"></div>
   <aside class="guide" id="guide" role="dialog" aria-modal="true" aria-label="Size guide" aria-hidden="true" inert>
     <div class="sg-head"><p class="bag-t">Size guide</p><button type="button" class="tool" id="sgClose">Close</button></div>
     <div class="sg-body">
@@ -264,6 +263,13 @@
       <dl class="sg-how" id="sgHow"></dl>
       <p class="fine">Pieces are cut and finished by hand in small batches, so a measurement can vary by up to 1 in (2.5 cm).</p>
     </div>
+  </aside>
+
+  <aside class="settings" id="settings" role="dialog" aria-label="Site settings" aria-hidden="true" inert>
+    <div class="st-grp"><p class="rg-h">Lighting</p><div class="seg" data-set="theme"><button type="button" data-v="night"><i style="background:#000"></i>Night</button><button type="button" data-v="bone"><i style="background:#e9e2d4"></i>Bone</button><button type="button" data-v="chapel"><i style="background:#fff"></i>Chapel</button><button type="button" data-v="blood"><i style="background:#4a060e"></i>Blood</button></div></div>
+    <div class="st-grp"><p class="rg-h">Products shown as</p><div class="seg" data-set="mode"><button type="button" data-v="cutout">Cutouts</button><button type="button" data-v="model">On models</button></div></div>
+    <div class="st-grp st-hov"><p class="rg-h">Hover effect</p><div class="seg" data-set="hover"><button type="button" data-v="zoom">Zoom</button><button type="button" data-v="lift">Lift</button><button type="button" data-v="focus">Focus</button></div></div>
+    <button type="button" class="tool st-close" id="setClose">Close</button>
   </aside>
 
   <div class="cur" id="cur" aria-hidden="true"></div>
