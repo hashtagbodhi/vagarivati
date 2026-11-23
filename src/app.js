@@ -376,6 +376,7 @@
     'Ships worldwide from India':['Envíos a todo el mundo desde la India','Livraison mondiale depuis l’Inde','भारत से दुनिया भर में शिपिंग','インドから世界中へ発送'],
     'Copied':['Copiado','Copié','कॉपी हो गया','コピーしました'],
     'Size guide':['Guía de tallas','Guide des tailles','साइज़ गाइड','サイズガイド'], 'How to measure':['Cómo medir','Comment mesurer','कैसे नापें','測り方'],
+    'Settings':['Ajustes','Réglages','सेटिंग्स','設定'],
     'Discover Destiny':['Discover Destiny','Discover Destiny','Discover Destiny','Discover Destiny']
   };
   var KTR = { Kimono:['Kimono','Kimono','किमोनो','キモノ'], Dress:['Vestido','Robe','ड्रेस','ドレス'], Top:['Top','Haut','टॉप','トップ'], Bottom:['Pantalón','Bas','बॉटम','ボトム'], Layer:['Capa','Veste','लेयर','アウター'] };
@@ -789,8 +790,9 @@
   buildStoreHome();
   $('setBtn').onclick = function(e){ e.stopPropagation(); openSet(!setOpen); };
   $('setClose').onclick = function(){ openSet(false); };
+  $('setBtn2').onclick = function(e){ e.stopPropagation(); openMenu(false); openSet(true); };
   setEl.addEventListener('click', function(e){ var b = e.target.closest('.seg button'); if (b){ applySet(b.parentNode.getAttribute('data-set'), b.getAttribute('data-v')); snd('tick'); } });
-  document.addEventListener('pointerdown', function(e){ if (setOpen && !e.target.closest('#settings, #setBtn')) openSet(false); });
+  document.addEventListener('pointerdown', function(e){ if (setOpen && !e.target.closest('#settings, #setBtn, #setBtn2')) openSet(false); });
   Object.keys(SET).forEach(function(k){ var v = null; try { v = localStorage.getItem('vv-' + k); } catch(e){} applySet(k, v || SET[k], true); });
   paintRegion(); renderBag(); setFilter('shop'); route(); playFilm();
   if (lang !== 'en') setLang(lang);
