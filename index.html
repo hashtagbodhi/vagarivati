@@ -1358,6 +1358,14 @@ img,video,svg{display:block}
 .pick button[aria-pressed="true"],#app[data-theme="blood"] .pick button[aria-pressed="true"]{background:var(--white);color:var(--ink)}
 #stLang{grid-template-columns:repeat(3,1fr)}
 #stLang{grid-template-columns:repeat(5,1fr)}#stLang button{font-size:11px}
+/* product page: photographs and buying column share one block, so the column stops where the photographs end */
+#app[data-layout="store"] .v-piece{display:block}
+#app[data-layout="store"] .p-main{display:grid;grid-template-columns:minmax(0,1fr) clamp(340px,30vw,440px);align-items:start;position:relative}
+#app[data-layout="store"] .p-main .p-info{top:var(--stick,0px)}
+#app[data-layout="store"] .p-more{border-top:1px solid var(--line);position:relative;z-index:2;background:var(--ink)}
+#app[data-layout="store"][data-theme="blood"] .p-more{background:var(--oxblood)}
+#app[data-layout="store"] .p-seen{border-top:0}
+@media (max-width:820px){#app[data-layout="store"] .p-main{display:block}}
 </style>
 </head>
 <body>
@@ -1438,6 +1446,7 @@ img,video,svg{display:block}
     <!-- Piece: the product page -->
     <section class="view v-piece" data-name="piece" aria-label="Piece">
       <div class="fx fx-dim" aria-hidden="true"><i class="fx-pat"></i><i class="fx-grain"></i></div>
+      <div class="p-main">
       <div class="p-gal" id="pGal"></div>
       <button type="button" class="p-photo" id="pPhoto" aria-label="Next photo">
         <img id="pieceImgA" alt=""><img id="pieceImgB" alt="">
@@ -1470,6 +1479,7 @@ img,video,svg{display:block}
           <p class="vv-line">Discover Destiny</p><p class="vv-copy">&copy; Vagari Vati 2027. All rights reserved.</p><p class="vv-soc"><a href="https://www.instagram.com/vagari.vati" target="_blank" rel="noopener" aria-label="Instagram"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.2" y="3.2" width="17.6" height="17.6" rx="5"/><circle cx="12" cy="12" r="4.1"/><circle class="f" cx="17.2" cy="6.8" r="1"/></svg></a><a href="https://www.tiktok.com/" target="_blank" rel="noopener" aria-label="TikTok"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M13.6 3.2v11.3a3.5 3.5 0 1 1-3.5-3.5"/><path d="M13.6 3.2c.3 2.9 2.2 4.8 5.2 5.1"/></svg></a></p>
           <nav aria-label="Policies"><a href="#shipping">Shipping</a><a href="#returns">Returns</a><a href="#privacy">Privacy</a><a href="#terms">Terms</a></nav>
         </footer>
+      </div>
       </div>
     <section class="p-more" id="pMore" aria-label="More pieces"></section>
     <section class="p-more p-seen" id="pSeen" aria-label="Recently viewed" hidden></section>
@@ -1681,10 +1691,8 @@ img,video,svg{display:block}
   </aside>
 
   <aside class="settings" id="settings" role="dialog" aria-label="Site settings" aria-hidden="true" inert>
-    <div class="st-grp"><p class="rg-h">Layout</p><div class="seg" data-set="layout"><button type="button" data-v="store">Storefront</button><button type="button" data-v="signature">Signature</button></div></div>
     <div class="st-grp"><p class="rg-h">Lighting</p><div class="seg" data-set="theme"><button type="button" data-v="night"><i style="background:#000"></i>Night</button><button type="button" data-v="bone"><i style="background:#e9e2d4"></i>Bone</button><button type="button" data-v="chapel"><i style="background:#fff"></i>Chapel</button><button type="button" data-v="blood"><i style="background:#4a060e"></i>Blood</button></div></div>
     <div class="st-grp"><p class="rg-h">Products shown as</p><div class="seg" data-set="mode"><button type="button" data-v="cutout">Cutouts</button><button type="button" data-v="model">On models</button></div></div>
-    <div class="st-grp st-hov"><p class="rg-h">Hover effect</p><div class="seg" data-set="hover"><button type="button" data-v="zoom">Zoom</button><button type="button" data-v="lift">Lift</button><button type="button" data-v="focus">Focus</button></div></div>
     <div class="st-grp"><p class="rg-h">Currency</p><div class="pick" id="stCur"></div></div>
     <div class="st-grp"><p class="rg-h">Language</p><div class="pick" id="stLang"></div></div>
     <button type="button" class="tool st-close" id="setClose">Close</button>
@@ -1867,7 +1875,7 @@ img,video,svg{display:block}
   /* ---------- sound: the film carries the music ---------- */
   var film = $('film'), wantSound = true, soundBtn = $('soundBtn');
   // phones play the lake film, full length
-  if (narrow.matches){ film.removeAttribute('poster'); film.poster = 'media/hero-m-poster.jpg'; film.src = 'media/hero-m.mp4'; film.load(); }
+
   // one soundtrack in its own element; navigation never touches it, so it plays on from the first visit to the last
   var track = $('track'); track.volume = 0.9; film.muted = true;   // the film is picture only
   function paintSound(){ var on = !track.paused && !track.muted; soundBtn.textContent = $('soundBtn2').textContent = on ? 'Sound on' : 'Sound off'; soundBtn.setAttribute('aria-pressed', on); }
@@ -2645,6 +2653,10 @@ img,video,svg{display:block}
   function paintSeen(){
     var hs = seen.slice(0, 8); $('shSeen').hidden = hs.length < 2; $('shSeenRow').innerHTML = rowHTML(hs);
   }
+  // the buying column stops with the photographs; if it is taller than the screen it sticks by its foot instead of its head
+  var pInfo = document.querySelector('.p-info');
+  function stick(){ var top = parseFloat(getComputedStyle(app).getPropertyValue('--top')) || 64, room = vp.clientHeight - top - pInfo.offsetHeight - 16; pInfo.style.setProperty('--stick', Math.min(0, room) + 'px'); }
+  if (window.ResizeObserver) new ResizeObserver(stick).observe(pInfo); window.addEventListener('resize', stick);
   function pieceExtras(p){
     $('pCare').innerHTML = '<p>Cut from natural fabric and printed or dyed by hand, so no two pieces match exactly.</p><p>Wash cold with like colours. Do not bleach. Dry in the shade. Iron warm on the reverse.</p>';
     var acs = document.querySelectorAll('.p-info .ac-h'); [].forEach.call(acs, function(b, k){ b.setAttribute('aria-expanded', k === 0); b.nextElementSibling.classList.toggle('shut', k !== 0); });
@@ -2687,9 +2699,10 @@ img,video,svg{display:block}
 
   /* ---------- site settings: lighting, how products are shown, hover effect ---------- */
   var SET = { layout:'store', theme:'night', mode:'cutout', hover:'zoom' }, setEl = $('settings'), setOpen = false;
-  var SET_OK = { layout:['store','signature'], theme:['night','bone','chapel','blood'], mode:['cutout','model'], hover:['zoom','lift','focus'] };
+  var SET_OK = { layout:['store'], theme:['night','bone','chapel','blood'], mode:['cutout','model'], hover:['zoom','lift','focus'] };
   function applySet(k, v, quiet){
     if (SET_OK[k].indexOf(v) < 0) v = SET_OK[k][0];
+    if (k === 'layout') v = 'store';   // one layout now: the storefront
     var changed = SET[k] !== v; SET[k] = v; try { localStorage.setItem('vv-' + k, v); } catch(e){}
     if (k === 'theme') app.setAttribute('data-theme', v);
     if (k === 'hover') app.setAttribute('data-hover', v);

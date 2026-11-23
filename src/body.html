@@ -75,6 +75,7 @@
     <!-- Piece: the product page -->
     <section class="view v-piece" data-name="piece" aria-label="Piece">
       <div class="fx fx-dim" aria-hidden="true"><i class="fx-pat"></i><i class="fx-grain"></i></div>
+      <div class="p-main">
       <div class="p-gal" id="pGal"></div>
       <button type="button" class="p-photo" id="pPhoto" aria-label="Next photo">
         <img id="pieceImgA" alt=""><img id="pieceImgB" alt="">
@@ -107,6 +108,7 @@
           <p class="vv-line">Discover Destiny</p><p class="vv-copy">&copy; Vagari Vati 2027. All rights reserved.</p><p class="vv-soc"><a href="https://www.instagram.com/vagari.vati" target="_blank" rel="noopener" aria-label="Instagram"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.2" y="3.2" width="17.6" height="17.6" rx="5"/><circle cx="12" cy="12" r="4.1"/><circle class="f" cx="17.2" cy="6.8" r="1"/></svg></a><a href="https://www.tiktok.com/" target="_blank" rel="noopener" aria-label="TikTok"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M13.6 3.2v11.3a3.5 3.5 0 1 1-3.5-3.5"/><path d="M13.6 3.2c.3 2.9 2.2 4.8 5.2 5.1"/></svg></a></p>
           <nav aria-label="Policies"><a href="#shipping">Shipping</a><a href="#returns">Returns</a><a href="#privacy">Privacy</a><a href="#terms">Terms</a></nav>
         </footer>
+      </div>
       </div>
     <section class="p-more" id="pMore" aria-label="More pieces"></section>
     <section class="p-more p-seen" id="pSeen" aria-label="Recently viewed" hidden></section>
@@ -318,10 +320,8 @@
   </aside>
 
   <aside class="settings" id="settings" role="dialog" aria-label="Site settings" aria-hidden="true" inert>
-    <div class="st-grp"><p class="rg-h">Layout</p><div class="seg" data-set="layout"><button type="button" data-v="store">Storefront</button><button type="button" data-v="signature">Signature</button></div></div>
     <div class="st-grp"><p class="rg-h">Lighting</p><div class="seg" data-set="theme"><button type="button" data-v="night"><i style="background:#000"></i>Night</button><button type="button" data-v="bone"><i style="background:#e9e2d4"></i>Bone</button><button type="button" data-v="chapel"><i style="background:#fff"></i>Chapel</button><button type="button" data-v="blood"><i style="background:#4a060e"></i>Blood</button></div></div>
     <div class="st-grp"><p class="rg-h">Products shown as</p><div class="seg" data-set="mode"><button type="button" data-v="cutout">Cutouts</button><button type="button" data-v="model">On models</button></div></div>
-    <div class="st-grp st-hov"><p class="rg-h">Hover effect</p><div class="seg" data-set="hover"><button type="button" data-v="zoom">Zoom</button><button type="button" data-v="lift">Lift</button><button type="button" data-v="focus">Focus</button></div></div>
     <div class="st-grp"><p class="rg-h">Currency</p><div class="pick" id="stCur"></div></div>
     <div class="st-grp"><p class="rg-h">Language</p><div class="pick" id="stLang"></div></div>
     <button type="button" class="tool st-close" id="setClose">Close</button>

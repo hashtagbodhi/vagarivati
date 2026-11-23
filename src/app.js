@@ -170,7 +170,7 @@
   /* ---------- sound: the film carries the music ---------- */
   var film = $('film'), wantSound = true, soundBtn = $('soundBtn');
   // phones play the lake film, full length
-  if (narrow.matches){ film.removeAttribute('poster'); film.poster = 'media/hero-m-poster.jpg'; film.src = 'media/hero-m.mp4'; film.load(); }
+
   // one soundtrack in its own element; navigation never touches it, so it plays on from the first visit to the last
   var track = $('track'); track.volume = 0.9; film.muted = true;   // the film is picture only
   function paintSound(){ var on = !track.paused && !track.muted; soundBtn.textContent = $('soundBtn2').textContent = on ? 'Sound on' : 'Sound off'; soundBtn.setAttribute('aria-pressed', on); }
@@ -948,6 +948,10 @@
   function paintSeen(){
     var hs = seen.slice(0, 8); $('shSeen').hidden = hs.length < 2; $('shSeenRow').innerHTML = rowHTML(hs);
   }
+  // the buying column stops with the photographs; if it is taller than the screen it sticks by its foot instead of its head
+  var pInfo = document.querySelector('.p-info');
+  function stick(){ var top = parseFloat(getComputedStyle(app).getPropertyValue('--top')) || 64, room = vp.clientHeight - top - pInfo.offsetHeight - 16; pInfo.style.setProperty('--stick', Math.min(0, room) + 'px'); }
+  if (window.ResizeObserver) new ResizeObserver(stick).observe(pInfo); window.addEventListener('resize', stick);
   function pieceExtras(p){
     $('pCare').innerHTML = '<p>Cut from natural fabric and printed or dyed by hand, so no two pieces match exactly.</p><p>Wash cold with like colours. Do not bleach. Dry in the shade. Iron warm on the reverse.</p>';
     var acs = document.querySelectorAll('.p-info .ac-h'); [].forEach.call(acs, function(b, k){ b.setAttribute('aria-expanded', k === 0); b.nextElementSibling.classList.toggle('shut', k !== 0); });
@@ -990,9 +994,10 @@
 
   /* ---------- site settings: lighting, how products are shown, hover effect ---------- */
   var SET = { layout:'store', theme:'night', mode:'cutout', hover:'zoom' }, setEl = $('settings'), setOpen = false;
-  var SET_OK = { layout:['store','signature'], theme:['night','bone','chapel','blood'], mode:['cutout','model'], hover:['zoom','lift','focus'] };
+  var SET_OK = { layout:['store'], theme:['night','bone','chapel','blood'], mode:['cutout','model'], hover:['zoom','lift','focus'] };
   function applySet(k, v, quiet){
     if (SET_OK[k].indexOf(v) < 0) v = SET_OK[k][0];
+    if (k === 'layout') v = 'store';   // one layout now: the storefront
     var changed = SET[k] !== v; SET[k] = v; try { localStorage.setItem('vv-' + k, v); } catch(e){}
     if (k === 'theme') app.setAttribute('data-theme', v);
     if (k === 'hover') app.setAttribute('data-hover', v);

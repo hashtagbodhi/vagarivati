@@ -1347,3 +1347,11 @@ img,video,svg{display:block}
 .pick button[aria-pressed="true"],#app[data-theme="blood"] .pick button[aria-pressed="true"]{background:var(--white);color:var(--ink)}
 #stLang{grid-template-columns:repeat(3,1fr)}
 #stLang{grid-template-columns:repeat(5,1fr)}#stLang button{font-size:11px}
+/* product page: photographs and buying column share one block, so the column stops where the photographs end */
+#app[data-layout="store"] .v-piece{display:block}
+#app[data-layout="store"] .p-main{display:grid;grid-template-columns:minmax(0,1fr) clamp(340px,30vw,440px);align-items:start;position:relative}
+#app[data-layout="store"] .p-main .p-info{top:var(--stick,0px)}
+#app[data-layout="store"] .p-more{border-top:1px solid var(--line);position:relative;z-index:2;background:var(--ink)}
+#app[data-layout="store"][data-theme="blood"] .p-more{background:var(--oxblood)}
+#app[data-layout="store"] .p-seen{border-top:0}
+@media (max-width:820px){#app[data-layout="store"] .p-main{display:block}}
