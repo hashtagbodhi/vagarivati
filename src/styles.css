@@ -1338,3 +1338,12 @@ img,video,svg{display:block}
 .sheet-s button[disabled]{color:var(--ash)}
 @media (prefers-reduced-motion:reduce){.mega,.srch,.fdrawer,.added,.sheet,.mbar,.top,.qa,.alt{transition:none!important;animation:none!important}}
 #app:not([data-layout="store"]) .top .sx{display:none!important}
+/* settings: currency and language, and the panel scrolls if the screen is short */
+.settings{max-height:calc(100% - var(--ann) - var(--top) - 16px);overflow-y:auto;overscroll-behavior:contain}
+.pick{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;margin-top:10px;background:var(--line);border:1px solid var(--line)}
+.pick button{height:36px;background:var(--ink);color:var(--ash);font-size:var(--t-xs);transition:background .2s,color .2s}
+#app[data-theme="blood"] .pick button{background:var(--pitch)}
+.pick button:hover{color:var(--white)}
+.pick button[aria-pressed="true"],#app[data-theme="blood"] .pick button[aria-pressed="true"]{background:var(--white);color:var(--ink)}
+#stLang{grid-template-columns:repeat(3,1fr)}
+#stLang{grid-template-columns:repeat(5,1fr)}#stLang button{font-size:11px}

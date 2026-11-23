@@ -426,6 +426,8 @@
   function paintRegion(){
     [].forEach.call(document.querySelectorAll('.regionBtn'), function(b){ b.textContent = cur + ' / ' + lang.toUpperCase(); });
     $('rgCur').innerHTML = CURS.map(function(c){ return '<button type="button" data-c="'+c[0]+'" aria-pressed="'+(c[0]===cur)+'"><b>'+c[0]+'</b><span>'+c[1]+'</span></button>'; }).join('');
+    $('stCur').innerHTML = CURS.map(function(c){ return '<button type="button" data-c="'+c[0]+'" aria-pressed="'+(c[0]===cur)+'" title="'+c[1]+'">'+c[0]+'</button>'; }).join('');
+    $('stLang').innerHTML = LANGS.map(function(l){ return '<button type="button" data-l="'+l[0]+'" aria-pressed="'+(l[0]===lang)+'">'+l[1]+'</button>'; }).join('');
     $('rgLang').innerHTML = LANGS.map(function(l){ return '<button type="button" data-l="'+l[0]+'" aria-pressed="'+(l[0]===lang)+'"><b>'+l[1]+'</b><span>'+(l[0]===lang?'Selected':'')+'</span></button>'; }).join('');
   }
   function openRegion(o){
@@ -441,6 +443,8 @@
   }
   app.addEventListener('click', function(e){ if (e.target.closest('.regionBtn')){ if (menuOpen) openMenu(false); openRegion(!regionOpen); } });
   $('rgClose').onclick = function(){ openRegion(false); };
+  $('stLang').addEventListener('click', function(e){ var b = e.target.closest('button'); if (b){ setLang(b.getAttribute('data-l')); paintRegion(); snd('tick'); } });
+  $('stCur').addEventListener('click', function(e){ var b = e.target.closest('button'); if (b){ setCur(b.getAttribute('data-c')); paintRegion(); snd('tick'); } });
   $('rgLang').addEventListener('click', function(e){ var b = e.target.closest('button'); if (b){ setLang(b.getAttribute('data-l')); snd('tick'); openRegion(false); } });
   $('rgCur').addEventListener('click', function(e){ var b = e.target.closest('button'); if (b){ setCur(b.getAttribute('data-c')); snd('tick'); openRegion(false); } });
 
@@ -657,7 +661,7 @@
   /* ---------- product page: wheel, arrows and swipe page through the photos ---------- */
   var acc = 0, lock = 0;
   app.addEventListener('wheel', function(e){
-    if (S.view !== 'piece' || narrow.matches || bagOpen) return;
+    if (S.view !== 'piece' || narrow.matches || bagOpen || app.getAttribute('data-layout') === 'store') return;   // the storefront product page scrolls like any page
     e.preventDefault();
     var now = Date.now(); if (now < lock) return;
     acc += (Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY);
