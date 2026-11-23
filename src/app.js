@@ -603,7 +603,8 @@
     var line = bag.filter(function(l){ return String(l.id)===String(v.id); })[0];
     if (line) line.q++; else bag.push({ h:p.h, id:v.id, s:v.s, q:1 });
     renderBag(); snd('toll');
-    if (app.getAttribute('data-layout') === 'store') showAdded(p, v); else openBag(true);
+    if (xOpen) openX(null); openBag(true);   // one response to adding: the bag opens from the top
+    var bc = $('bagBtn'); bc.classList.remove('bump'); void bc.offsetWidth; bc.classList.add('bump');
   }
   var menuEl = $('menu'), menuOpen = false;
   function openMenu(o){
