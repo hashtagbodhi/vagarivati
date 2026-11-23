@@ -14,7 +14,7 @@
       <a href="#system" class="tool" id="sysLink">System</a>
       <button type="button" class="tool" id="gridBtn" aria-pressed="false">Grid</button>
       <button type="button" class="tool regionBtn" id="regionTop"></button>
-      <a href="#account" class="tool hbtn" id="accLink" aria-label="Account"><svg class="hi" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8.2" r="3.7"/><path d="M4.5 20.5c.9-4 3.8-6 7.5-6s6.6 2 7.5 6"/></svg><span class="lbl">Account</span></a>
+      <button type="button" class="tool hbtn sx" id="searchBtn" aria-haspopup="dialog" aria-label="Search"><svg class="hi" viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.3"/><path d="M15.6 15.6 20.5 20.5"/></svg><span class="lbl">Search</span></button><a href="#saved" class="tool hbtn sx" id="favBtn" aria-label="Favourites"><svg class="hi" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20.3S4 15.4 4 9.6A4.3 4.3 0 0 1 12 7.4a4.3 4.3 0 0 1 8 2.2c0 5.8-8 10.7-8 10.7z"/></svg><span class="lbl">Favourites</span><span id="favCount"></span></a><a href="#account" class="tool hbtn" id="accLink" aria-label="Account"><svg class="hi" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8.2" r="3.7"/><path d="M4.5 20.5c.9-4 3.8-6 7.5-6s6.6 2 7.5 6"/></svg><span class="lbl">Account</span></a>
       <button type="button" class="tool setbtn" id="setBtn" aria-haspopup="dialog" aria-expanded="false" aria-label="Site settings"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M2 5.5h8M14 5.5h4M2 14.5h4M10 14.5h8"/><circle cx="12" cy="5.5" r="2"/><circle cx="8" cy="14.5" r="2"/></svg></button>
       <button type="button" class="tool bagbtn hbtn" id="bagBtn" aria-haspopup="dialog" aria-label="Bag"><svg class="hi" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 8.5h14l-1 12H6z"/><path d="M8.8 8.5V7a3.2 3.2 0 0 1 6.4 0v1.5"/></svg><span class="lbl">Bag</span> <span id="bagCount">0</span></button>
     </div>
@@ -35,7 +35,7 @@
           <audio id="track" src="media/track.mp3" loop preload="auto"></audio>
           <div class="shade"></div>
           <h1 class="sr">Vagari Vati</h1>
-          <div class="hero-copy"><p>Collection 2027</p><h2>Worn in memory of the land before us</h2><a class="btn solid" href="#shop">Shop now</a></div>
+          <div class="hero-copy"><p>Collection 2027</p><h2>Worn in memory of the land before us</h2><span class="hero-cta"><a class="btn solid" href="#shop">Shop now</a><a class="btn ghost" href="#story">The story</a></span></div>
         </div>
         <section class="sh sh-cats" aria-label="Shop by category"><h2 class="sh-h">Shop by category</h2><div class="sh-tiles" id="shTiles"></div></section>
         <section class="sh sh-new" aria-label="New arrivals"><div class="sh-top"><h2 class="sh-h">New arrivals</h2><div class="sh-arrows"><button type="button" id="shPrev" aria-label="Previous"><i class="chev l"></i></button><button type="button" id="shNext" aria-label="Next"><i class="chev r"></i></button></div></div><div class="sh-row" id="shRow"></div></section>
@@ -43,13 +43,15 @@
           <a class="duo" href="#story"><img src="media/sw/maitri.jpg" alt="" loading="lazy"><span><b>The story of the prints</b><i>Eleven patterns and what they carry</i><u>Read the story</u></span></a>
           <a class="duo" href="#shop"><img src="img/qing-2.jpg" alt="" loading="lazy"><span><b>End of season sale</b><i>10% off with code DESTINY10</i><u>Shop all pieces</u></span></a>
         </section>
+        <div class="lst-x"><div class="lst-active" id="lstActive"></div><p class="lst-empty" id="lstEmpty" hidden></p></div>
+        <section class="sh sh-new sh-seen" id="shSeen" aria-label="Recently viewed" hidden><div class="sh-top"><h2 class="sh-h">Recently viewed</h2></div><div class="sh-row" id="shSeenRow"></div></section>
         <div class="lst-head">
           <p class="crumbs"><a href="#home">Vagari Vati</a> / <span id="lstCrumb"></span></p>
           <h2 class="lst-title" id="lstTitle"></h2>
           <p class="lst-line" id="lstLine"></p>
           <nav class="lst-chips" id="lstChips" aria-label="Categories"></nav>
           <div class="lst-bar"><span id="lstCount"></span>
-            <div class="lst-tools"><div class="seg lst-seg" data-set="mode"><button type="button" data-v="model">Model</button><button type="button" data-v="cutout">Product</button></div>
+            <div class="lst-tools"><button type="button" class="f-open" id="fBtn" aria-haspopup="dialog"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M2 5.5h8M14 5.5h4M2 14.5h4M10 14.5h8"/><circle cx="12" cy="5.5" r="2"/><circle cx="8" cy="14.5" r="2"/></svg>Filter &amp; sort<b id="fN"></b></button><div class="dens" id="dens" role="group" aria-label="Grid size"><button type="button" data-d="small" aria-pressed="true" aria-label="Smaller pictures"><i></i><i></i><i></i><i></i></button><button type="button" data-d="big" aria-pressed="false" aria-label="Larger pictures"><i></i><i></i></button></div><div class="seg lst-seg" data-set="mode"><button type="button" data-v="model">Model</button><button type="button" data-v="cutout">Product</button></div>
             <label class="lst-sort">Sort by <select id="lstSort"><option value="rec">Recommended</option><option value="lo">Lowest price</option><option value="hi">Highest price</option></select></label></div>
           </div>
         </div>
@@ -86,13 +88,14 @@
         <h2 class="title" id="pieceTitle"></h2>
         <div class="p-spec">
           <div class="p-buy">
-            <p class="price" id="piecePrice"></p>
+            <div class="p-pr"><p class="price" id="piecePrice"></p><button type="button" class="fav pfav" id="pFav" aria-pressed="false" aria-label="Save to favourites"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20.3S4 15.4 4 9.6A4.3 4.3 0 0 1 12 7.4a4.3 4.3 0 0 1 8 2.2c0 5.8-8 10.7-8 10.7z"/></svg></button></div><p class="sz-l"><span>Select size</span></p>
             <div class="sizes" id="sizes" role="radiogroup" aria-label="Size"></div>
             <button type="button" class="link sg-open" id="sgOpen" aria-haspopup="dialog">Size guide</button>
             <button type="button" class="btn solid" id="addBtn">Add to bag</button>
             <p class="fine" id="buyNote">Ships worldwide from India. <a class="link" href="#returns">14-day returns</a>.</p>
           </div>
-          <div class="desc" id="pieceDesc"></div>
+          <button type="button" class="ac-h" aria-expanded="true">Description &amp; fit<i></i></button><div class="desc" id="pieceDesc"></div>
+          <div class="acx"><button type="button" class="ac-h" aria-expanded="false">Materials &amp; care<i></i></button><div class="ac-b shut" id="pCare"></div><button type="button" class="ac-h" aria-expanded="false">Delivery &amp; returns<i></i></button><div class="ac-b shut"><p>Ships worldwide from India. Orders leave the studio in 2 to 4 business days.</p><p>Returns within 14 days of delivery, unworn and with tags. <a class="link" href="#shipping">Shipping</a> <a class="link" href="#returns">Returns</a></p></div></div>
         </div>
         <div class="p-thumbs" id="thumbs" role="tablist" aria-label="Photos"></div>
         <div class="p-foot">
@@ -106,6 +109,7 @@
         </footer>
       </div>
     <section class="p-more" id="pMore" aria-label="More pieces"></section>
+    <section class="p-more p-seen" id="pSeen" aria-label="Recently viewed" hidden></section>
     </section>
 
     <!-- Story: two rails inside wide margins. Rail A (columns 6-11) holds names and cloth; rail B (columns 13-19) holds the reading text. -->
@@ -223,6 +227,26 @@
 
   <div class="gridlines" id="gridlines" aria-hidden="true" hidden></div>
 
+  <div class="dim" id="dim"></div>
+  <div class="mega" id="mega" aria-hidden="true"></div>
+  <div class="srch" id="srch" role="dialog" aria-label="Search" aria-hidden="true" inert>
+    <div class="srch-in"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.3"/><path d="M15.6 15.6 20.5 20.5"/></svg><input type="search" id="srchQ" placeholder="Search pieces" autocomplete="off" aria-label="Search pieces"><button type="button" class="tool" id="srchX">Close</button></div>
+    <div class="srch-sug" id="srchSug"></div>
+    <div class="srch-res" id="srchRes"></div>
+  </div>
+  <aside class="fdrawer" id="fdrawer" role="dialog" aria-modal="true" aria-label="Filter and sort" aria-hidden="true" inert>
+    <div class="fd-head"><p>Filter &amp; sort</p><button type="button" class="tool" id="fdX">Close</button></div>
+    <div class="fd-body">
+      <p class="fd-h">Sort by</p><div class="fd-opts" id="fdSort"><button type="button" data-v="rec">Recommended</button><button type="button" data-v="lo">Lowest price</button><button type="button" data-v="hi">Highest price</button></div>
+      <p class="fd-h">Size</p><div class="fd-chips" id="fdSize"></div>
+      <p class="fd-h">Availability</p><div class="fd-opts" id="fdStock"><button type="button" data-v="1">In stock only</button></div>
+    </div>
+    <div class="fd-foot"><button type="button" class="btn" id="fdClear">Clear all</button><button type="button" class="btn solid" id="fdShow">Show pieces</button></div>
+  </aside>
+  <div class="added" id="added" role="status" aria-live="polite" aria-hidden="true"><p class="ad-t">Added to bag</p><div class="ad-row"><span class="ad-img" id="adImg"></span><div><b id="adName"></b><span id="adMeta"></span><span id="adPrice"></span></div></div><div class="ad-btns"><button type="button" class="btn" id="addedView">View bag</button><a class="btn solid" id="addedPay" href="#" target="_blank" rel="noopener">Check out</a></div></div>
+  <div class="zoom" id="zoom" role="dialog" aria-label="Photos" aria-hidden="true" inert><button type="button" class="tool" id="zoomX">Close</button><div class="zoom-in" id="zoomIn"></div></div>
+  <div class="mbar" id="mbar" aria-hidden="true"><div><b id="mbName"></b><span id="mbPrice"></span></div><button type="button" class="btn solid" id="mbAdd">Add</button></div>
+  <div class="sheet" id="szSheet" role="dialog" aria-label="Select size" aria-hidden="true" inert><div class="sheet-h"><p>Select size</p><button type="button" class="tool" id="szX">Close</button></div><div class="sheet-s" id="szList"></div></div>
   <div class="scrim" id="scrim" hidden></div>
   <aside class="bag" id="bag" role="dialog" aria-modal="true" aria-label="Your bag" aria-hidden="true" inert>
     <div class="bag-head grid">
