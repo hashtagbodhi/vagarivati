@@ -92,6 +92,14 @@
     $('shTiles').innerHTML = cats.map(function(c){ return '<a class="tile2" href="#'+c.slug+'"><span class="t2-img"><img src="'+IMG+c.cover+'" alt="" loading="lazy" draggable="false"></span><b>'+c.name+'</b><i>'+c.items.length+' pieces</i></a>'; }).join('');
     $('shRow').innerHTML = ['yugen','maitri','qing','hikari','mani','ekatva','padma','dolma','vasanta','yun','satya','milarepa'].map(function(h){ return cellHTML(h, 'model'); }).join('');
   }
+  [].forEach.call(document.querySelectorAll('.sh-cat'), function(sec){
+    var c = catBy[sec.getAttribute('data-row')], row = sec.querySelector('.sh-row');
+    sec.querySelector('.sh-h').textContent = 'Shop ' + c.name.toLowerCase(); sec.querySelector('.sh-sub').textContent = c.line;
+    sec.querySelector('.sh-all').textContent = 'View all ' + c.items.length;
+    row.innerHTML = c.items.map(function(h){ return cellHTML(h, sec.classList.contains('sh-c2') ? 'cutout' : 'model'); }).join('');
+    sec.querySelector('.sh-arrows').addEventListener('click', function(e){ var b = e.target.closest('button'); if (b) row.scrollBy({ left: row.clientWidth * .8 * +b.getAttribute('data-dir'), behavior:'smooth' }); });
+  });
+  $('sfTop').onclick = function(){ glide(home, 0, true); };
   $('shPrev').onclick = function(){ $('shRow').scrollBy({ left:-$('shRow').clientWidth * .8, behavior:'smooth' }); };
   $('shNext').onclick = function(){ $('shRow').scrollBy({ left:$('shRow').clientWidth * .8, behavior:'smooth' }); };
   // now and then a letter or two in a name on screen turns red for a moment
@@ -704,7 +712,7 @@
   // the trident's three blades flicker one after another, never together
   if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) (function tri(){
     setTimeout(function(){
-      if (S.view === 'home' && !document.hidden) [].forEach.call(document.querySelectorAll('.sigil .tri i'), function(t, k){
+      if (S.view === 'home' && !document.hidden) [].forEach.call(document.querySelectorAll('.sf-mark .tri i'), function(t, k){
         setTimeout(function(){ t.classList.remove('flick'); void t.offsetWidth; t.classList.add('flick'); }, k * 460);
       });
       tri();
@@ -719,7 +727,7 @@
     }, 2600 + Math.random()*5200);
   })();
   /* announcement bar: tap the code to copy it; the cross closes the bar */
-  $('ann').addEventListener('click', function(e){
+  app.addEventListener('click', function(e){
     var c = e.target.closest('.ann-code'); if (!c) return;
     var done = function(){ c.textContent = 'Copied'; snd('tick'); setTimeout(function(){ c.textContent = 'DESTINY10'; }, 1400); };
     try { navigator.clipboard.writeText('DESTINY10').then(done, done); } catch(err){ done(); }

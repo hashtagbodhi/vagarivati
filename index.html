@@ -1366,6 +1366,54 @@ img,video,svg{display:block}
 #app[data-layout="store"][data-theme="blood"] .p-more{background:var(--oxblood)}
 #app[data-layout="store"] .p-seen{border-top:0}
 @media (max-width:820px){#app[data-layout="store"] .p-main{display:block}}
+
+/* ---- home: category rows ---- */
+.sh-sub{color:var(--ash);font-size:var(--t-s);margin-top:6px}
+.sh-cat .sh-top{align-items:flex-end}
+.sh-all{font-size:12px;letter-spacing:.08em;text-transform:uppercase;border-bottom:1px solid currentColor;padding-bottom:3px;margin-right:12px;align-self:center;transition:color .2s}
+.sh-all:hover{color:var(--blood)}
+.sh-arrows{align-items:center}
+#app[data-layout="store"] .catalog>.sh-c2{order:4;padding-top:0}
+#app[data-layout="store"] .sh-duo{padding-bottom:clamp(40px,8vh,80px)}
+#app[data-layout="store"] .catalog>.sh-seen{padding-top:clamp(40px,8vh,80px);padding-bottom:0}
+#app[data-layout="store"] .catalog.listing>.sh-cat{display:none}
+#app:not([data-layout="store"]) .sh-cat{display:none}
+.sh-c2 .cell .box{background:rgba(255,255,255,.04)}
+
+/* ---- footer: the trident opens it, the line sits right under, then the columns ---- */
+#app[data-layout="store"] .sh-foot{margin-top:clamp(70px,12vh,130px);padding:0 var(--pad) 22px;border-top:0;background:var(--oxblood)}
+.sf-mark{display:flex;align-items:center;gap:22px;transform:translateY(-50%)}
+.sf-mark::before,.sf-mark::after{content:"";flex:1;height:1px;background:var(--line)}
+.sf-mark .tri{width:44px;height:44px;flex:none}
+.sf-brand{text-align:center;display:grid;gap:10px;justify-items:center;padding:6px 0 clamp(36px,6vh,56px)}
+.sf-brand .vv-line{font-size:clamp(34px,4.6vw,60px);line-height:1}
+.sf-tag{color:var(--ash);font-size:var(--t-s);max-width:44ch}
+#app[data-layout="store"] .sf-cols{padding:clamp(28px,5vh,44px) 0;border-top:1px solid var(--line);grid-template-columns:repeat(4,minmax(0,1fr))}
+.sf-cols h3{font-size:12px;letter-spacing:.09em;text-transform:uppercase}
+.sf-cols a{width:fit-content;background:linear-gradient(currentColor,currentColor) 0 calc(100% - 3px)/0 1px no-repeat;transition:color .2s,background-size .3s ease}
+.sf-cols a:hover{background-size:100% 1px}
+.sf-cols p{margin-top:0}
+.sf-code{margin-top:12px;height:34px;padding:0 14px;border:1px solid var(--blood);color:var(--white);font-size:12px;letter-spacing:.12em;font-weight:500;transition:background .2s}
+.sf-code:hover{background:var(--blood);color:#fff}
+#app[data-layout="store"] .sf-base{margin-top:0;align-items:center;gap:14px 20px}
+.sf-base .vv-soc{display:flex;gap:6px}
+.sf-base .vv-soc a{width:34px;height:34px;display:grid;place-items:center;border:1px solid var(--line);color:var(--white);transition:border-color .2s,color .2s}
+.sf-base .vv-soc a:hover{border-color:var(--blood);color:var(--blood)}
+.sf-base .vv-soc svg{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:1.5}
+.sf-base .vv-soc svg .f{fill:currentColor;stroke:none}
+.sf-copy{margin-left:auto}
+.sf-top{display:inline-flex;align-items:center;gap:8px;color:var(--white);font-size:12px;letter-spacing:.08em;text-transform:uppercase}
+.sf-top .chev{transform:rotate(-90deg);transition:transform .25s}
+.sf-top:hover .chev{transform:rotate(-90deg) translateX(3px)}
+@media (max-width:820px){
+  #app[data-layout="store"] .sf-cols{grid-template-columns:1fr 1fr;gap:26px 20px}
+  .sf-mark .tri{width:38px;height:38px}
+  .sf-copy{margin-left:0;flex-basis:100%;order:3}
+  .sf-top{margin-left:auto}
+  .sh-cat .sh-arrows button{display:none}
+  .sh-all{margin-right:0}
+}
+.sf-top span{display:inline-block;transition:transform .25s}.sf-top:hover span{transform:translateY(-3px)}
 </style>
 </head>
 <body>
@@ -1410,11 +1458,13 @@ img,video,svg{display:block}
         </div>
         <section class="sh sh-cats" aria-label="Shop by category"><h2 class="sh-h">Shop by category</h2><div class="sh-tiles" id="shTiles"></div></section>
         <section class="sh sh-new" aria-label="New arrivals"><div class="sh-top"><h2 class="sh-h">New arrivals</h2><div class="sh-arrows"><button type="button" id="shPrev" aria-label="Previous"><i class="chev l"></i></button><button type="button" id="shNext" aria-label="Next"><i class="chev r"></i></button></div></div><div class="sh-row" id="shRow"></div></section>
+        <section class="sh sh-new sh-cat sh-c1" data-row="kimonos" aria-label="Kimonos"><div class="sh-top"><div><h2 class="sh-h"></h2><p class="sh-sub"></p></div><div class="sh-arrows"><a class="sh-all" href="#kimonos">View all</a><button type="button" data-dir="-1" aria-label="Previous"><i class="chev l"></i></button><button type="button" data-dir="1" aria-label="Next"><i class="chev r"></i></button></div></div><div class="sh-row"></div></section>
         <section class="sh sh-duo" aria-label="Features">
           <a class="duo" href="#story"><img src="media/sw/maitri.jpg" alt="" loading="lazy"><span><b>The story of the prints</b><i>Eleven patterns and what they carry</i><u>Read the story</u></span></a>
           <a class="duo" href="#shop"><img src="img/qing-2.jpg" alt="" loading="lazy"><span><b>End of season sale</b><i>10% off with code DESTINY10</i><u>Shop all pieces</u></span></a>
         </section>
         <div class="lst-x"><div class="lst-active" id="lstActive"></div><p class="lst-empty" id="lstEmpty" hidden></p></div>
+        <section class="sh sh-new sh-cat sh-c2" data-row="bottoms" aria-label="Bottoms"><div class="sh-top"><div><h2 class="sh-h"></h2><p class="sh-sub"></p></div><div class="sh-arrows"><a class="sh-all" href="#bottoms">View all</a><button type="button" data-dir="-1" aria-label="Previous"><i class="chev l"></i></button><button type="button" data-dir="1" aria-label="Next"><i class="chev r"></i></button></div></div><div class="sh-row"></div></section>
         <section class="sh sh-new sh-seen" id="shSeen" aria-label="Recently viewed" hidden><div class="sh-top"><h2 class="sh-h">Recently viewed</h2></div><div class="sh-row" id="shSeenRow"></div></section>
         <div class="lst-head">
           <p class="crumbs"><a href="#home">Vagari Vati</a> / <span id="lstCrumb"></span></p>
@@ -1427,13 +1477,15 @@ img,video,svg{display:block}
           </div>
         </div>
         <footer class="sh sh-foot">
+          <div class="sf-mark" aria-hidden="true"><span class="tri"><i class="t1"></i><i class="t2"></i><i class="t3"></i></span></div>
+          <div class="sf-brand"><p class="vv-line">Discover Destiny</p><p class="sf-tag">Streetwear from New York City, made in memory of the land before us.</p></div>
           <div class="sf-cols">
-            <div><h3>Shop</h3><a href="#kimonos">Kimonos</a><a href="#dresses">Dresses</a><a href="#tops">Tops</a><a href="#bottoms">Bottoms</a><a href="#layers">Layers</a></div>
-            <div><h3>Vagari Vati</h3><a href="#story">Story</a><a href="#account">Account</a></div>
+            <div><h3>Shop</h3><a href="#shop">All pieces</a><a href="#kimonos">Kimonos</a><a href="#dresses">Dresses</a><a href="#tops">Tops</a><a href="#bottoms">Bottoms</a><a href="#layers">Layers</a></div>
+            <div><h3>Vagari Vati</h3><a href="#story">The story</a><a href="#saved">Favourites</a><a href="#account">Account</a></div>
             <div><h3>Help</h3><a href="#shipping">Shipping</a><a href="#returns">Returns</a><a href="#privacy">Privacy</a><a href="#terms">Terms</a></div>
-            <div><h3>Follow</h3><a href="https://www.instagram.com/vagari.vati" target="_blank" rel="noopener">Instagram</a><a href="https://www.tiktok.com/" target="_blank" rel="noopener">TikTok</a><p>End of season sale: 10% off with code DESTINY10.</p></div>
+            <div><h3>End of season sale</h3><p>10% off everything with the code below.</p><button type="button" class="ann-code sf-code" aria-label="Copy code DESTINY10">DESTINY10</button></div>
           </div>
-          <div class="sf-base"><button type="button" class="regionBtn"></button><p class="vv-line">Discover Destiny</p><p>&copy; Vagari Vati 2027. All rights reserved.</p></div>
+          <div class="sf-base"><button type="button" class="regionBtn"></button><p class="vv-soc"><a href="https://www.instagram.com/vagari.vati" target="_blank" rel="noopener" aria-label="Instagram"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.2" y="3.2" width="17.6" height="17.6" rx="5"/><circle cx="12" cy="12" r="4.1"/><circle class="f" cx="17.2" cy="6.8" r="1"/></svg></a><a href="https://www.tiktok.com/" target="_blank" rel="noopener" aria-label="TikTok"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M13.6 3.2v11.3a3.5 3.5 0 1 1-3.5-3.5"/><path d="M13.6 3.2c.3 2.9 2.2 4.8 5.2 5.1"/></svg></a></p><p class="sf-copy">&copy; Vagari Vati 2027. All rights reserved.</p><button type="button" class="sf-top" id="sfTop">Back to top<span aria-hidden="true">&uarr;</span></button></div>
         </footer>
         <footer class="end grid">
           <div class="sign"><p class="vv-line">Discover Destiny</p><p class="vv-copy">&copy; Vagari Vati 2027. All rights reserved.</p></div>
@@ -1797,6 +1849,14 @@ img,video,svg{display:block}
     $('shTiles').innerHTML = cats.map(function(c){ return '<a class="tile2" href="#'+c.slug+'"><span class="t2-img"><img src="'+IMG+c.cover+'" alt="" loading="lazy" draggable="false"></span><b>'+c.name+'</b><i>'+c.items.length+' pieces</i></a>'; }).join('');
     $('shRow').innerHTML = ['yugen','maitri','qing','hikari','mani','ekatva','padma','dolma','vasanta','yun','satya','milarepa'].map(function(h){ return cellHTML(h, 'model'); }).join('');
   }
+  [].forEach.call(document.querySelectorAll('.sh-cat'), function(sec){
+    var c = catBy[sec.getAttribute('data-row')], row = sec.querySelector('.sh-row');
+    sec.querySelector('.sh-h').textContent = 'Shop ' + c.name.toLowerCase(); sec.querySelector('.sh-sub').textContent = c.line;
+    sec.querySelector('.sh-all').textContent = 'View all ' + c.items.length;
+    row.innerHTML = c.items.map(function(h){ return cellHTML(h, sec.classList.contains('sh-c2') ? 'cutout' : 'model'); }).join('');
+    sec.querySelector('.sh-arrows').addEventListener('click', function(e){ var b = e.target.closest('button'); if (b) row.scrollBy({ left: row.clientWidth * .8 * +b.getAttribute('data-dir'), behavior:'smooth' }); });
+  });
+  $('sfTop').onclick = function(){ glide(home, 0, true); };
   $('shPrev').onclick = function(){ $('shRow').scrollBy({ left:-$('shRow').clientWidth * .8, behavior:'smooth' }); };
   $('shNext').onclick = function(){ $('shRow').scrollBy({ left:$('shRow').clientWidth * .8, behavior:'smooth' }); };
   // now and then a letter or two in a name on screen turns red for a moment
@@ -2409,7 +2469,7 @@ img,video,svg{display:block}
   // the trident's three blades flicker one after another, never together
   if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) (function tri(){
     setTimeout(function(){
-      if (S.view === 'home' && !document.hidden) [].forEach.call(document.querySelectorAll('.sigil .tri i'), function(t, k){
+      if (S.view === 'home' && !document.hidden) [].forEach.call(document.querySelectorAll('.sf-mark .tri i'), function(t, k){
         setTimeout(function(){ t.classList.remove('flick'); void t.offsetWidth; t.classList.add('flick'); }, k * 460);
       });
       tri();
@@ -2424,7 +2484,7 @@ img,video,svg{display:block}
     }, 2600 + Math.random()*5200);
   })();
   /* announcement bar: tap the code to copy it; the cross closes the bar */
-  $('ann').addEventListener('click', function(e){
+  app.addEventListener('click', function(e){
     var c = e.target.closest('.ann-code'); if (!c) return;
     var done = function(){ c.textContent = 'Copied'; snd('tick'); setTimeout(function(){ c.textContent = 'DESTINY10'; }, 1400); };
     try { navigator.clipboard.writeText('DESTINY10').then(done, done); } catch(err){ done(); }
