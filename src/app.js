@@ -259,8 +259,9 @@
     document.querySelector('.v-piece').scrollTop = 0;
   }
   function setNeighbor(a, h){ a.style.visibility = h ? '' : 'hidden'; if (h){ a.href = '#piece-'+h; a.querySelector('span').textContent = label(P[h]); } }
+  function paintMbSize(){ var el = $('mbSize'); if (!el || !S.piece) return; var v = S.size && S.piece.v.filter(function(v){ return String(v.id) === S.size; })[0]; el.textContent = v ? 'Size ' + v.s : 'Pick a size'; el.classList.toggle('set', !!v); }
   function pickSize(id){
-    S.size = String(id);
+    S.size = String(id); setTimeout(paintMbSize, 0);
     [].forEach.call($('sizes').children, function(b){ b.setAttribute('aria-checked', b.getAttribute('data-id')===S.size); });
     if (!$('addBtn').disabled) $('addBtn').textContent = 'Add to bag';
   }
@@ -969,7 +970,7 @@
     ps.hidden = !others.length; ps.innerHTML = '<h3 class="sh-h">Recently viewed</h3><div class="pm-row">' + rowHTML(others) + '</div>';
     seen = [p.h].concat(seen.filter(function(h){ return h !== p.h; })).slice(0, 9); try { localStorage.setItem('vv-seen', JSON.stringify(seen)); } catch(e){}
     paintSeen(); paintFav();
-    $('mbName').textContent = label(p); $('mbPrice').textContent = priceOf(p); $('mbAdd').disabled = soldOut(p); $('mbAdd').textContent = soldOut(p) ? 'Sold out' : 'Add';
+    $('mbName').textContent = p.t; $('mbPrice').textContent = priceOf(p); $('mbImg').innerHTML = '<img src="'+IMG+p.i[0]+'" alt="">'; $('mbAdd').disabled = soldOut(p); $('mbAdd').querySelector('span').textContent = soldOut(p) ? 'Sold out' : 'Add to bag'; paintMbSize();
     $('szList').innerHTML = p.v.map(function(v){ return '<button type="button" data-id="'+v.id+'"'+(v.a ? '' : ' disabled')+'><span>'+v.s+'</span><i>'+(v.a ? '' : 'Sold out')+'</i></button>'; }).join('');
   }
   $('pGal').addEventListener('click', function(e){
