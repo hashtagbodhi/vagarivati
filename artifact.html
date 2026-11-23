@@ -1096,6 +1096,16 @@ img,video,svg{display:block}
   .bagbtn.has span#bagCount{color:#fff}
   #app[data-theme="blood"] #bagCount{color:#070102}
 }
+/* phone header: logo and icons always share one row, in either layout */
+@media (max-width:820px){
+  .top .brand,#app[data-layout="store"] .brand{grid-column:1/8;grid-row:1}
+  .top .tools,#app[data-layout="store"] .tools{grid-column:8/25;grid-row:1}
+}
+/* banners: the picture is pushed back and a dark fade sits under the words, so they always read */
+.duo img{filter:brightness(.42) saturate(.85)}
+.duo::after{content:"";position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.86) 0%,rgba(0,0,0,.5) 38%,rgba(0,0,0,0) 72%);pointer-events:none}
+.duo span{z-index:1}
+.duo i{color:rgba(255,255,255,.86)}
 </style>
 <div id="app" data-view="home">
 
