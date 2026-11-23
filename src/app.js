@@ -99,6 +99,7 @@
     row.innerHTML = c.items.map(function(h){ return cellHTML(h, sec.classList.contains('sh-c2') ? 'cutout' : 'model'); }).join('');
     sec.querySelector('.sh-arrows').addEventListener('click', function(e){ var b = e.target.closest('button'); if (b) row.scrollBy({ left: row.clientWidth * .8 * +b.getAttribute('data-dir'), behavior:'smooth' }); });
   });
+  [].forEach.call(document.querySelectorAll('.sf-cols h3'), function(h){ h.addEventListener('click', function(){ if (narrow.matches){ h.parentNode.classList.toggle('open'); snd('tick'); } }); });
   $('sfTop').onclick = function(){ glide(home, 0, true); };
   $('shPrev').onclick = function(){ $('shRow').scrollBy({ left:-$('shRow').clientWidth * .8, behavior:'smooth' }); };
   $('shNext').onclick = function(){ $('shRow').scrollBy({ left:$('shRow').clientWidth * .8, behavior:'smooth' }); };
