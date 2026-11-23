@@ -8,7 +8,7 @@ head='''<title>Vagari Vati</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Host+Grotesk:wght@400;500&family=JetBrains+Mono:wght@700&family=UnifrakturMaguntia&family=Tinos&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Host+Grotesk:wght@400;500&family=JetBrains+Mono:wght@700&family=UnifrakturMaguntia&family=Tinos&family=EB+Garamond:ital,wght@0,400;0,500;1,400&display=swap">
 <style>
 '''+rd('styles.css')+'''</style>
 '''
