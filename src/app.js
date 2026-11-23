@@ -1001,14 +1001,15 @@
   paintSeen();
 
   /* ---------- site settings: lighting, how products are shown, hover effect ---------- */
-  var SET = { layout:'store', theme:'night', mode:'cutout', hover:'zoom' }, setEl = $('settings'), setOpen = false;
-  var SET_OK = { layout:['store'], theme:['night','bone','chapel','blood'], mode:['cutout','model'], hover:['zoom','lift','focus'] };
+  var SET = { layout:'store', theme:'night', mode:'cutout', hover:'zoom', icon:'red' }, setEl = $('settings'), setOpen = false;
+  var SET_OK = { layout:['store'], theme:['night','bone','chapel','blood'], mode:['cutout','model'], hover:['zoom','lift','focus'], icon:['red','white','ash','maroon'] };
   function applySet(k, v, quiet){
     if (SET_OK[k].indexOf(v) < 0) v = SET_OK[k][0];
     if (k === 'layout') v = 'store';   // one layout now: the storefront
     var changed = SET[k] !== v; SET[k] = v; try { localStorage.setItem('vv-' + k, v); } catch(e){}
     if (k === 'theme') app.setAttribute('data-theme', v);
     if (k === 'hover') app.setAttribute('data-hover', v);
+    if (k === 'icon') app.setAttribute('data-icon', v);
     if (k === 'layout'){ app.setAttribute('data-layout', v); if (!quiet) route(); }
     if (k === 'mode'){
       viewMode = v; app.setAttribute('data-mode', v);
