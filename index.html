@@ -1559,6 +1559,18 @@ img,video,svg{display:block}
   .sh-about p{max-width:none;font-size:17px;line-height:1.3}
   .sh-about a{font-size:13px}
 }
+/* about: smaller, six lines on desktop, smaller link */
+@media (min-width:821px){
+  .sh-about p{font-size:var(--ab,.92vw)}
+  .sh-about a{font-size:.72vw;letter-spacing:.12em;padding-bottom:.35vw}
+  #app[data-layout="store"] .catalog>.sh-about{gap:1.5vw}
+}
+/* on smaller desktops the type never drops under 13px: the block widens with it, so it stays six lines */
+@media (min-width:821px){
+  #app[data-layout="store"] .catalog>.sh-about{--ab:max(13px,.92vw);padding-left:0;padding-right:0}
+  .sh-about p{width:calc(var(--ab) * 43.5);max-width:calc(100% - 2*var(--pad))}
+  .sh-about a{font-size:max(11px,.72vw)}
+}
 </style>
 </head>
 <body>
