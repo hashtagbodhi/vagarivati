@@ -1100,3 +1100,12 @@ img,video,svg{display:block}
 .duo::after{content:"";position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.86) 0%,rgba(0,0,0,.5) 38%,rgba(0,0,0,0) 72%);pointer-events:none}
 .duo span{z-index:1}
 .duo i{color:rgba(255,255,255,.86)}
+/* phones: settings sits in the header with the other icons, so the layout switch is one tap away */
+@media (max-width:820px){
+  .top #setBtn{display:inline-grid;place-items:center;width:44px;height:44px;padding:0;color:var(--white);order:0}
+  .top #setBtn svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.5;stroke-linecap:round}
+  .top .brand,#app[data-layout="store"] .brand{grid-column:1/6}
+  .top .tools,#app[data-layout="store"] .tools{grid-column:6/25}
+}
+/* the print behind the story banner is darker still */
+.duo:first-child img{filter:brightness(.2) saturate(.7)}
