@@ -943,6 +943,142 @@ img,video,svg{display:block}
   #app[data-hover="lift"] .wall .cell:hover .frame{transform:translateY(-3%)}
   #app[data-hover="focus"] .wall .cell:hover .shot{transform:scale(1.03)}
 }
+
+/* ============ STOREFRONT LAYOUT: the flow of a large fashion store, in our type and colour ============ */
+.sh,.lst-head,.hero-copy,.p-gal,.p-more{display:none}
+#app[data-layout="store"]{--pad:max(16px,env(safe-area-inset-left,0px))}
+#app[data-layout="store"] .catalog>.splits,#app[data-layout="store"] .catalog>.sigil,#app[data-layout="store"] .catalog>.end{display:none}
+#app[data-layout="store"] .catalog>.hero{order:1}
+#app[data-layout="store"] .catalog>.sh-cats{order:2}
+#app[data-layout="store"] .catalog>.sh-new{order:3}
+#app[data-layout="store"] .catalog>.sh-duo{order:4}
+#app[data-layout="store"] .catalog>.lst-head{order:5}
+#app[data-layout="store"] .catalog>.wall{order:6}
+#app[data-layout="store"] .catalog>.sh-foot{order:7}
+#app[data-layout="store"] .sh,#app[data-layout="store"] .lst-head{display:block;position:relative;z-index:1}
+/* home shows the editorial blocks; a category shows the listing */
+#app[data-layout="store"] .catalog:not(.listing)>.wall,#app[data-layout="store"] .catalog:not(.listing)>.lst-head{display:none}
+#app[data-layout="store"] .catalog.listing>.hero,#app[data-layout="store"] .catalog.listing>.sh-cats,#app[data-layout="store"] .catalog.listing>.sh-new,#app[data-layout="store"] .catalog.listing>.sh-duo{display:none}
+/* header: departments sit beside the logo, tools at the right */
+#app[data-layout="store"] .top{--top:64px}
+#app[data-layout="store"]{--top:64px}
+#app[data-layout="store"] .brand .logo{width:30px;height:36px}
+#app[data-layout="store"] .cats{grid-column:3/15;justify-content:flex-start;gap:clamp(14px,1.8vw,28px)}
+#app[data-layout="store"] .cats a{color:var(--white);font-weight:500}
+#app[data-layout="store"] .cats::before{display:none}
+#app[data-layout="store"] .cats::after{opacity:var(--mo,0);background:var(--blood);height:2px}
+/* hero: full-width campaign with its line and one button, bottom left */
+#app[data-layout="store"] .catalog>.hero{margin-top:var(--top);height:calc((var(--vh,100vh) - var(--top))*.86)}
+#app[data-layout="store"] .hero-copy{display:grid;gap:12px;justify-items:start;position:absolute;left:var(--pad);bottom:clamp(24px,6vh,56px);z-index:2;max-width:min(560px,86%);color:#fff}
+.hero-copy p{font-size:var(--t-s)}
+.hero-copy h2{font:400 clamp(34px,4.4vw,64px)/1 var(--display)}
+.hero-copy .btn{height:44px;margin-top:6px;background:#fff;color:#000;border-color:#fff}
+.hero-copy .btn:hover{background:var(--blood);border-color:var(--blood);color:#fff}
+/* section heads */
+.sh-h{font-size:18px;font-weight:500;line-height:1.2}
+.sh-cats,.sh-new{padding:clamp(40px,8vh,80px) var(--pad) 0}
+.sh-tiles{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:4px;margin-top:18px}
+.tile2{display:grid;gap:4px}
+.t2-img{display:block;aspect-ratio:2/3;overflow:hidden;background:var(--oxblood);margin-bottom:8px}
+.t2-img img{width:100%;height:100%;object-fit:cover;object-position:50% 12%;transition:transform .9s cubic-bezier(.45,0,.15,1)}
+.tile2:hover .t2-img img{transform:scale(1.05)}
+.tile2 b{font-weight:500;font-size:var(--t-m)}
+.tile2 i{font-style:normal;color:var(--ash);font-size:var(--t-xs)}
+.sh-top{display:flex;justify-content:space-between;align-items:center}
+.sh-arrows{display:flex;gap:6px}
+.sh-arrows button{width:36px;height:36px;border:1px solid var(--line);display:grid;place-items:center;transition:border-color .2s}
+.sh-arrows button:hover{border-color:var(--white)}
+.sh-row{display:flex;gap:4px;margin-top:18px;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none}
+.sh-row::-webkit-scrollbar{display:none}
+.sh-row .cell{flex:0 0 calc((100% - 12px)/4);scroll-snap-align:start}
+.sh-duo{padding:clamp(40px,8vh,80px) var(--pad) clamp(50px,10vh,100px)}
+#app[data-layout="store"] .sh-duo{display:grid;grid-template-columns:1fr 1fr;gap:4px}
+.duo{position:relative;display:block;aspect-ratio:4/3;overflow:hidden;background:var(--oxblood)}
+.duo img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 22%;filter:brightness(.62);transition:transform 1s cubic-bezier(.45,0,.15,1)}
+.duo:hover img{transform:scale(1.04)}
+.duo span{position:absolute;left:clamp(16px,2.4vw,36px);bottom:clamp(18px,3vw,36px);right:16px;display:grid;gap:8px;justify-items:start;color:#fff}
+.duo b{font:400 clamp(28px,3vw,44px)/1 var(--display)}
+.duo i{font-style:normal;font-size:var(--t-m)}
+.duo u{margin-top:6px;font-size:var(--t-s);text-underline-offset:5px}
+/* cards: picture, then name, then price, left aligned, no ornaments */
+#app[data-layout="store"] .cell .box{aspect-ratio:2/3;background:var(--glow2,rgba(255,255,255,.04))}
+#app[data-layout="store"] .cell .box::before,#app[data-layout="store"] .cell .box::after{display:none}
+#app[data-layout="store"] .cell .cut{inset:8%;width:84%;height:84%}
+#app[data-layout="store"] .cell .cap{display:grid;gap:3px;margin-top:10px;padding:0 2px;justify-items:start;font-size:var(--t-s)}
+#app[data-layout="store"] .cell .cap .nm{font-size:var(--t-s);font-weight:400}
+#app[data-layout="store"] .cell .cap .nm::before{display:none}
+#app[data-layout="store"] .cell .cap .pr{margin:0;font-weight:500;font-size:var(--t-s)}
+#app[data-layout="store"] .cell .cap .sub{font-size:var(--t-xs)}
+/* listing */
+#app[data-layout="store"] .lst-head{padding:calc(var(--top) + 28px) var(--pad) 0}
+.crumbs{color:var(--ash);font-size:var(--t-xs)}
+.crumbs a{text-decoration:underline;text-underline-offset:3px}
+.lst-title{font:400 clamp(40px,4.4vw,64px)/1 var(--display);margin-top:14px}
+.lst-line{color:var(--ash);margin-top:10px;max-width:60ch}
+.lst-chips{display:flex;gap:6px;flex-wrap:wrap;margin-top:22px}
+.lst-chips a{height:34px;padding:0 14px;display:inline-flex;align-items:center;border:1px solid var(--line);font-size:var(--t-s);transition:border-color .2s,background .2s,color .2s}
+.lst-chips a:hover{border-color:var(--white)}
+.lst-chips a[aria-current="true"]{background:var(--white);color:var(--ink);border-color:var(--white)}
+.lst-bar{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;margin-top:22px;padding:12px 0;border-top:1px solid var(--line);font-size:var(--t-s);color:var(--ash)}
+.lst-tools{display:flex;align-items:center;gap:18px}
+.lst-seg{margin:0}
+.lst-seg button{height:32px;padding:0 14px;flex:none}
+.lst-sort{display:inline-flex;align-items:center;gap:8px}
+.lst-sort select{height:32px;background:var(--ink);color:var(--white);border:1px solid var(--line);font:inherit;padding:0 8px}
+#app[data-layout="store"] .wall{grid-template-columns:repeat(4,minmax(0,1fr));column-gap:4px;row-gap:28px;justify-content:stretch;padding:8px var(--pad) clamp(60px,10vh,110px)}
+#app[data-layout="store"] .wall.models .box{aspect-ratio:2/3}
+/* footer: four columns, then the base line */
+#app[data-layout="store"] .sh-foot{background:var(--oxblood);padding:clamp(36px,6vh,60px) var(--pad) 26px;border-top:1px solid var(--line)}
+.sf-cols{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:28px}
+.sf-cols h3{font-size:var(--t-s);font-weight:500;margin-bottom:12px}
+.sf-cols a{display:block;color:var(--ash);font-size:var(--t-s);padding:4px 0;transition:color .2s}
+.sf-cols a:hover{color:var(--white)}
+.sf-cols p{color:var(--ash);font-size:var(--t-xs);line-height:1.5;margin-top:10px;max-width:26ch}
+.sf-base{display:flex;align-items:baseline;gap:18px;flex-wrap:wrap;margin-top:clamp(30px,6vh,56px);padding-top:18px;border-top:1px solid var(--line);color:var(--ash);font-size:var(--t-xs)}
+.sf-base .regionBtn{color:var(--white);border:1px solid var(--line);padding:6px 10px}
+.sf-base .vv-line{margin-left:auto;font-size:20px}
+/* product page: photographs in two columns, a buying column that stays in view */
+#app[data-layout="store"] .v-piece{overflow-y:auto;display:grid;grid-template-columns:minmax(0,1fr) clamp(340px,30vw,440px);align-items:start;padding-top:var(--top)}
+#app[data-layout="store"] .v-piece>.fx,#app[data-layout="store"] .p-photo,#app[data-layout="store"] .p-thumbs,#app[data-layout="store"] .p-sign{display:none}
+#app[data-layout="store"] .p-gal{display:grid;grid-template-columns:1fr 1fr;gap:4px;grid-column:1}
+.p-gal img{width:100%;aspect-ratio:2/3;object-fit:cover;object-position:50% 14%;background:#fff}
+#app[data-layout="store"] .p-info{position:sticky;top:var(--top);left:auto;right:auto;bottom:auto;grid-column:2;display:block;padding:22px var(--pad) 28px 28px;z-index:1}
+#app[data-layout="store"] .p-top{padding:0 0 18px}
+#app[data-layout="store"] .title,#app[data-layout="store"] .title.long{font-size:clamp(34px,3vw,46px);padding:0;line-height:1}
+#app[data-layout="store"] .p-spec{display:block;border:0;padding:0}
+#app[data-layout="store"] .p-buy{gap:14px;margin-top:10px;justify-items:stretch}
+#app[data-layout="store"] .price{font-size:18px}
+#app[data-layout="store"] .sizes{display:grid;grid-template-columns:repeat(3,1fr);margin-top:8px}
+#app[data-layout="store"] .sizes button{width:auto}
+#app[data-layout="store"] .p-buy .btn{height:54px}
+#app[data-layout="store"] .desc{margin-top:22px;padding-top:18px;border-top:1px solid var(--line);max-width:none}
+#app[data-layout="store"] .desc p+p{display:block}
+#app[data-layout="store"] .p-foot{height:auto;margin-top:22px;padding-top:14px;border-top:1px solid var(--line);flex-wrap:wrap;gap:8px 14px}
+#app[data-layout="store"] .p-more{display:block;grid-column:1/-1;padding:clamp(50px,9vh,90px) var(--pad) clamp(50px,9vh,90px)}
+.pm-row{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:4px;margin-top:18px}
+@media (max-width:820px){
+  #app[data-layout="store"] .cats{display:none}
+  #app[data-layout="store"] .catalog>.hero{height:72vh}
+  #app[data-layout="store"] .hero .film{inset:0;top:0;height:100%;transform:none}
+  .sh-tiles{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none}
+  .tile2{flex:0 0 46%;scroll-snap-align:start}
+  .sh-row .cell{flex:0 0 calc((100% - 4px)/2.15)}
+  #app[data-layout="store"] .sh-duo{grid-template-columns:1fr}
+  #app[data-layout="store"] .wall{grid-template-columns:repeat(2,minmax(0,1fr));padding-top:8px}
+  .lst-tools{gap:10px}
+  .sf-cols{grid-template-columns:1fr 1fr}
+  .sf-base .vv-line{margin-left:0;flex-basis:100%}
+  #app[data-layout="store"] .v-piece{display:block}
+  #app[data-layout="store"] .p-gal{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none}
+  .p-gal img{flex:0 0 86%;scroll-snap-align:start}
+  #app[data-layout="store"] .p-info{position:static;padding:18px 16px 24px}
+  .pm-row{grid-template-columns:1fr 1fr}
+}
+#app[data-layout="store"] .brand{grid-column:1/3;grid-row:1}
+#app[data-layout="store"] .cats{grid-row:1}
+#app[data-layout="store"] .tools{grid-row:1}
+#app[data-layout="store"] .top{background:var(--ink);border-bottom:1px solid var(--line)}
+#app[data-layout="store"][data-theme="blood"] .top{background:var(--pitch)}
 </style>
 <div id="app" data-view="home">
 
@@ -981,7 +1117,33 @@ img,video,svg{display:block}
           <audio id="track" src="media/track.mp3" loop preload="auto"></audio>
           <div class="shade"></div>
           <h1 class="sr">Vagari Vati</h1>
+          <div class="hero-copy"><p>Collection 2027</p><h2>Worn in memory of the land before us</h2><a class="btn solid" href="#shop">Shop now</a></div>
         </div>
+        <section class="sh sh-cats" aria-label="Shop by category"><h2 class="sh-h">Shop by category</h2><div class="sh-tiles" id="shTiles"></div></section>
+        <section class="sh sh-new" aria-label="New arrivals"><div class="sh-top"><h2 class="sh-h">New arrivals</h2><div class="sh-arrows"><button type="button" id="shPrev" aria-label="Previous"><i class="chev l"></i></button><button type="button" id="shNext" aria-label="Next"><i class="chev r"></i></button></div></div><div class="sh-row" id="shRow"></div></section>
+        <section class="sh sh-duo" aria-label="Features">
+          <a class="duo" href="#story"><img src="media/sw/maitri.jpg" alt="" loading="lazy"><span><b>The story of the prints</b><i>Eleven patterns and what they carry</i><u>Read the story</u></span></a>
+          <a class="duo" href="#shop"><img src="img/qing-2.jpg" alt="" loading="lazy"><span><b>End of season sale</b><i>10% off with code DESTINY10</i><u>Shop all pieces</u></span></a>
+        </section>
+        <div class="lst-head">
+          <p class="crumbs"><a href="#home">Vagari Vati</a> / <span id="lstCrumb"></span></p>
+          <h2 class="lst-title" id="lstTitle"></h2>
+          <p class="lst-line" id="lstLine"></p>
+          <nav class="lst-chips" id="lstChips" aria-label="Categories"></nav>
+          <div class="lst-bar"><span id="lstCount"></span>
+            <div class="lst-tools"><div class="seg lst-seg" data-set="mode"><button type="button" data-v="model">Model</button><button type="button" data-v="cutout">Product</button></div>
+            <label class="lst-sort">Sort by <select id="lstSort"><option value="rec">Recommended</option><option value="lo">Lowest price</option><option value="hi">Highest price</option></select></label></div>
+          </div>
+        </div>
+        <footer class="sh sh-foot">
+          <div class="sf-cols">
+            <div><h3>Shop</h3><a href="#kimonos">Kimonos</a><a href="#dresses">Dresses</a><a href="#tops">Tops</a><a href="#bottoms">Bottoms</a><a href="#layers">Layers</a></div>
+            <div><h3>Vagari Vati</h3><a href="#story">Story</a><a href="#account">Account</a></div>
+            <div><h3>Help</h3><a href="#shipping">Shipping</a><a href="#returns">Returns</a><a href="#privacy">Privacy</a><a href="#terms">Terms</a></div>
+            <div><h3>Follow</h3><a href="https://www.instagram.com/vagari.vati" target="_blank" rel="noopener">Instagram</a><a href="https://www.tiktok.com/" target="_blank" rel="noopener">TikTok</a><p>End of season sale: 10% off with code DESTINY10.</p></div>
+          </div>
+          <div class="sf-base"><button type="button" class="regionBtn"></button><p class="vv-line">Discover Destiny</p><p>&copy; Vagari Vati 2027. All rights reserved.</p></div>
+        </footer>
         <footer class="end grid">
           <div class="sign"><p class="vv-line">Discover Destiny</p><p class="vv-copy">&copy; Vagari Vati 2027. All rights reserved.</p></div>
           <nav class="end-links" aria-label="Policies"><a href="#shipping">Shipping</a><a href="#returns">Returns</a><a href="#privacy">Privacy</a><a href="#terms">Terms</a><a href="#account">Account</a></nav>
@@ -993,6 +1155,7 @@ img,video,svg{display:block}
     <!-- Piece: the product page -->
     <section class="view v-piece" data-name="piece" aria-label="Piece">
       <div class="fx fx-dim" aria-hidden="true"><i class="fx-pat"></i><i class="fx-grain"></i></div>
+      <div class="p-gal" id="pGal"></div>
       <button type="button" class="p-photo" id="pPhoto" aria-label="Next photo">
         <img id="pieceImgA" alt=""><img id="pieceImgB" alt="">
         <span class="p-num" id="pNum"></span>
@@ -1024,6 +1187,7 @@ img,video,svg{display:block}
           <nav aria-label="Policies"><a href="#shipping">Shipping</a><a href="#returns">Returns</a><a href="#privacy">Privacy</a><a href="#terms">Terms</a></nav>
         </footer>
       </div>
+    <section class="p-more" id="pMore" aria-label="More pieces"></section>
     </section>
 
     <!-- Story: two rails inside wide margins. Rail A (columns 6-11) holds names and cloth; rail B (columns 13-19) holds the reading text. -->
@@ -1212,6 +1376,7 @@ img,video,svg{display:block}
   </aside>
 
   <aside class="settings" id="settings" role="dialog" aria-label="Site settings" aria-hidden="true" inert>
+    <div class="st-grp"><p class="rg-h">Layout</p><div class="seg" data-set="layout"><button type="button" data-v="store">Storefront</button><button type="button" data-v="signature">Signature</button></div></div>
     <div class="st-grp"><p class="rg-h">Lighting</p><div class="seg" data-set="theme"><button type="button" data-v="night"><i style="background:#000"></i>Night</button><button type="button" data-v="bone"><i style="background:#e9e2d4"></i>Bone</button><button type="button" data-v="chapel"><i style="background:#fff"></i>Chapel</button><button type="button" data-v="blood"><i style="background:#4a060e"></i>Blood</button></div></div>
     <div class="st-grp"><p class="rg-h">Products shown as</p><div class="seg" data-set="mode"><button type="button" data-v="cutout">Cutouts</button><button type="button" data-v="model">On models</button></div></div>
     <div class="st-grp st-hov"><p class="rg-h">Hover effect</p><div class="seg" data-set="hover"><button type="button" data-v="zoom">Zoom</button><button type="button" data-v="lift">Lift</button><button type="button" data-v="focus">Focus</button></div></div>
@@ -1296,7 +1461,26 @@ img,video,svg{display:block}
     var shown = cells.filter(function(t){ return !t.hidden; }).length;
     if (S.filter !== f){ wall.classList.remove('swap'); void wall.offsetWidth; wall.classList.add('swap'); }
     S.filter = f;
+    // listing header (storefront layout)
+    $('lstCrumb').textContent = c ? c.name : 'All pieces'; $('lstTitle').textContent = c ? c.name : 'All pieces';
+    $('lstLine').textContent = c ? c.line : 'Kimonos, dresses, tops, bottoms and layers.';
+    $('lstCount').textContent = shown + ' pieces';
+    [].forEach.call($('lstChips').children, function(a){ a.setAttribute('aria-current', a.getAttribute('data-cat') === f); });
   }
+  $('lstChips').innerHTML = '<a href="#shop" data-cat="shop">All</a>' + cats.map(function(c){ return '<a href="#'+c.slug+'" data-cat="'+c.slug+'">'+c.name+'</a>'; }).join('');
+  $('lstSort').addEventListener('change', function(){
+    var v = this.value, order = all.slice();
+    if (v !== 'rec') order.sort(function(a, b){ return (price(P[a]) - price(P[b])) * (v === 'lo' ? 1 : -1); });
+    var by = {}; cells.forEach(function(c){ by[c.getAttribute('href').slice(7)] = c; });
+    order.forEach(function(h){ wall.appendChild(by[h]); }); cells = [].slice.call(wall.children);
+  });
+  // storefront home: category tiles and a row of new arrivals
+  function buildStoreHome(){
+    $('shTiles').innerHTML = cats.map(function(c){ return '<a class="tile2" href="#'+c.slug+'"><span class="t2-img"><img src="'+IMG+c.cover+'" alt="" loading="lazy" draggable="false"></span><b>'+c.name+'</b><i>'+c.items.length+' pieces</i></a>'; }).join('');
+    $('shRow').innerHTML = ['yugen','maitri','qing','hikari','mani','ekatva','padma','dolma','vasanta','yun','satya','milarepa'].map(function(h){ return cellHTML(h, 'model'); }).join('');
+  }
+  $('shPrev').onclick = function(){ $('shRow').scrollBy({ left:-$('shRow').clientWidth * .8, behavior:'smooth' }); };
+  $('shNext').onclick = function(){ $('shRow').scrollBy({ left:$('shRow').clientWidth * .8, behavior:'smooth' }); };
   // now and then a letter or two in a name on screen turns red for a moment
   if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) setInterval(function(){
     if (S.view !== 'home' || document.hidden) return;
@@ -1357,7 +1541,7 @@ img,video,svg{display:block}
   }
   var calmNav = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   ['wheel','touchstart','pointerdown'].forEach(function(ev){ home.addEventListener(ev, function(){ glideId++; }, { passive:true }); });
-  function toCatalog(smooth){ glide(home, wall.offsetTop - document.querySelector('.top').offsetHeight - 44, smooth); }
+  function toCatalog(smooth){ if (app.getAttribute('data-layout') === 'store'){ glide(home, 0, false); return; } glide(home, wall.offsetTop - document.querySelector('.top').offsetHeight - 44, smooth); }
   // one marker in the navigation slides to the link you point at, and back to the page you are on
   var catsEl = $('cats');
   function markTo(a){
@@ -1399,8 +1583,8 @@ img,video,svg{display:block}
   /* ---------- piece ---------- */
   var KIND = { kimonos:'Kimono', dresses:'Dress', tops:'Top', bottoms:'Bottom', layers:'Layer' };
   var viewMode;   // 'cutout' or 'model', set from site settings
-  function cellHTML(h){
-    var p = P[h], pic = viewMode === 'model'
+  function cellHTML(h, forced){
+    var p = P[h], pic = (forced || viewMode) === 'model'
       ? '<span class="frame"><img class="shot" src="'+IMG+p.i[0]+'" alt="" loading="lazy" decoding="async" draggable="false"></span>'
       : '<img class="cut" src="cut2/'+h+'.webp" alt="" loading="lazy" decoding="async" draggable="false">';
     return '<a class="cell" href="#piece-'+h+'" data-cat="'+p.c+'" aria-label="'+esc(p.f)+', '+priceOf(p)+'">'
@@ -1441,6 +1625,10 @@ img,video,svg{display:block}
     $('buyNote').innerHTML = so ? 'This piece is sold out in every size.' : 'Ships worldwide from India. <a class="link" href="#returns">14-day returns</a>.';
     setNeighbor($('piecePrev'), c.items[k-1]); setNeighbor($('pieceNext'), c.items[k+1]);
     showImg(0, true);
+    $('pGal').innerHTML = p.i.map(function(f, n){ return '<img src="'+IMG+f+'" alt="'+esc(p.f)+', photo '+(n+1)+'"'+(n>1?' loading="lazy"':'')+'>'; }).join('');
+    var more = catBy[p.c].items.filter(function(h){ return h !== p.h; }).slice(0, 4);
+    $('pMore').innerHTML = '<h3 class="sh-h">Others also viewed</h3><div class="pm-row">' + more.map(function(h){ return cellHTML(h, 'model'); }).join('') + '</div>';
+    $('pGal').scrollLeft = 0;
     document.querySelector('.v-piece').scrollTop = 0;
   }
   function setNeighbor(a, h){ a.style.visibility = h ? '' : 'hidden'; if (h){ a.href = '#piece-'+h; a.querySelector('span').textContent = label(P[h]); } }
@@ -1825,7 +2013,7 @@ img,video,svg{display:block}
     if (h !== 'system') S.last = h;
     if (h==='shop' || catBy[h]){
       var same = S.filter === h && (from==='piece' || from==='system') && inCatalog();
-      setFilter(h); S.list = h; show('home');
+      catalog.classList.add('listing'); setFilter(h); S.list = h; show('home');
       if (!same) toCatalog(from==='home' && !first);
       cells.filter(function(c){ return !c.hidden; }).forEach(function(c, k){ c.style.animationDelay = Math.min(k, 11) * 45 + 'ms'; });
     } else if (h.indexOf('piece-')===0 && P[h.slice(6)]){
@@ -1834,7 +2022,7 @@ img,video,svg{display:block}
     else if (POL[h]){ showPolicy(h); show('info'); }
     else if (h==='account'){ renderAccount(); show('account'); document.querySelector('.v-account').scrollTop = 0; }
     else if (h==='system'){ show('system'); }
-    else { setFilter('shop'); S.list = 'shop'; show('home'); glide(home, 0, from==='home' && !first); }
+    else { catalog.classList.remove('listing'); setFilter('shop'); S.list = 'shop'; show('home'); glide(home, 0, from==='home' && !first); }
   }
   window.addEventListener('hashchange', route);
   function go(h){ if (location.hash === '#'+h) route(); else location.hash = h; }
@@ -1969,23 +2157,26 @@ img,video,svg{display:block}
   $('sgUnits').addEventListener('click', function(e){ var b = e.target.closest('button'); if (b){ sgUnit = b.getAttribute('data-u'); renderGuide(); snd('tick'); } });
 
   /* ---------- site settings: lighting, how products are shown, hover effect ---------- */
-  var SET = { theme:'night', mode:'cutout', hover:'zoom' }, setEl = $('settings'), setOpen = false;
-  var SET_OK = { theme:['night','bone','chapel','blood'], mode:['cutout','model'], hover:['zoom','lift','focus'] };
+  var SET = { layout:'store', theme:'night', mode:'cutout', hover:'zoom' }, setEl = $('settings'), setOpen = false;
+  var SET_OK = { layout:['store','signature'], theme:['night','bone','chapel','blood'], mode:['cutout','model'], hover:['zoom','lift','focus'] };
   function applySet(k, v, quiet){
     if (SET_OK[k].indexOf(v) < 0) v = SET_OK[k][0];
     var changed = SET[k] !== v; SET[k] = v; try { localStorage.setItem('vv-' + k, v); } catch(e){}
     if (k === 'theme') app.setAttribute('data-theme', v);
     if (k === 'hover') app.setAttribute('data-hover', v);
+    if (k === 'layout'){ app.setAttribute('data-layout', v); if (!quiet) route(); }
     if (k === 'mode'){
       viewMode = v; app.setAttribute('data-mode', v);
       if (changed || !quiet){ wall.innerHTML = all.map(function(h){ return cellHTML(h); }).join(''); cells = [].slice.call(wall.children); wall.classList.toggle('models', v === 'model'); setFilter(S.filter); }
     }
-    [].forEach.call(setEl.querySelectorAll('.seg[data-set="' + k + '"] button'), function(b){ b.setAttribute('aria-pressed', b.getAttribute('data-v') === v); });
+    [].forEach.call(document.querySelectorAll('.seg[data-set="' + k + '"] button'), function(b){ b.setAttribute('aria-pressed', b.getAttribute('data-v') === v); });
   }
   function openSet(o){
     setOpen = o; setEl.classList.toggle('open', o); setEl.setAttribute('aria-hidden', !o); setEl.inert = !o; $('setBtn').setAttribute('aria-expanded', o);
     if (o){ snd('sheet'); if (menuOpen) openMenu(false); if (regionOpen) openRegion(false); }
   }
+  document.querySelector('.lst-seg').addEventListener('click', function(e){ var b2 = e.target.closest('button'); if (b2){ applySet('mode', b2.getAttribute('data-v')); snd('tick'); } });
+  buildStoreHome();
   $('setBtn').onclick = function(e){ e.stopPropagation(); openSet(!setOpen); };
   $('setClose').onclick = function(){ openSet(false); };
   setEl.addEventListener('click', function(e){ var b = e.target.closest('.seg button'); if (b){ applySet(b.parentNode.getAttribute('data-set'), b.getAttribute('data-v')); snd('tick'); } });

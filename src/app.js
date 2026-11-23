@@ -71,7 +71,26 @@
     var shown = cells.filter(function(t){ return !t.hidden; }).length;
     if (S.filter !== f){ wall.classList.remove('swap'); void wall.offsetWidth; wall.classList.add('swap'); }
     S.filter = f;
+    // listing header (storefront layout)
+    $('lstCrumb').textContent = c ? c.name : 'All pieces'; $('lstTitle').textContent = c ? c.name : 'All pieces';
+    $('lstLine').textContent = c ? c.line : 'Kimonos, dresses, tops, bottoms and layers.';
+    $('lstCount').textContent = shown + ' pieces';
+    [].forEach.call($('lstChips').children, function(a){ a.setAttribute('aria-current', a.getAttribute('data-cat') === f); });
   }
+  $('lstChips').innerHTML = '<a href="#shop" data-cat="shop">All</a>' + cats.map(function(c){ return '<a href="#'+c.slug+'" data-cat="'+c.slug+'">'+c.name+'</a>'; }).join('');
+  $('lstSort').addEventListener('change', function(){
+    var v = this.value, order = all.slice();
+    if (v !== 'rec') order.sort(function(a, b){ return (price(P[a]) - price(P[b])) * (v === 'lo' ? 1 : -1); });
+    var by = {}; cells.forEach(function(c){ by[c.getAttribute('href').slice(7)] = c; });
+    order.forEach(function(h){ wall.appendChild(by[h]); }); cells = [].slice.call(wall.children);
+  });
+  // storefront home: category tiles and a row of new arrivals
+  function buildStoreHome(){
+    $('shTiles').innerHTML = cats.map(function(c){ return '<a class="tile2" href="#'+c.slug+'"><span class="t2-img"><img src="'+IMG+c.cover+'" alt="" loading="lazy" draggable="false"></span><b>'+c.name+'</b><i>'+c.items.length+' pieces</i></a>'; }).join('');
+    $('shRow').innerHTML = ['yugen','maitri','qing','hikari','mani','ekatva','padma','dolma','vasanta','yun','satya','milarepa'].map(function(h){ return cellHTML(h, 'model'); }).join('');
+  }
+  $('shPrev').onclick = function(){ $('shRow').scrollBy({ left:-$('shRow').clientWidth * .8, behavior:'smooth' }); };
+  $('shNext').onclick = function(){ $('shRow').scrollBy({ left:$('shRow').clientWidth * .8, behavior:'smooth' }); };
   // now and then a letter or two in a name on screen turns red for a moment
   if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) setInterval(function(){
     if (S.view !== 'home' || document.hidden) return;
@@ -132,7 +151,7 @@
   }
   var calmNav = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   ['wheel','touchstart','pointerdown'].forEach(function(ev){ home.addEventListener(ev, function(){ glideId++; }, { passive:true }); });
-  function toCatalog(smooth){ glide(home, wall.offsetTop - document.querySelector('.top').offsetHeight - 44, smooth); }
+  function toCatalog(smooth){ if (app.getAttribute('data-layout') === 'store'){ glide(home, 0, false); return; } glide(home, wall.offsetTop - document.querySelector('.top').offsetHeight - 44, smooth); }
   // one marker in the navigation slides to the link you point at, and back to the page you are on
   var catsEl = $('cats');
   function markTo(a){
@@ -174,8 +193,8 @@
   /* ---------- piece ---------- */
   var KIND = { kimonos:'Kimono', dresses:'Dress', tops:'Top', bottoms:'Bottom', layers:'Layer' };
   var viewMode;   // 'cutout' or 'model', set from site settings
-  function cellHTML(h){
-    var p = P[h], pic = viewMode === 'model'
+  function cellHTML(h, forced){
+    var p = P[h], pic = (forced || viewMode) === 'model'
       ? '<span class="frame"><img class="shot" src="'+IMG+p.i[0]+'" alt="" loading="lazy" decoding="async" draggable="false"></span>'
       : '<img class="cut" src="cut2/'+h+'.webp" alt="" loading="lazy" decoding="async" draggable="false">';
     return '<a class="cell" href="#piece-'+h+'" data-cat="'+p.c+'" aria-label="'+esc(p.f)+', '+priceOf(p)+'">'
@@ -216,6 +235,10 @@
     $('buyNote').innerHTML = so ? 'This piece is sold out in every size.' : 'Ships worldwide from India. <a class="link" href="#returns">14-day returns</a>.';
     setNeighbor($('piecePrev'), c.items[k-1]); setNeighbor($('pieceNext'), c.items[k+1]);
     showImg(0, true);
+    $('pGal').innerHTML = p.i.map(function(f, n){ return '<img src="'+IMG+f+'" alt="'+esc(p.f)+', photo '+(n+1)+'"'+(n>1?' loading="lazy"':'')+'>'; }).join('');
+    var more = catBy[p.c].items.filter(function(h){ return h !== p.h; }).slice(0, 4);
+    $('pMore').innerHTML = '<h3 class="sh-h">Others also viewed</h3><div class="pm-row">' + more.map(function(h){ return cellHTML(h, 'model'); }).join('') + '</div>';
+    $('pGal').scrollLeft = 0;
     document.querySelector('.v-piece').scrollTop = 0;
   }
   function setNeighbor(a, h){ a.style.visibility = h ? '' : 'hidden'; if (h){ a.href = '#piece-'+h; a.querySelector('span').textContent = label(P[h]); } }
@@ -600,7 +623,7 @@
     if (h !== 'system') S.last = h;
     if (h==='shop' || catBy[h]){
       var same = S.filter === h && (from==='piece' || from==='system') && inCatalog();
-      setFilter(h); S.list = h; show('home');
+      catalog.classList.add('listing'); setFilter(h); S.list = h; show('home');
       if (!same) toCatalog(from==='home' && !first);
       cells.filter(function(c){ return !c.hidden; }).forEach(function(c, k){ c.style.animationDelay = Math.min(k, 11) * 45 + 'ms'; });
     } else if (h.indexOf('piece-')===0 && P[h.slice(6)]){
@@ -609,7 +632,7 @@
     else if (POL[h]){ showPolicy(h); show('info'); }
     else if (h==='account'){ renderAccount(); show('account'); document.querySelector('.v-account').scrollTop = 0; }
     else if (h==='system'){ show('system'); }
-    else { setFilter('shop'); S.list = 'shop'; show('home'); glide(home, 0, from==='home' && !first); }
+    else { catalog.classList.remove('listing'); setFilter('shop'); S.list = 'shop'; show('home'); glide(home, 0, from==='home' && !first); }
   }
   window.addEventListener('hashchange', route);
   function go(h){ if (location.hash === '#'+h) route(); else location.hash = h; }
@@ -744,23 +767,26 @@
   $('sgUnits').addEventListener('click', function(e){ var b = e.target.closest('button'); if (b){ sgUnit = b.getAttribute('data-u'); renderGuide(); snd('tick'); } });
 
   /* ---------- site settings: lighting, how products are shown, hover effect ---------- */
-  var SET = { theme:'night', mode:'cutout', hover:'zoom' }, setEl = $('settings'), setOpen = false;
-  var SET_OK = { theme:['night','bone','chapel','blood'], mode:['cutout','model'], hover:['zoom','lift','focus'] };
+  var SET = { layout:'store', theme:'night', mode:'cutout', hover:'zoom' }, setEl = $('settings'), setOpen = false;
+  var SET_OK = { layout:['store','signature'], theme:['night','bone','chapel','blood'], mode:['cutout','model'], hover:['zoom','lift','focus'] };
   function applySet(k, v, quiet){
     if (SET_OK[k].indexOf(v) < 0) v = SET_OK[k][0];
     var changed = SET[k] !== v; SET[k] = v; try { localStorage.setItem('vv-' + k, v); } catch(e){}
     if (k === 'theme') app.setAttribute('data-theme', v);
     if (k === 'hover') app.setAttribute('data-hover', v);
+    if (k === 'layout'){ app.setAttribute('data-layout', v); if (!quiet) route(); }
     if (k === 'mode'){
       viewMode = v; app.setAttribute('data-mode', v);
       if (changed || !quiet){ wall.innerHTML = all.map(function(h){ return cellHTML(h); }).join(''); cells = [].slice.call(wall.children); wall.classList.toggle('models', v === 'model'); setFilter(S.filter); }
     }
-    [].forEach.call(setEl.querySelectorAll('.seg[data-set="' + k + '"] button'), function(b){ b.setAttribute('aria-pressed', b.getAttribute('data-v') === v); });
+    [].forEach.call(document.querySelectorAll('.seg[data-set="' + k + '"] button'), function(b){ b.setAttribute('aria-pressed', b.getAttribute('data-v') === v); });
   }
   function openSet(o){
     setOpen = o; setEl.classList.toggle('open', o); setEl.setAttribute('aria-hidden', !o); setEl.inert = !o; $('setBtn').setAttribute('aria-expanded', o);
     if (o){ snd('sheet'); if (menuOpen) openMenu(false); if (regionOpen) openRegion(false); }
   }
+  document.querySelector('.lst-seg').addEventListener('click', function(e){ var b2 = e.target.closest('button'); if (b2){ applySet('mode', b2.getAttribute('data-v')); snd('tick'); } });
+  buildStoreHome();
   $('setBtn').onclick = function(e){ e.stopPropagation(); openSet(!setOpen); };
   $('setClose').onclick = function(){ openSet(false); };
   setEl.addEventListener('click', function(e){ var b = e.target.closest('.seg button'); if (b){ applySet(b.parentNode.getAttribute('data-set'), b.getAttribute('data-v')); snd('tick'); } });

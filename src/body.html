@@ -35,7 +35,33 @@
           <audio id="track" src="media/track.mp3" loop preload="auto"></audio>
           <div class="shade"></div>
           <h1 class="sr">Vagari Vati</h1>
+          <div class="hero-copy"><p>Collection 2027</p><h2>Worn in memory of the land before us</h2><a class="btn solid" href="#shop">Shop now</a></div>
         </div>
+        <section class="sh sh-cats" aria-label="Shop by category"><h2 class="sh-h">Shop by category</h2><div class="sh-tiles" id="shTiles"></div></section>
+        <section class="sh sh-new" aria-label="New arrivals"><div class="sh-top"><h2 class="sh-h">New arrivals</h2><div class="sh-arrows"><button type="button" id="shPrev" aria-label="Previous"><i class="chev l"></i></button><button type="button" id="shNext" aria-label="Next"><i class="chev r"></i></button></div></div><div class="sh-row" id="shRow"></div></section>
+        <section class="sh sh-duo" aria-label="Features">
+          <a class="duo" href="#story"><img src="media/sw/maitri.jpg" alt="" loading="lazy"><span><b>The story of the prints</b><i>Eleven patterns and what they carry</i><u>Read the story</u></span></a>
+          <a class="duo" href="#shop"><img src="img/qing-2.jpg" alt="" loading="lazy"><span><b>End of season sale</b><i>10% off with code DESTINY10</i><u>Shop all pieces</u></span></a>
+        </section>
+        <div class="lst-head">
+          <p class="crumbs"><a href="#home">Vagari Vati</a> / <span id="lstCrumb"></span></p>
+          <h2 class="lst-title" id="lstTitle"></h2>
+          <p class="lst-line" id="lstLine"></p>
+          <nav class="lst-chips" id="lstChips" aria-label="Categories"></nav>
+          <div class="lst-bar"><span id="lstCount"></span>
+            <div class="lst-tools"><div class="seg lst-seg" data-set="mode"><button type="button" data-v="model">Model</button><button type="button" data-v="cutout">Product</button></div>
+            <label class="lst-sort">Sort by <select id="lstSort"><option value="rec">Recommended</option><option value="lo">Lowest price</option><option value="hi">Highest price</option></select></label></div>
+          </div>
+        </div>
+        <footer class="sh sh-foot">
+          <div class="sf-cols">
+            <div><h3>Shop</h3><a href="#kimonos">Kimonos</a><a href="#dresses">Dresses</a><a href="#tops">Tops</a><a href="#bottoms">Bottoms</a><a href="#layers">Layers</a></div>
+            <div><h3>Vagari Vati</h3><a href="#story">Story</a><a href="#account">Account</a></div>
+            <div><h3>Help</h3><a href="#shipping">Shipping</a><a href="#returns">Returns</a><a href="#privacy">Privacy</a><a href="#terms">Terms</a></div>
+            <div><h3>Follow</h3><a href="https://www.instagram.com/vagari.vati" target="_blank" rel="noopener">Instagram</a><a href="https://www.tiktok.com/" target="_blank" rel="noopener">TikTok</a><p>End of season sale: 10% off with code DESTINY10.</p></div>
+          </div>
+          <div class="sf-base"><button type="button" class="regionBtn"></button><p class="vv-line">Discover Destiny</p><p>&copy; Vagari Vati 2027. All rights reserved.</p></div>
+        </footer>
         <footer class="end grid">
           <div class="sign"><p class="vv-line">Discover Destiny</p><p class="vv-copy">&copy; Vagari Vati 2027. All rights reserved.</p></div>
           <nav class="end-links" aria-label="Policies"><a href="#shipping">Shipping</a><a href="#returns">Returns</a><a href="#privacy">Privacy</a><a href="#terms">Terms</a><a href="#account">Account</a></nav>
@@ -47,6 +73,7 @@
     <!-- Piece: the product page -->
     <section class="view v-piece" data-name="piece" aria-label="Piece">
       <div class="fx fx-dim" aria-hidden="true"><i class="fx-pat"></i><i class="fx-grain"></i></div>
+      <div class="p-gal" id="pGal"></div>
       <button type="button" class="p-photo" id="pPhoto" aria-label="Next photo">
         <img id="pieceImgA" alt=""><img id="pieceImgB" alt="">
         <span class="p-num" id="pNum"></span>
@@ -78,6 +105,7 @@
           <nav aria-label="Policies"><a href="#shipping">Shipping</a><a href="#returns">Returns</a><a href="#privacy">Privacy</a><a href="#terms">Terms</a></nav>
         </footer>
       </div>
+    <section class="p-more" id="pMore" aria-label="More pieces"></section>
     </section>
 
     <!-- Story: two rails inside wide margins. Rail A (columns 6-11) holds names and cloth; rail B (columns 13-19) holds the reading text. -->
@@ -266,6 +294,7 @@
   </aside>
 
   <aside class="settings" id="settings" role="dialog" aria-label="Site settings" aria-hidden="true" inert>
+    <div class="st-grp"><p class="rg-h">Layout</p><div class="seg" data-set="layout"><button type="button" data-v="store">Storefront</button><button type="button" data-v="signature">Signature</button></div></div>
     <div class="st-grp"><p class="rg-h">Lighting</p><div class="seg" data-set="theme"><button type="button" data-v="night"><i style="background:#000"></i>Night</button><button type="button" data-v="bone"><i style="background:#e9e2d4"></i>Bone</button><button type="button" data-v="chapel"><i style="background:#fff"></i>Chapel</button><button type="button" data-v="blood"><i style="background:#4a060e"></i>Blood</button></div></div>
     <div class="st-grp"><p class="rg-h">Products shown as</p><div class="seg" data-set="mode"><button type="button" data-v="cutout">Cutouts</button><button type="button" data-v="model">On models</button></div></div>
     <div class="st-grp st-hov"><p class="rg-h">Hover effect</p><div class="seg" data-set="hover"><button type="button" data-v="zoom">Zoom</button><button type="button" data-v="lift">Lift</button><button type="button" data-v="focus">Focus</button></div></div>
