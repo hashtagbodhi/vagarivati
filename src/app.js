@@ -1005,7 +1005,7 @@
 
   /* ---------- try the look: eight models in one studio, a lineup that glides ---------- */
   // left to right as they stand in the one studio photograph; sx is each person's centre across that photo
-  var LOOKS = [{h:'surya',sx:5.4,x:57,y:40},{h:'padma',sx:14.8,x:51,y:42},{h:'satya',sx:22.4,x:52,y:40},{h:'qing',sx:30.3,x:50,y:44},{h:'ekatva',sx:38.5,x:50,y:38},{h:'yugen',sx:45.5,x:57,y:44},{h:'dolma',sx:51.5,x:50,y:42},{h:'maitri',sx:57.8,x:50,y:40},{h:'mani',sx:64.6,x:50,y:47},{h:'milarepa',sx:71.7,x:50,y:40},{h:'hikari',sx:79.8,x:57,y:46},{h:'indra',sx:87.9,x:50,y:38},{h:'yun',sx:95.6,x:46,y:66}];
+  var LOOKS = [{h:'surya',sx:5.8,x:57,y:40},{h:'padma',sx:16.0,x:51,y:42},{h:'satya',sx:24.2,x:52,y:40},{h:'qing',sx:32.8,x:50,y:44},{h:'yugen',sx:41.1,x:57,y:44},{h:'dolma',sx:47.6,x:50,y:42},{h:'maitri',sx:54.4,x:50,y:40},{h:'mani',sx:61.7,x:50,y:47},{h:'milarepa',sx:69.4,x:50,y:40},{h:'hikari',sx:78.2,x:57,y:46},{h:'indra',sx:86.9,x:50,y:38},{h:'yun',sx:95.2,x:46,y:66}];
   var tl = { i:0, t:0, paused:false, dur:5200 }, tlStage = $('tlStage');
   // two copies of the same photo: one soft (the room), one sharp and masked to the person in front
   // both copies live in one rig, and only the rig moves, so they can never drift apart
@@ -1013,7 +1013,7 @@
     + '<div class="tl-cam tl-sharp"><img src="media/look/scene.jpg" alt="Eight Vagari Vati looks in one studio" draggable="false" decoding="async"></div></div>';
   $('tlProg').innerHTML = LOOKS.map(function(){ return '<i><b></b></i>'; }).join('');
   var tlRig = tlStage.querySelector('.tl-rig'), tlCams = [].slice.call(tlStage.querySelectorAll('.tl-cam')), tlSharp = tlStage.querySelector('.tl-sharp'), tlBars = [].slice.call($('tlProg').children);
-  var SCN = 3600 / 893, G = {}, camX = 0;   // the photo's width over its height; the camera's current position
+  var SCN = 3600 / 965, G = {}, camX = 0;   // the photo's width over its height; the camera's current position
   var EASE_OUT = 'cubic-bezier(.16,1,.3,1)', EASE_GLIDE = 'cubic-bezier(.65,0,.35,1)';
   function tlGeo(){
     var sh = tlStage.clientHeight, sw = tlStage.clientWidth, ih = sh * (narrow.matches ? 1.05 : 1.0), iw = ih * SCN;
