@@ -1004,23 +1004,25 @@
   paintSeen();
 
   /* ---------- try the look: eight models in one studio, a lineup that glides ---------- */
-  var LOOKS = [{h:'yugen',x:57,y:44},{h:'maitri',x:50,y:40},{h:'qing',x:50,y:44},{h:'hikari',x:57,y:46},{h:'mani',x:50,y:47},{h:'yun',x:46,y:66},{h:'padma',x:51,y:42},{h:'surya',x:57,y:40}];
+  // left to right as they stand in the one studio photograph; sx is each person's centre across that photo
+  var LOOKS = [{h:'surya',sx:10.8,x:57,y:40},{h:'padma',sx:23.4,x:51,y:42},{h:'qing',sx:34.2,x:50,y:44},{h:'yugen',sx:45.4,x:57,y:44},{h:'maitri',sx:56.4,x:50,y:40},{h:'mani',sx:67.9,x:50,y:47},{h:'hikari',sx:78.9,x:57,y:46},{h:'yun',sx:90,x:46,y:66}];
   var tl = { i:0, t:0, paused:false, dur:5200 }, tlStage = $('tlStage');
-  tlStage.innerHTML = LOOKS.map(function(L, k){ return '<figure class="tl-fig" data-k="'+k+'"><img src="media/look/'+L.h+'.webp" alt="'+esc(P[L.h].f)+'" draggable="false"'+(k>2&&k<6?' loading="lazy"':'')+'></figure>'; }).join('');
+  // two copies of the same photo: one soft (the room), one sharp and masked to the person in front
+  tlStage.innerHTML = '<div class="tl-cam tl-soft"><img src="media/look/scene.jpg" alt="" draggable="false"></div>'
+    + '<div class="tl-focus"><div class="tl-cam"><img src="media/look/scene.jpg" alt="Eight Vagari Vati looks in one studio" draggable="false"></div></div>';
   $('tlProg').innerHTML = LOOKS.map(function(){ return '<i><b></b></i>'; }).join('');
-  var tlFigs = [].slice.call(tlStage.children), tlBars = [].slice.call($('tlProg').children);
+  var tlCams = [].slice.call(tlStage.querySelectorAll('.tl-cam')), tlBars = [].slice.call($('tlProg').children);
+  var SCN = 2800 / 1185;   // the photo's width over its height
   function tlLay(){
-    var n = LOOKS.length, wide = !narrow.matches;
-    tlFigs.forEach(function(f, k){
-      var off = k - tl.i; if (off > n/2) off -= n; if (off < -n/2) off += n;
-      var a = Math.abs(off), sc = Math.max(.5, 1 - a * (wide ? .15 : .2)), x = off * (wide ? 58 : 50);
-      f.style.transform = 'translate3d(calc(-50% + ' + x + '%),0,0) scale(' + sc + ')';
-      f.style.zIndex = 20 - a;
-      f.style.filter = a ? 'blur(' + (a * 1.6) + 'px) contrast(' + (1 - a * .12) + ') brightness(' + (1 + a * .05) + ')' : 'none';
-      f.style.opacity = a > 3 ? 0 : 1 - a * .08;
-      f.classList.toggle('on', a === 0); f.setAttribute('aria-hidden', a !== 0);
-    });
-    var p = P[LOOKS[tl.i].h];
+    var n = LOOKS.length, sh = tlStage.clientHeight, sw = tlStage.clientWidth;
+    var ih = sh * (narrow.matches ? 1.05 : 1.0), iw = ih * SCN, L = LOOKS[tl.i];
+    var x = Math.min(0, Math.max(sw - iw, sw / 2 - iw * L.sx / 100)), y = sh - ih * 0.985;
+    tlStage.style.setProperty('--fx', (x + iw * L.sx / 100) + 'px');
+    var push = narrow.matches ? 1 : 1.07, ox = iw * L.sx / 100, oy = ih * .93;
+    tlCams.forEach(function(c){ c.style.width = iw + 'px'; c.style.height = ih + 'px'; c.style.transformOrigin = ox + 'px ' + oy + 'px'; c.style.transform = 'translate3d(' + x + 'px,' + y + 'px,0) scale(' + push + ')'; });
+    if (push !== 1) tlStage.style.setProperty('--fw', (iw * 0.105 * push) + 'px');
+    tlStage.style.setProperty('--fw', (iw * 0.105) + 'px');
+    var p = P[L.h];
     $('tlNum').textContent = 'Look ' + two(tl.i + 1) + ' / ' + two(n);
     $('tlName').textContent = p.t; $('tlMeta').textContent = KIND[p.c];
     $('tlPimg').innerHTML = '<img src="cut2/' + p.h + '.webp" alt="">';
@@ -1028,6 +1030,7 @@
     tlBars.forEach(function(b, k){ b.className = k < tl.i ? 'done' : ''; });
     var cur = tlBars[tl.i]; cur.className = ''; void cur.offsetWidth; cur.className = tl.paused ? 'now held' : 'now';
     cur.style.setProperty('--d', tl.dur + 'ms');
+    tlStage.classList.remove('move'); void tlStage.offsetWidth; tlStage.classList.add('move');
   }
   function tlGo(k, user){
     tl.i = (k + LOOKS.length) % LOOKS.length; tlLay();
@@ -1047,8 +1050,8 @@
   tlStage.addEventListener('pointerup', function(e){
     if (tx0 === null) return; var dx = e.clientX - tx0; tx0 = null;
     if (tmoved && Math.abs(dx) > 40){ tlGo(tl.i + (dx < 0 ? 1 : -1), true); return; }
-    var f = e.target.closest('.tl-fig'); if (!f) return; var k = +f.getAttribute('data-k');
-    if (k === tl.i) tlOpen(k); else tlGo(k, true);
+    var r = tlStage.getBoundingClientRect(), fw = parseFloat(getComputedStyle(tlStage).getPropertyValue('--fw')) || 120, off = e.clientX - (r.left + (parseFloat(getComputedStyle(tlStage).getPropertyValue('--fx')) || r.width / 2));
+    if (Math.abs(off) < fw * .7) tlOpen(tl.i); else tlGo(tl.i + Math.round(off / (fw * 1.0 / 0.105 * 0.112)), true);
   });
   tlStage.addEventListener('pointercancel', function(){ tx0 = null; });
   $('tlPiece').onclick = function(){ tlOpen(tl.i, true); };
@@ -1057,7 +1060,7 @@
   function tlxFill(k){
     tlxK = (k + LOOKS.length) % LOOKS.length; var L = LOOKS[tlxK], p = P[L.h];
     $('tlxNum').textContent = 'Look ' + two(tlxK + 1); $('tlxName').textContent = p.t;
-    var im = $('tlxImg'); im.src = 'media/look/' + L.h + '.webp'; im.alt = p.f;
+    var im = $('tlxImg'); im.src = 'media/look/' + L.h + '.jpg'; im.alt = p.f;
     var pin = $('tlxPin'); pin.style.left = L.x + '%'; pin.style.top = L.y + '%';
     $('tlxThumb').innerHTML = '<img src="cut2/' + p.h + '.webp" alt="">';
     $('tlxPn').textContent = p.f; $('tlxPp').textContent = priceOf(p); $('tlxMore').href = '#piece-' + p.h;
