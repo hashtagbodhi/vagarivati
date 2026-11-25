@@ -1796,6 +1796,8 @@ img,video,svg{display:block}
 .tl-ring .tl-fig.on{cursor:zoom-in}
 .tl-stage{cursor:grab}
 @media (max-width:820px){.tl-stage{height:54vh;min-height:380px}}
+/* the haze is the figure itself flattened to the backdrop grey, laid over it */
+.tl-ring .tl-haze{position:absolute;inset:0;width:100%;height:100%;background:none;-webkit-mask:none;mask:none;filter:contrast(0) brightness(1.71)}
 </style>
 <div id="app" data-view="home">
 
@@ -3248,7 +3250,7 @@ img,video,svg{display:block}
   var DIM = {surya:[407,963],padma:[438,951],satya:[409,1006],qing:[471,950],yugen:[466,950],dolma:[488,952],maitri:[457,956],mani:[604,948],milarepa:[457,966],hikari:[384,948],indra:[447,972],yun:[466,947]};
   tlStage.innerHTML = '<div class="tl-ring">' + LOOKS.map(function(L, k){
     var u = 'media/ring/' + L.h + '.webp';
-    return '<figure class="tl-fig" data-k="' + k + '"><img src="' + u + '" alt="' + esc(P[L.h].f) + '" draggable="false" decoding="async"><i class="tl-haze" style="-webkit-mask-image:url(' + u + ');mask-image:url(' + u + ')"></i></figure>';
+    return '<figure class="tl-fig" data-k="' + k + '"><img src="' + u + '" alt="' + esc(P[L.h].f) + '" draggable="false" decoding="async"><img class="tl-haze" src="' + u + '" alt="" draggable="false" decoding="async"></figure>';
   }).join('') + '</div>';
   $('tlProg').innerHTML = LOOKS.map(function(){ return '<i><b></b></i>'; }).join('');
   var tlFigs = [].slice.call(tlStage.querySelectorAll('.tl-fig')), tlHaze = tlFigs.map(function(f){ return f.querySelector('.tl-haze'); }), tlBars = [].slice.call($('tlProg').children);

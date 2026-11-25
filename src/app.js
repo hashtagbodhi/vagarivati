@@ -1013,7 +1013,7 @@
   var DIM = {surya:[407,963],padma:[438,951],satya:[409,1006],qing:[471,950],yugen:[466,950],dolma:[488,952],maitri:[457,956],mani:[604,948],milarepa:[457,966],hikari:[384,948],indra:[447,972],yun:[466,947]};
   tlStage.innerHTML = '<div class="tl-ring">' + LOOKS.map(function(L, k){
     var u = 'media/ring/' + L.h + '.webp';
-    return '<figure class="tl-fig" data-k="' + k + '"><img src="' + u + '" alt="' + esc(P[L.h].f) + '" draggable="false" decoding="async"><i class="tl-haze" style="-webkit-mask-image:url(' + u + ');mask-image:url(' + u + ')"></i></figure>';
+    return '<figure class="tl-fig" data-k="' + k + '"><img src="' + u + '" alt="' + esc(P[L.h].f) + '" draggable="false" decoding="async"><img class="tl-haze" src="' + u + '" alt="" draggable="false" decoding="async"></figure>';
   }).join('') + '</div>';
   $('tlProg').innerHTML = LOOKS.map(function(){ return '<i><b></b></i>'; }).join('');
   var tlFigs = [].slice.call(tlStage.querySelectorAll('.tl-fig')), tlHaze = tlFigs.map(function(f){ return f.querySelector('.tl-haze'); }), tlBars = [].slice.call($('tlProg').children);
