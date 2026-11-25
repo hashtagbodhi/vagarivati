@@ -1785,6 +1785,9 @@ img,video,svg{display:block}
 .sf-nav{justify-content:center}
 @media (max-width:820px){.sf-nav nav:first-child a:nth-child(-n+3){border-bottom:1px solid var(--line)}.sf-nav{border-bottom:1px solid var(--line)}}
 @media (max-width:820px){#app[data-layout="store"] .hero-copy{bottom:auto;top:clamp(70px,16%,140px)}}
+.tl-rig{position:absolute;left:0;top:0;will-change:transform;backface-visibility:hidden;-webkit-backface-visibility:hidden}
+.tl-rig .tl-cam{position:absolute;inset:0;width:100%;height:100%;transform:none!important;transition:none;will-change:auto}
+.tl-sharp{will-change:opacity}
 </style>
 <div id="app" data-view="home">
 
@@ -3232,27 +3235,26 @@ img,video,svg{display:block}
   var LOOKS = [{h:'surya',sx:10.8,x:57,y:40},{h:'padma',sx:23.4,x:51,y:42},{h:'qing',sx:34.2,x:50,y:44},{h:'yugen',sx:45.4,x:57,y:44},{h:'maitri',sx:56.4,x:50,y:40},{h:'mani',sx:67.9,x:50,y:47},{h:'hikari',sx:78.9,x:57,y:46},{h:'yun',sx:90,x:46,y:66}];
   var tl = { i:0, t:0, paused:false, dur:5200 }, tlStage = $('tlStage');
   // two copies of the same photo: one soft (the room), one sharp and masked to the person in front
-  tlStage.innerHTML = '<div class="tl-cam tl-soft"><img src="media/look/scene.jpg" alt="" draggable="false"></div>'
-    + '<div class="tl-cam tl-sharp"><img src="media/look/scene.jpg" alt="Eight Vagari Vati looks in one studio" draggable="false"></div>';
+  // both copies live in one rig, and only the rig moves, so they can never drift apart
+  tlStage.innerHTML = '<div class="tl-rig"><div class="tl-cam tl-soft"><img src="media/look/scene.jpg" alt="" draggable="false" decoding="async"></div>'
+    + '<div class="tl-cam tl-sharp"><img src="media/look/scene.jpg" alt="Eight Vagari Vati looks in one studio" draggable="false" decoding="async"></div></div>';
   $('tlProg').innerHTML = LOOKS.map(function(){ return '<i><b></b></i>'; }).join('');
-  var tlCams = [].slice.call(tlStage.querySelectorAll('.tl-cam')), tlSharp = tlStage.querySelector('.tl-sharp'), tlBars = [].slice.call($('tlProg').children);
+  var tlRig = tlStage.querySelector('.tl-rig'), tlCams = [].slice.call(tlStage.querySelectorAll('.tl-cam')), tlSharp = tlStage.querySelector('.tl-sharp'), tlBars = [].slice.call($('tlProg').children);
   var SCN = 2800 / 1185, G = {}, camX = 0;   // the photo's width over its height; the camera's current position
   var EASE_OUT = 'cubic-bezier(.16,1,.3,1)', EASE_GLIDE = 'cubic-bezier(.65,0,.35,1)';
   function tlGeo(){
     var sh = tlStage.clientHeight, sw = tlStage.clientWidth, ih = sh * (narrow.matches ? 1.05 : 1.0), iw = ih * SCN;
     G = { sh:sh, sw:sw, ih:ih, iw:iw, y:sh - ih * .985, min:Math.min(0, sw - iw), push:narrow.matches ? 1 : 1.07 };
     G.xs = LOOKS.map(function(L){ return Math.min(0, Math.max(G.min, sw / 2 - iw * L.sx / 100)); });
-    tlCams.forEach(function(c){ c.style.width = iw + 'px'; c.style.height = ih + 'px'; });
+    tlRig.style.width = iw + 'px'; tlRig.style.height = ih + 'px';
     tlSharp.style.setProperty('--pw', (iw * .105) + 'px');
   }
   // place the camera; ms = 0 follows the finger exactly
   function tlCam(x, k, ms, ease, push){
     camX = x; var s = push || 1, ox = G.iw * LOOKS[k].sx / 100;
-    tlCams.forEach(function(c){
-      c.style.transition = ms ? 'transform ' + ms + 'ms ' + ease : 'none';
-      c.style.transformOrigin = ox + 'px ' + (G.ih * .93) + 'px';
-      c.style.transform = 'translate3d(' + x + 'px,' + G.y + 'px,0) scale(' + s + ')';
-    });
+    tlRig.style.transition = ms ? 'transform ' + ms + 'ms ' + ease : 'none';
+    tlRig.style.transformOrigin = ox + 'px ' + (G.ih * .93) + 'px';
+    tlRig.style.transform = 'translate3d(' + x + 'px,' + G.y + 'px,0) scale(' + s + ')';
   }
   // the light: only the person in front is lit; it fades while the camera travels and returns on arrival
   function tlLight(k, on, delay){
@@ -3297,7 +3299,9 @@ img,video,svg{display:block}
   tlStage.addEventListener('pointerdown', function(e){
     if (!G.iw) tlGeo();
     drag = { x0:e.clientX, y0:e.clientY, cx:camX, axis:null, pts:[[e.clientX, performance.now()]], id:e.pointerId };
-    tlCams.forEach(function(c){ var m = getComputedStyle(c).transform; if (m && m !== 'none'){ var v = m.match(/-?[\d.]+/g); drag.cx = camX = +v[4]; } c.style.transition = 'none'; });
+    // catch the rig where it is, mid-glide, so a touch never makes it jump
+    var m = getComputedStyle(tlRig).transform; if (m && m !== 'none'){ var v = m.match(/-?[\d.]+/g); drag.cx = camX = +v[4]; }
+    tlRig.style.transition = 'none'; tlRig.style.transform = 'translate3d(' + camX + 'px,' + G.y + 'px,0)';
     clearTimeout(tl.t);
   });
   tlStage.addEventListener('pointermove', function(e){
