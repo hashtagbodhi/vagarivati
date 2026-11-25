@@ -1003,6 +1003,94 @@
   }, true);
   paintSeen();
 
+  /* ---------- try the look: eight models in one studio, a lineup that glides ---------- */
+  var LOOKS = [{h:'yugen',x:57,y:44},{h:'maitri',x:50,y:40},{h:'qing',x:50,y:44},{h:'hikari',x:57,y:46},{h:'mani',x:50,y:47},{h:'yun',x:46,y:66},{h:'padma',x:51,y:42},{h:'surya',x:57,y:40}];
+  var tl = { i:0, t:0, paused:false, dur:5200 }, tlStage = $('tlStage');
+  tlStage.innerHTML = LOOKS.map(function(L, k){ return '<figure class="tl-fig" data-k="'+k+'"><img src="media/look/'+L.h+'.webp" alt="'+esc(P[L.h].f)+'" draggable="false"'+(k>2&&k<6?' loading="lazy"':'')+'></figure>'; }).join('');
+  $('tlProg').innerHTML = LOOKS.map(function(){ return '<i><b></b></i>'; }).join('');
+  var tlFigs = [].slice.call(tlStage.children), tlBars = [].slice.call($('tlProg').children);
+  function tlLay(){
+    var n = LOOKS.length, wide = !narrow.matches;
+    tlFigs.forEach(function(f, k){
+      var off = k - tl.i; if (off > n/2) off -= n; if (off < -n/2) off += n;
+      var a = Math.abs(off), sc = Math.max(.5, 1 - a * (wide ? .15 : .2)), x = off * (wide ? 58 : 50);
+      f.style.transform = 'translate3d(calc(-50% + ' + x + '%),0,0) scale(' + sc + ')';
+      f.style.zIndex = 20 - a;
+      f.style.filter = a ? 'blur(' + (a * 1.6) + 'px) contrast(' + (1 - a * .12) + ') brightness(' + (1 + a * .05) + ')' : 'none';
+      f.style.opacity = a > 3 ? 0 : 1 - a * .08;
+      f.classList.toggle('on', a === 0); f.setAttribute('aria-hidden', a !== 0);
+    });
+    var p = P[LOOKS[tl.i].h];
+    $('tlNum').textContent = 'Look ' + two(tl.i + 1) + ' / ' + two(n);
+    $('tlName').textContent = p.t; $('tlMeta').textContent = KIND[p.c];
+    $('tlPimg').innerHTML = '<img src="cut2/' + p.h + '.webp" alt="">';
+    $('tlPkind').textContent = KIND[p.c]; $('tlPname').textContent = p.f; $('tlPprice').textContent = priceOf(p);
+    tlBars.forEach(function(b, k){ b.className = k < tl.i ? 'done' : ''; });
+    var cur = tlBars[tl.i]; cur.className = ''; void cur.offsetWidth; cur.className = tl.paused ? 'now held' : 'now';
+    cur.style.setProperty('--d', tl.dur + 'ms');
+  }
+  function tlGo(k, user){
+    tl.i = (k + LOOKS.length) % LOOKS.length; tlLay();
+    clearTimeout(tl.t); if (!tl.paused) tl.t = setTimeout(function(){ tlGo(tl.i + 1); }, tl.dur);
+    if (user) snd('tick');
+  }
+  function tlHold(on){ tl.paused = on; tlGo(tl.i); }
+  $('tlPrev').onclick = function(){ tlGo(tl.i - 1, true); };
+  $('tlNext').onclick = function(){ tlGo(tl.i + 1, true); };
+  var tlSec = $('tl');
+  tlSec.addEventListener('pointerenter', function(e){ if (e.pointerType === 'mouse') tlHold(true); });
+  tlSec.addEventListener('pointerleave', function(e){ if (e.pointerType === 'mouse') tlHold(false); });
+  // swipe or drag the lineup; a tap on a side model brings it forward, a tap on the front one opens it
+  var tx0 = null, tmoved = false;
+  tlStage.addEventListener('pointerdown', function(e){ tx0 = e.clientX; tmoved = false; });
+  tlStage.addEventListener('pointermove', function(e){ if (tx0 !== null && Math.abs(e.clientX - tx0) > 10) tmoved = true; });
+  tlStage.addEventListener('pointerup', function(e){
+    if (tx0 === null) return; var dx = e.clientX - tx0; tx0 = null;
+    if (tmoved && Math.abs(dx) > 40){ tlGo(tl.i + (dx < 0 ? 1 : -1), true); return; }
+    var f = e.target.closest('.tl-fig'); if (!f) return; var k = +f.getAttribute('data-k');
+    if (k === tl.i) tlOpen(k); else tlGo(k, true);
+  });
+  tlStage.addEventListener('pointercancel', function(){ tx0 = null; });
+  $('tlPiece').onclick = function(){ tlOpen(tl.i, true); };
+  // the look, opened: one model, a dot on the piece, a sheet to buy it
+  var tlx = $('tlx'), tlxOpen = false, tlxK = 0, tlxSize = null;
+  function tlxFill(k){
+    tlxK = (k + LOOKS.length) % LOOKS.length; var L = LOOKS[tlxK], p = P[L.h];
+    $('tlxNum').textContent = 'Look ' + two(tlxK + 1); $('tlxName').textContent = p.t;
+    var im = $('tlxImg'); im.src = 'media/look/' + L.h + '.webp'; im.alt = p.f;
+    var pin = $('tlxPin'); pin.style.left = L.x + '%'; pin.style.top = L.y + '%';
+    $('tlxThumb').innerHTML = '<img src="cut2/' + p.h + '.webp" alt="">';
+    $('tlxPn').textContent = p.f; $('tlxPp').textContent = priceOf(p); $('tlxMore').href = '#piece-' + p.h;
+    $('tlxSizes').innerHTML = p.v.map(function(v){ return '<button type="button" data-id="'+v.id+'"'+(v.a?'':' disabled')+'>'+v.s+'</button>'; }).join('');
+    tlxSize = null; var av = p.v.filter(function(v){ return v.a; }); if (av.length === 1) tlxPick(av[0].id);
+    tlxAddPaint();
+    tlx.classList.remove('buy'); tlx.classList.remove('swap'); void tlx.offsetWidth; tlx.classList.add('swap');
+  }
+  function tlxPick(id){ tlxSize = String(id); [].forEach.call($('tlxSizes').children, function(b){ b.setAttribute('aria-pressed', b.getAttribute('data-id') === tlxSize); }); tlxAddPaint(); }
+  function tlxAddPaint(){ var p = P[LOOKS[tlxK].h], b = $('tlxAdd'); if (soldOut(p)){ b.disabled = true; b.textContent = 'Sold out'; } else { b.disabled = !tlxSize; b.textContent = tlxSize ? 'Add to bag' : 'Select a size'; } }
+  function tlOpen(k, sheet){
+    tlxFill(k); tlxOpen = true; tl.paused = true; clearTimeout(tl.t);
+    tlx.classList.add('open'); tlx.setAttribute('aria-hidden', false); tlx.inert = false; snd('sheet');
+    if (sheet) setTimeout(function(){ tlx.classList.add('buy'); }, 220);
+  }
+  function tlClose(){ if (!tlxOpen) return; tlxOpen = false; tlx.classList.remove('open', 'buy'); tlx.setAttribute('aria-hidden', true); tlx.inert = true; tl.paused = false; tlGo(tlxK); }
+  $('tlxX').onclick = tlClose;
+  $('tlxPin').onclick = function(){ tlx.classList.add('buy'); snd('tick'); };
+  $('tlxSx').onclick = function(){ tlx.classList.remove('buy'); };
+  $('tlxPrev').onclick = function(){ tlxFill(tlxK - 1); snd('tick'); };
+  $('tlxNext').onclick = function(){ tlxFill(tlxK + 1); snd('tick'); };
+  $('tlxSizes').onclick = function(e){ var b = e.target.closest('button'); if (b && !b.disabled){ tlxPick(b.getAttribute('data-id')); snd('tick'); } };
+  $('tlxAdd').onclick = function(){ var p = P[LOOKS[tlxK].h], v = p.v.filter(function(v){ return String(v.id) === tlxSize; })[0]; if (!v) return; tlClose(); addLine(p, v); };
+  $('tlxMore').onclick = function(){ tlClose(); };
+  document.addEventListener('keydown', function(e){
+    if (!tlxOpen) return; e.stopPropagation();
+    if (e.key === 'Escape') tlClose(); else if (e.key === 'ArrowRight') tlxFill(tlxK + 1); else if (e.key === 'ArrowLeft') tlxFill(tlxK - 1);
+  }, true);
+  window.addEventListener('resize', tlLay);
+  // only run the clock while the lineup is on screen
+  if ('IntersectionObserver' in window) new IntersectionObserver(function(es){ es.forEach(function(en){ if (tlxOpen) return; tl.paused = !en.isIntersecting; tlGo(tl.i); }); }, { threshold:.25 }).observe(tlSec);
+  tlGo(0);
+
   /* ---------- site settings: lighting, how products are shown, hover effect ---------- */
   var SET = { layout:'store', theme:'night', mode:'cutout', hover:'zoom', icon:'red' }, setEl = $('settings'), setOpen = false;
   var SET_OK = { layout:['store'], theme:['night','bone','chapel','blood'], mode:['cutout','model'], hover:['zoom','lift','focus'], icon:['red','white','ash','maroon'] };

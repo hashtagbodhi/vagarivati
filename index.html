@@ -1654,6 +1654,103 @@ img,video,svg{display:block}
 .v-story .st-steps h4,.v-story .st-steps p,.v-story .st-steps b{margin:0}
 .v-story .st-steps p{font-size:16.5px;line-height:1.5}
 @media (max-width:820px){.v-story .st-steps li,.v-story .st-steps li+li{grid-template-columns:34px 1fr;row-gap:6px}.v-story .st-steps p{grid-column:2}}
+
+/* =====================================================================
+   Try the look: one studio, eight models. The stage is painted the exact
+   colour the looks were shot on, so every model sits in the same room.
+   ===================================================================== */
+.tl,.tlx{--stage:rgb(221,220,228);--sink:#141216;--soft:rgba(20,18,22,.55);--hair:rgba(20,18,22,.14)}
+.tl{display:none}
+#app[data-layout="store"] .catalog>.tl{display:block;order:0;margin-top:var(--top);position:relative;z-index:1;background:var(--stage);color:var(--sink);overflow:hidden}
+#app[data-layout="store"] .catalog>.hero{margin-top:0}
+#app[data-layout="store"] .catalog.listing>.tl{display:none}
+.tl-head{position:absolute;left:var(--pad);top:clamp(22px,4vh,40px);z-index:30;max-width:360px;pointer-events:none}
+.tl-head h2{font:500 clamp(24px,2.2vw,32px)/1.05 var(--text);letter-spacing:-.02em;color:var(--sink)}
+.tl-head p{margin-top:8px;font-size:var(--t-s);color:var(--soft);line-height:1.45}
+.tl-stage{position:relative;height:min(80vh,820px);min-height:520px;touch-action:pan-y;user-select:none;cursor:grab}
+.tl-stage:active{cursor:grabbing}
+.tl-fig{position:absolute;left:50%;bottom:0;height:100%;aspect-ratio:900/1341;margin:0;transform-origin:50% 88%;transition:transform 1s cubic-bezier(.65,0,.2,1),filter 1s ease,opacity 1s ease;will-change:transform}
+.tl-fig img{width:100%;height:100%;display:block;pointer-events:none}
+.tl-fig.on{cursor:zoom-in}
+.tl-bar{position:relative;z-index:30;padding:0 var(--pad) clamp(22px,4vh,34px);display:grid;grid-template-columns:1fr auto;gap:14px 30px;align-items:end}
+.tl-prog{grid-column:1/-1;display:grid;grid-template-columns:repeat(8,1fr);gap:4px}
+.tl-prog i{height:2px;background:var(--hair);overflow:hidden}
+.tl-prog b{display:block;height:100%;width:0;background:var(--sink)}
+.tl-prog .done b{width:100%}
+.tl-prog .now b{animation:tlrun var(--d,5200ms) linear forwards}
+.tl-prog .now.held b{animation-play-state:paused}
+@keyframes tlrun{to{width:100%}}
+.tl-info{display:flex;align-items:end;justify-content:space-between;gap:20px}
+.tl-name{display:grid;gap:4px}
+.tl-name span{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--soft)}
+.tl-name b{font:400 clamp(30px,3vw,44px)/1 var(--display);color:var(--sink)}
+.tl-name i{font-style:normal;font-size:var(--t-s);color:var(--soft)}
+.tl-ctl{display:flex;gap:6px}
+.tl-ctl button{width:42px;height:42px;display:grid;place-items:center;border:1px solid var(--hair);color:var(--sink);transition:border-color .2s,background .2s}
+.tl-ctl button:hover{border-color:var(--sink)}
+.tl-piece{display:grid;grid-template-columns:56px 1fr 40px;align-items:center;gap:14px;min-width:300px;padding:8px 8px 8px 8px;background:rgba(255,255,255,.55);border:1px solid var(--hair);text-align:left;color:var(--sink);transition:background .25s,border-color .25s}
+.tl-piece:hover{background:#fff;border-color:var(--sink)}
+.tl-pimg{width:56px;height:70px;display:block}
+.tl-pimg img{width:100%;height:100%;object-fit:contain}
+.tl-pt{display:grid;gap:2px;font-size:13px}
+.tl-pt em{font-style:normal;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--soft)}
+.tl-pt b{font-weight:500}
+.tl-plus{width:40px;height:40px;display:grid;place-items:center;font-size:22px;font-weight:300;border-left:1px solid var(--hair)}
+.tl .chev,.tlx .chev{border-color:currentColor}
+
+/* the opened look */
+.tlx{position:absolute;inset:0;z-index:84;background:var(--stage);color:var(--sink);opacity:0;visibility:hidden;transition:opacity .45s ease,visibility 0s .45s;overflow:hidden}
+.tlx.open{opacity:1;visibility:visible;transition:opacity .45s ease}
+.tlx-top{position:absolute;left:var(--pad);right:var(--pad);top:calc(var(--ann) + 18px);z-index:3;display:flex;align-items:center;gap:14px}
+.tlx-top span{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--soft)}
+.tlx-top b{font:400 30px/1 var(--display)}
+.tlx-x{margin-left:auto;width:44px;height:44px;border-radius:50%;border:1px solid var(--hair);font-size:24px;line-height:1;color:var(--sink);display:grid;place-items:center;background:rgba(255,255,255,.4)}
+.tlx-fig{position:absolute;left:50%;bottom:7vh;height:84vh;aspect-ratio:900/1341;transform:translateX(-50%);transition:transform .7s cubic-bezier(.65,0,.2,1)}
+.tlx.swap .tlx-fig{animation:tlxin .7s cubic-bezier(.3,0,.2,1)}
+@keyframes tlxin{from{opacity:0;transform:translateX(-50%) scale(.96)}to{opacity:1;transform:translateX(-50%)}}
+.tlx.buy .tlx-fig{transform:translateX(-50%) translateY(-6vh) scale(.9)}
+.tlx-fig img{width:100%;height:100%;display:block}
+.tl-pin{position:absolute;width:34px;height:34px;margin:-17px 0 0 -17px;border-radius:50%;background:rgba(255,255,255,.92);color:var(--sink);display:grid;place-items:center;font-size:12px;font-weight:500;box-shadow:0 2px 10px rgba(0,0,0,.18)}
+.tl-pin::before{content:"";position:absolute;inset:-9px;border-radius:50%;border:1px solid rgba(255,255,255,.95);animation:pinring 1.8s ease-out infinite}
+@keyframes pinring{from{transform:scale(.7);opacity:1}to{transform:scale(1.5);opacity:0}}
+.tl-pin:hover{background:var(--blood);color:#fff}
+.tlx-hint{position:absolute;left:0;right:0;bottom:3vh;text-align:center;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--soft)}
+.tlx-nav{position:absolute;top:50%;width:48px;height:48px;margin-top:-24px;border:1px solid var(--hair);display:grid;place-items:center;color:var(--sink);z-index:2;background:rgba(255,255,255,.35)}
+.tlx-nav.l{left:var(--pad)}.tlx-nav.r{right:var(--pad)}
+.tlx-sheet{position:absolute;left:50%;bottom:0;width:min(460px,100%);transform:translate(-50%,105%);background:#fff;color:var(--sink);padding:14px 18px calc(18px + env(safe-area-inset-bottom,0px));box-shadow:0 -10px 40px rgba(0,0,0,.12);transition:transform .45s cubic-bezier(.65,0,.2,1);z-index:4}
+.tlx.buy .tlx-sheet{transform:translate(-50%,0)}
+.tlx-sheet::before{content:"";display:block;width:36px;height:4px;border-radius:2px;background:var(--hair);margin:0 auto 12px}
+.tlx-row{display:grid;grid-template-columns:52px 1fr 36px;gap:12px;align-items:center}
+.tlx-thumb{width:52px;height:64px;display:block;background:var(--stage)}
+.tlx-thumb img{width:100%;height:100%;object-fit:contain}
+.tlx-row div{display:grid;gap:3px;font-size:14px}
+.tlx-row b{font-weight:500}
+.tlx-sx{width:36px;height:36px;font-size:22px;color:var(--sink)}
+.tlx-lab{margin:16px 0 8px;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--soft)}
+.tlx-sizes{display:flex;gap:6px;flex-wrap:wrap}
+.tlx-sizes button{min-width:48px;height:44px;padding:0 12px;border:1px solid var(--hair);border-radius:22px;color:var(--sink);font-size:13px;transition:background .2s,color .2s,border-color .2s}
+.tlx-sizes button:hover{border-color:var(--sink)}
+.tlx-sizes button[aria-pressed="true"]{background:var(--sink);color:#fff;border-color:var(--sink)}
+.tlx-sizes button[disabled]{opacity:.35;text-decoration:line-through}
+.tlx-add{width:100%;height:50px;margin-top:14px;background:var(--sink);color:#fff;font-size:12px;letter-spacing:.1em;text-transform:uppercase;font-weight:500;transition:background .2s}
+.tlx-add:not([disabled]):hover{background:var(--blood)}
+.tlx-add[disabled]{background:var(--hair);color:var(--soft);cursor:not-allowed}
+.tlx-more{display:block;text-align:center;margin-top:12px;font-size:12px;text-decoration:underline;text-underline-offset:4px;color:var(--soft)}
+@media (max-width:820px){
+  .tl-head{top:16px;max-width:none;right:var(--pad)}
+  .tl-head p{display:none}
+  .tl-stage{height:62vh;min-height:430px}
+  .tl-bar{grid-template-columns:1fr;gap:12px}
+  .tl-name b{font-size:30px}
+  .tl-piece{min-width:0}
+  .tlx-fig{height:70vh;bottom:9vh}
+  .tlx-nav{top:auto;bottom:2.4vh;margin:0;width:40px;height:40px}
+  .tlx-top b{font-size:24px}
+}
+@media (prefers-reduced-motion:reduce){.tl-fig,.tlx-fig,.tlx-sheet{transition:none}.tl-pin::before{animation:none}}
+
+.tl-stage{height:clamp(460px,calc(var(--vh,100vh) - var(--top) - 150px),860px)}
+@media (max-width:820px){.tl-stage{height:62vh;min-height:430px}}
 </style>
 </head>
 <body>
@@ -1687,6 +1784,18 @@ img,video,svg{display:block}
         <div class="splits" id="splits" aria-label="Featured pieces"></div>
         <div class="sigil" aria-hidden="true"><span class="tri"><i class="t1"></i><i class="t2"></i><i class="t3"></i></span></div>
         <div class="wall" id="wall"></div>
+        <section class="tl" id="tl" aria-label="Try the look">
+          <header class="tl-head"><h2>Try the look.</h2><p>Eight looks, shot in one room. Tap a look to shop the piece.</p></header>
+          <div class="tl-stage" id="tlStage" aria-roledescription="carousel"></div>
+          <div class="tl-bar">
+            <div class="tl-prog" id="tlProg"></div>
+            <div class="tl-info">
+              <div class="tl-name"><span id="tlNum"></span><b id="tlName"></b><i id="tlMeta"></i></div>
+              <div class="tl-ctl"><button type="button" id="tlPrev" aria-label="Previous look"><i class="chev l"></i></button><button type="button" id="tlNext" aria-label="Next look"><i class="chev r"></i></button></div>
+            </div>
+            <button type="button" class="tl-piece" id="tlPiece"><span class="tl-pimg" id="tlPimg"></span><span class="tl-pt"><em id="tlPkind"></em><b id="tlPname"></b><span id="tlPprice"></span></span><span class="tl-plus" aria-hidden="true">+</span></button>
+          </div>
+        </section>
         <div class="hero">
           <video class="film" id="film" muted loop playsinline preload="auto" poster="media/film-poster.jpg">
             <source src="media/film.mp4" type="video/mp4">
@@ -1986,6 +2095,18 @@ img,video,svg{display:block}
   <div class="zoom" id="zoom" role="dialog" aria-label="Photos" aria-hidden="true" inert><button type="button" class="tool" id="zoomX">Close</button><div class="zoom-in" id="zoomIn"></div></div>
   <div class="mbar" id="mbar" aria-hidden="true"><span class="mb-img" id="mbImg"></span><div class="mb-t"><b id="mbName"></b><span><em id="mbPrice"></em><i id="mbSize"></i></span></div><button type="button" class="mb-add" id="mbAdd"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 8.5h14l-1 12H6z"/><path d="M8.8 8.5V7a3.2 3.2 0 0 1 6.4 0v1.5"/></svg><span>Add to bag</span></button></div>
   <div class="sheet" id="szSheet" role="dialog" aria-label="Select size" aria-hidden="true" inert><div class="sheet-h"><p>Select size</p><button type="button" class="tool" id="szX">Close</button></div><div class="sheet-s" id="szList"></div></div>
+  <div class="tlx" id="tlx" role="dialog" aria-modal="true" aria-label="Look" aria-hidden="true" inert>
+    <div class="tlx-top"><span id="tlxNum"></span><b id="tlxName"></b><button type="button" class="tlx-x" id="tlxX" aria-label="Close">&times;</button></div>
+    <div class="tlx-fig" id="tlxFig"><img id="tlxImg" alt=""><button type="button" class="tl-pin" id="tlxPin" aria-label="Shop this piece"><span>1</span></button></div>
+    <p class="tlx-hint">Tap the dot to shop the piece</p>
+    <button type="button" class="tlx-nav l" id="tlxPrev" aria-label="Previous look"><i class="chev l"></i></button><button type="button" class="tlx-nav r" id="tlxNext" aria-label="Next look"><i class="chev r"></i></button>
+    <div class="tlx-sheet" id="tlxSheet">
+      <div class="tlx-row"><span class="tlx-thumb" id="tlxThumb"></span><div><b id="tlxPn"></b><span id="tlxPp"></span></div><button type="button" class="tlx-sx" id="tlxSx" aria-label="Close">&times;</button></div>
+      <p class="tlx-lab">Select size</p><div class="tlx-sizes" id="tlxSizes"></div>
+      <button type="button" class="tlx-add" id="tlxAdd" disabled>Select a size</button>
+      <a class="tlx-more" id="tlxMore" href="#">View full details</a>
+    </div>
+  </div>
   <div class="scrim" id="scrim" hidden></div>
   <aside class="bag" id="bag" role="dialog" aria-modal="true" aria-label="Your bag" aria-hidden="true" inert>
     <div class="bag-head grid">
@@ -3074,6 +3195,94 @@ img,video,svg{display:block}
     if (xOpen){ e.stopPropagation(); openX(null); syncBar(); } else if (mega.classList.contains('open')){ e.stopPropagation(); hideMega(true); }
   }, true);
   paintSeen();
+
+  /* ---------- try the look: eight models in one studio, a lineup that glides ---------- */
+  var LOOKS = [{h:'yugen',x:57,y:44},{h:'maitri',x:50,y:40},{h:'qing',x:50,y:44},{h:'hikari',x:57,y:46},{h:'mani',x:50,y:47},{h:'yun',x:46,y:66},{h:'padma',x:51,y:42},{h:'surya',x:57,y:40}];
+  var tl = { i:0, t:0, paused:false, dur:5200 }, tlStage = $('tlStage');
+  tlStage.innerHTML = LOOKS.map(function(L, k){ return '<figure class="tl-fig" data-k="'+k+'"><img src="media/look/'+L.h+'.webp" alt="'+esc(P[L.h].f)+'" draggable="false"'+(k>2&&k<6?' loading="lazy"':'')+'></figure>'; }).join('');
+  $('tlProg').innerHTML = LOOKS.map(function(){ return '<i><b></b></i>'; }).join('');
+  var tlFigs = [].slice.call(tlStage.children), tlBars = [].slice.call($('tlProg').children);
+  function tlLay(){
+    var n = LOOKS.length, wide = !narrow.matches;
+    tlFigs.forEach(function(f, k){
+      var off = k - tl.i; if (off > n/2) off -= n; if (off < -n/2) off += n;
+      var a = Math.abs(off), sc = Math.max(.5, 1 - a * (wide ? .15 : .2)), x = off * (wide ? 58 : 50);
+      f.style.transform = 'translate3d(calc(-50% + ' + x + '%),0,0) scale(' + sc + ')';
+      f.style.zIndex = 20 - a;
+      f.style.filter = a ? 'blur(' + (a * 1.6) + 'px) contrast(' + (1 - a * .12) + ') brightness(' + (1 + a * .05) + ')' : 'none';
+      f.style.opacity = a > 3 ? 0 : 1 - a * .08;
+      f.classList.toggle('on', a === 0); f.setAttribute('aria-hidden', a !== 0);
+    });
+    var p = P[LOOKS[tl.i].h];
+    $('tlNum').textContent = 'Look ' + two(tl.i + 1) + ' / ' + two(n);
+    $('tlName').textContent = p.t; $('tlMeta').textContent = KIND[p.c];
+    $('tlPimg').innerHTML = '<img src="cut2/' + p.h + '.webp" alt="">';
+    $('tlPkind').textContent = KIND[p.c]; $('tlPname').textContent = p.f; $('tlPprice').textContent = priceOf(p);
+    tlBars.forEach(function(b, k){ b.className = k < tl.i ? 'done' : ''; });
+    var cur = tlBars[tl.i]; cur.className = ''; void cur.offsetWidth; cur.className = tl.paused ? 'now held' : 'now';
+    cur.style.setProperty('--d', tl.dur + 'ms');
+  }
+  function tlGo(k, user){
+    tl.i = (k + LOOKS.length) % LOOKS.length; tlLay();
+    clearTimeout(tl.t); if (!tl.paused) tl.t = setTimeout(function(){ tlGo(tl.i + 1); }, tl.dur);
+    if (user) snd('tick');
+  }
+  function tlHold(on){ tl.paused = on; tlGo(tl.i); }
+  $('tlPrev').onclick = function(){ tlGo(tl.i - 1, true); };
+  $('tlNext').onclick = function(){ tlGo(tl.i + 1, true); };
+  var tlSec = $('tl');
+  tlSec.addEventListener('pointerenter', function(e){ if (e.pointerType === 'mouse') tlHold(true); });
+  tlSec.addEventListener('pointerleave', function(e){ if (e.pointerType === 'mouse') tlHold(false); });
+  // swipe or drag the lineup; a tap on a side model brings it forward, a tap on the front one opens it
+  var tx0 = null, tmoved = false;
+  tlStage.addEventListener('pointerdown', function(e){ tx0 = e.clientX; tmoved = false; });
+  tlStage.addEventListener('pointermove', function(e){ if (tx0 !== null && Math.abs(e.clientX - tx0) > 10) tmoved = true; });
+  tlStage.addEventListener('pointerup', function(e){
+    if (tx0 === null) return; var dx = e.clientX - tx0; tx0 = null;
+    if (tmoved && Math.abs(dx) > 40){ tlGo(tl.i + (dx < 0 ? 1 : -1), true); return; }
+    var f = e.target.closest('.tl-fig'); if (!f) return; var k = +f.getAttribute('data-k');
+    if (k === tl.i) tlOpen(k); else tlGo(k, true);
+  });
+  tlStage.addEventListener('pointercancel', function(){ tx0 = null; });
+  $('tlPiece').onclick = function(){ tlOpen(tl.i, true); };
+  // the look, opened: one model, a dot on the piece, a sheet to buy it
+  var tlx = $('tlx'), tlxOpen = false, tlxK = 0, tlxSize = null;
+  function tlxFill(k){
+    tlxK = (k + LOOKS.length) % LOOKS.length; var L = LOOKS[tlxK], p = P[L.h];
+    $('tlxNum').textContent = 'Look ' + two(tlxK + 1); $('tlxName').textContent = p.t;
+    var im = $('tlxImg'); im.src = 'media/look/' + L.h + '.webp'; im.alt = p.f;
+    var pin = $('tlxPin'); pin.style.left = L.x + '%'; pin.style.top = L.y + '%';
+    $('tlxThumb').innerHTML = '<img src="cut2/' + p.h + '.webp" alt="">';
+    $('tlxPn').textContent = p.f; $('tlxPp').textContent = priceOf(p); $('tlxMore').href = '#piece-' + p.h;
+    $('tlxSizes').innerHTML = p.v.map(function(v){ return '<button type="button" data-id="'+v.id+'"'+(v.a?'':' disabled')+'>'+v.s+'</button>'; }).join('');
+    tlxSize = null; var av = p.v.filter(function(v){ return v.a; }); if (av.length === 1) tlxPick(av[0].id);
+    tlxAddPaint();
+    tlx.classList.remove('buy'); tlx.classList.remove('swap'); void tlx.offsetWidth; tlx.classList.add('swap');
+  }
+  function tlxPick(id){ tlxSize = String(id); [].forEach.call($('tlxSizes').children, function(b){ b.setAttribute('aria-pressed', b.getAttribute('data-id') === tlxSize); }); tlxAddPaint(); }
+  function tlxAddPaint(){ var p = P[LOOKS[tlxK].h], b = $('tlxAdd'); if (soldOut(p)){ b.disabled = true; b.textContent = 'Sold out'; } else { b.disabled = !tlxSize; b.textContent = tlxSize ? 'Add to bag' : 'Select a size'; } }
+  function tlOpen(k, sheet){
+    tlxFill(k); tlxOpen = true; tl.paused = true; clearTimeout(tl.t);
+    tlx.classList.add('open'); tlx.setAttribute('aria-hidden', false); tlx.inert = false; snd('sheet');
+    if (sheet) setTimeout(function(){ tlx.classList.add('buy'); }, 220);
+  }
+  function tlClose(){ if (!tlxOpen) return; tlxOpen = false; tlx.classList.remove('open', 'buy'); tlx.setAttribute('aria-hidden', true); tlx.inert = true; tl.paused = false; tlGo(tlxK); }
+  $('tlxX').onclick = tlClose;
+  $('tlxPin').onclick = function(){ tlx.classList.add('buy'); snd('tick'); };
+  $('tlxSx').onclick = function(){ tlx.classList.remove('buy'); };
+  $('tlxPrev').onclick = function(){ tlxFill(tlxK - 1); snd('tick'); };
+  $('tlxNext').onclick = function(){ tlxFill(tlxK + 1); snd('tick'); };
+  $('tlxSizes').onclick = function(e){ var b = e.target.closest('button'); if (b && !b.disabled){ tlxPick(b.getAttribute('data-id')); snd('tick'); } };
+  $('tlxAdd').onclick = function(){ var p = P[LOOKS[tlxK].h], v = p.v.filter(function(v){ return String(v.id) === tlxSize; })[0]; if (!v) return; tlClose(); addLine(p, v); };
+  $('tlxMore').onclick = function(){ tlClose(); };
+  document.addEventListener('keydown', function(e){
+    if (!tlxOpen) return; e.stopPropagation();
+    if (e.key === 'Escape') tlClose(); else if (e.key === 'ArrowRight') tlxFill(tlxK + 1); else if (e.key === 'ArrowLeft') tlxFill(tlxK - 1);
+  }, true);
+  window.addEventListener('resize', tlLay);
+  // only run the clock while the lineup is on screen
+  if ('IntersectionObserver' in window) new IntersectionObserver(function(es){ es.forEach(function(en){ if (tlxOpen) return; tl.paused = !en.isIntersecting; tlGo(tl.i); }); }, { threshold:.25 }).observe(tlSec);
+  tlGo(0);
 
   /* ---------- site settings: lighting, how products are shown, hover effect ---------- */
   var SET = { layout:'store', theme:'night', mode:'cutout', hover:'zoom', icon:'red' }, setEl = $('settings'), setOpen = false;

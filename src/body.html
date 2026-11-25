@@ -28,6 +28,18 @@
         <div class="splits" id="splits" aria-label="Featured pieces"></div>
         <div class="sigil" aria-hidden="true"><span class="tri"><i class="t1"></i><i class="t2"></i><i class="t3"></i></span></div>
         <div class="wall" id="wall"></div>
+        <section class="tl" id="tl" aria-label="Try the look">
+          <header class="tl-head"><h2>Try the look.</h2><p>Eight looks, shot in one room. Tap a look to shop the piece.</p></header>
+          <div class="tl-stage" id="tlStage" aria-roledescription="carousel"></div>
+          <div class="tl-bar">
+            <div class="tl-prog" id="tlProg"></div>
+            <div class="tl-info">
+              <div class="tl-name"><span id="tlNum"></span><b id="tlName"></b><i id="tlMeta"></i></div>
+              <div class="tl-ctl"><button type="button" id="tlPrev" aria-label="Previous look"><i class="chev l"></i></button><button type="button" id="tlNext" aria-label="Next look"><i class="chev r"></i></button></div>
+            </div>
+            <button type="button" class="tl-piece" id="tlPiece"><span class="tl-pimg" id="tlPimg"></span><span class="tl-pt"><em id="tlPkind"></em><b id="tlPname"></b><span id="tlPprice"></span></span><span class="tl-plus" aria-hidden="true">+</span></button>
+          </div>
+        </section>
         <div class="hero">
           <video class="film" id="film" muted loop playsinline preload="auto" poster="media/film-poster.jpg">
             <source src="media/film.mp4" type="video/mp4">
@@ -327,6 +339,18 @@
   <div class="zoom" id="zoom" role="dialog" aria-label="Photos" aria-hidden="true" inert><button type="button" class="tool" id="zoomX">Close</button><div class="zoom-in" id="zoomIn"></div></div>
   <div class="mbar" id="mbar" aria-hidden="true"><span class="mb-img" id="mbImg"></span><div class="mb-t"><b id="mbName"></b><span><em id="mbPrice"></em><i id="mbSize"></i></span></div><button type="button" class="mb-add" id="mbAdd"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 8.5h14l-1 12H6z"/><path d="M8.8 8.5V7a3.2 3.2 0 0 1 6.4 0v1.5"/></svg><span>Add to bag</span></button></div>
   <div class="sheet" id="szSheet" role="dialog" aria-label="Select size" aria-hidden="true" inert><div class="sheet-h"><p>Select size</p><button type="button" class="tool" id="szX">Close</button></div><div class="sheet-s" id="szList"></div></div>
+  <div class="tlx" id="tlx" role="dialog" aria-modal="true" aria-label="Look" aria-hidden="true" inert>
+    <div class="tlx-top"><span id="tlxNum"></span><b id="tlxName"></b><button type="button" class="tlx-x" id="tlxX" aria-label="Close">&times;</button></div>
+    <div class="tlx-fig" id="tlxFig"><img id="tlxImg" alt=""><button type="button" class="tl-pin" id="tlxPin" aria-label="Shop this piece"><span>1</span></button></div>
+    <p class="tlx-hint">Tap the dot to shop the piece</p>
+    <button type="button" class="tlx-nav l" id="tlxPrev" aria-label="Previous look"><i class="chev l"></i></button><button type="button" class="tlx-nav r" id="tlxNext" aria-label="Next look"><i class="chev r"></i></button>
+    <div class="tlx-sheet" id="tlxSheet">
+      <div class="tlx-row"><span class="tlx-thumb" id="tlxThumb"></span><div><b id="tlxPn"></b><span id="tlxPp"></span></div><button type="button" class="tlx-sx" id="tlxSx" aria-label="Close">&times;</button></div>
+      <p class="tlx-lab">Select size</p><div class="tlx-sizes" id="tlxSizes"></div>
+      <button type="button" class="tlx-add" id="tlxAdd" disabled>Select a size</button>
+      <a class="tlx-more" id="tlxMore" href="#">View full details</a>
+    </div>
+  </div>
   <div class="scrim" id="scrim" hidden></div>
   <aside class="bag" id="bag" role="dialog" aria-modal="true" aria-label="Your bag" aria-hidden="true" inert>
     <div class="bag-head grid">
