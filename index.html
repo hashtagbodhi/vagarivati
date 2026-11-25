@@ -1793,6 +1793,14 @@ img,video,svg{display:block}
 .tl-rig{position:absolute;left:0;top:0;will-change:transform;backface-visibility:hidden;-webkit-backface-visibility:hidden}
 .tl-rig .tl-cam{position:absolute;inset:0;width:100%;height:100%;transform:none!important;transition:none;will-change:auto}
 .tl-sharp{will-change:opacity}
+/* the ring */
+.tl-ring{position:absolute;inset:0}
+.tl-ring .tl-fig{position:absolute;left:50%;bottom:0;top:auto;margin:0;aspect-ratio:auto;transform-origin:50% 100%;transition:none;will-change:transform;filter:none}
+.tl-ring .tl-fig img{width:100%;height:100%;display:block;pointer-events:none}
+.tl-haze{position:absolute;inset:0;background:var(--stage);-webkit-mask-size:100% 100%;mask-size:100% 100%;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;pointer-events:none}
+.tl-ring .tl-fig.on{cursor:zoom-in}
+.tl-stage{cursor:grab}
+@media (max-width:820px){.tl-stage{height:54vh;min-height:380px}}
 </style>
 </head>
 <body>
@@ -3243,32 +3251,42 @@ img,video,svg{display:block}
   var tl = { i:0, t:0, paused:false, dur:5200 }, tlStage = $('tlStage');
   // two copies of the same photo: one soft (the room), one sharp and masked to the person in front
   // both copies live in one rig, and only the rig moves, so they can never drift apart
-  tlStage.innerHTML = '<div class="tl-rig"><div class="tl-cam tl-soft"><img src="media/look/scene.jpg" alt="" draggable="false" decoding="async"></div>'
-    + '<div class="tl-cam tl-sharp"><img src="media/look/scene.jpg" alt="Eight Vagari Vati looks in one studio" draggable="false" decoding="async"></div></div>';
+  // the ring: each look stands on an oval track; the front of the oval is large and low, the back small and high
+  var DIM = {surya:[407,963],padma:[438,951],satya:[409,1006],qing:[471,950],yugen:[466,950],dolma:[488,952],maitri:[457,956],mani:[604,948],milarepa:[457,966],hikari:[384,948],indra:[447,972],yun:[466,947]};
+  tlStage.innerHTML = '<div class="tl-ring">' + LOOKS.map(function(L, k){
+    var u = 'media/ring/' + L.h + '.webp';
+    return '<figure class="tl-fig" data-k="' + k + '"><img src="' + u + '" alt="' + esc(P[L.h].f) + '" draggable="false" decoding="async"><i class="tl-haze" style="-webkit-mask-image:url(' + u + ');mask-image:url(' + u + ')"></i></figure>';
+  }).join('') + '</div>';
   $('tlProg').innerHTML = LOOKS.map(function(){ return '<i><b></b></i>'; }).join('');
-  var tlRig = tlStage.querySelector('.tl-rig'), tlCams = [].slice.call(tlStage.querySelectorAll('.tl-cam')), tlSharp = tlStage.querySelector('.tl-sharp'), tlBars = [].slice.call($('tlProg').children);
-  var SCN = 3600 / 965, G = {}, camX = 0;   // the photo's width over its height; the camera's current position
-  var EASE_OUT = 'cubic-bezier(.16,1,.3,1)', EASE_GLIDE = 'cubic-bezier(.65,0,.35,1)';
+  var tlFigs = [].slice.call(tlStage.querySelectorAll('.tl-fig')), tlHaze = tlFigs.map(function(f){ return f.querySelector('.tl-haze'); }), tlBars = [].slice.call($('tlProg').children);
+  var N = LOOKS.length, rot = 0, goal = 0, raf = 0, G = {};
+  function wrap(d){ d = ((d % N) + N) % N; return d > N / 2 ? d - N : d; }
   function tlGeo(){
-    var sh = tlStage.clientHeight, sw = tlStage.clientWidth, ih = sh * (narrow.matches ? 1.05 : 1.0), iw = ih * SCN;
-    G = { sh:sh, sw:sw, ih:ih, iw:iw, y:sh - ih * .985, min:Math.min(0, sw - iw), push:narrow.matches ? 1 : 1.07 };
-    G.xs = LOOKS.map(function(L){ return Math.min(0, Math.max(G.min, sw / 2 - iw * L.sx / 100)); });
-    tlRig.style.width = iw + 'px'; tlRig.style.height = ih + 'px';
-    tlSharp.style.setProperty('--pw', (iw * .066) + 'px');
+    var sh = tlStage.clientHeight, sw = tlStage.clientWidth, phone = narrow.matches;
+    G = { sh:sh, sw:sw, rx:phone ? sw * .62 : Math.min(sw * .42, sh * 1.0), lift:sh * (phone ? .2 : .24), fh:sh * (phone ? .72 : .84), base:sh * .03, ex:phone ? .62 : .8 };
+    tlFigs.forEach(function(f, k){ var d = DIM[LOOKS[k].h], h = G.fh * d[1] / 1000; f.style.height = h + 'px'; f.style.width = (h * d[0] / d[1]) + 'px'; });
   }
-  // place the camera; ms = 0 follows the finger exactly
-  function tlCam(x, k, ms, ease, push){
-    camX = x; var s = push || 1, ox = G.iw * LOOKS[k].sx / 100;
-    tlRig.style.transition = ms ? 'transform ' + ms + 'ms ' + ease : 'none';
-    tlRig.style.transformOrigin = ox + 'px ' + (G.ih * .93) + 'px';
-    tlRig.style.transform = 'translate3d(' + x + 'px,' + G.y + 'px,0) scale(' + s + ')';
+  function place(){
+    tlFigs.forEach(function(f, k){
+      var d = wrap(k - rot), th = d * 2 * Math.PI / N, z = Math.cos(th), q = Math.min(1, Math.abs(d) / (N / 2)), t = Math.pow(q, G.ex);
+      var s = 1 - .62 * t, x = Math.sin(th) * G.rx, y = -G.base - t * G.lift;
+      f.style.transform = 'translate3d(calc(-50% + ' + x.toFixed(1) + 'px),' + y.toFixed(1) + 'px,0) scale(' + s.toFixed(4) + ')';
+      f.style.zIndex = Math.round(200 + z * 100);
+      f.style.opacity = Math.abs(d) > 3.4 ? Math.max(0, (4.2 - Math.abs(d)) / .8) : 1;
+      tlHaze[k].style.opacity = (Math.min(1, t * 1.3) * .6).toFixed(3);
+      f.classList.toggle('on', Math.abs(d) < .5);
+    });
   }
-  // the light: only the person in front is lit; it fades while the camera travels and returns on arrival
-  function tlLight(k, on, delay){
-    tlSharp.style.setProperty('--px', (G.iw * LOOKS[k].sx / 100) + 'px');
-    tlSharp.style.transition = 'opacity ' + (on ? 520 : 220) + 'ms ease ' + (delay || 0) + 'ms';
-    tlSharp.style.opacity = on ? 1 : 0;
+  // one clock drives the ring: it eases the current angle toward the goal, quick at first and settling softly
+  function run(){
+    cancelAnimationFrame(raf);
+    (function step(){
+      var e = goal - rot;
+      if (Math.abs(e) < .0008){ rot = goal; place(); return; }
+      rot += e * (drag ? 1 : .085); place(); raf = requestAnimationFrame(step);
+    })();
   }
+  function tlLay(){ if (!G.sh || G.sh !== tlStage.clientHeight || G.sw !== tlStage.clientWidth) tlGeo(); run(); tlInfo(); }
   function tlInfo(){
     var n = LOOKS.length, p = P[LOOKS[tl.i].h];
     $('tlNum').textContent = 'Look ' + two(tl.i + 1) + ' / ' + two(n);
@@ -3279,18 +3297,8 @@ img,video,svg{display:block}
     var cur = tlBars[tl.i]; cur.className = ''; void cur.offsetWidth; cur.className = tl.paused ? 'now held' : 'now';
     cur.style.setProperty('--d', tl.dur + 'ms');
   }
-  function tlLay(ms, ease){
-    if (!G.iw || G.sh !== tlStage.clientHeight || G.sw !== tlStage.clientWidth) tlGeo();
-    var x = G.xs[tl.i], dist = Math.abs(x - camX);
-    if (ms === undefined) ms = Math.round(Math.min(1300, 650 + dist * .9));
-    var moving = dist > 2;
-    if (moving){ tlLight(tl.i, false); }
-    tlCam(x, tl.i, ms, ease || EASE_GLIDE, G.push);
-    tlLight(tl.i, true, moving ? ms * .55 : 0);
-    tlInfo();
-  }
-  function tlGo(k, user, ms, ease){
-    tl.i = (k + LOOKS.length) % LOOKS.length; tlLay(ms, ease);
+  function tlGo(k, user){
+    goal = rot + wrap(k - rot); tl.i = ((Math.round(goal) % N) + N) % N; tlLay();
     clearTimeout(tl.t); if (!tl.paused) tl.t = setTimeout(function(){ tlGo(tl.i + 1); }, tl.dur);
     if (user) snd('tick');
   }
@@ -3300,47 +3308,35 @@ img,video,svg{display:block}
   var tlSec = $('tl');
   tlSec.addEventListener('pointerenter', function(e){ if (e.pointerType === 'mouse') tlHold(true); });
   tlSec.addEventListener('pointerleave', function(e){ if (e.pointerType === 'mouse') tlHold(false); });
-  // direct manipulation: the scene follows the finger, a flick carries on, it settles on the nearest look
+  // direct manipulation: the ring turns under the finger, a flick carries it on, it settles on the nearest look
   var drag = null;
-  function nearest(x){ var b = 0, d = 1e9; G.xs.forEach(function(v, k){ var e = Math.abs(v - x); if (e < d){ d = e; b = k; } }); return b; }
   tlStage.addEventListener('pointerdown', function(e){
-    if (!G.iw) tlGeo();
-    drag = { x0:e.clientX, y0:e.clientY, cx:camX, axis:null, pts:[[e.clientX, performance.now()]], id:e.pointerId };
-    // catch the rig where it is, mid-glide, so a touch never makes it jump
-    var m = getComputedStyle(tlRig).transform; if (m && m !== 'none'){ var v = m.match(/-?[\d.]+/g); drag.cx = camX = +v[4]; }
-    tlRig.style.transition = 'none'; tlRig.style.transform = 'translate3d(' + camX + 'px,' + G.y + 'px,0)';
-    clearTimeout(tl.t);
+    if (!G.sh) tlGeo();
+    drag = { x0:e.clientX, y0:e.clientY, r0:rot, axis:null, pts:[[e.clientX, performance.now()]], id:e.pointerId };
+    goal = rot; clearTimeout(tl.t);
   });
   tlStage.addEventListener('pointermove', function(e){
     if (!drag) return; var dx = e.clientX - drag.x0, dy = e.clientY - drag.y0;
     if (!drag.axis){ if (Math.abs(dx) < 6 && Math.abs(dy) < 6) return; drag.axis = Math.abs(dx) > Math.abs(dy) ? 'x' : 'y'; if (drag.axis === 'x') try { tlStage.setPointerCapture(drag.id); } catch(err){} }
     if (drag.axis !== 'x') return;
     e.preventDefault();
-    var x = drag.cx + dx;
-    if (x > 0) x = x * .35; else if (x < G.min) x = G.min + (x - G.min) * .35;   // resistance past the ends
-    tlCam(x, tl.i, 0, '', 1);
-    var k = nearest(x); tlSharp.style.setProperty('--px', (G.iw * LOOKS[k].sx / 100) + 'px');
-    tlSharp.style.transition = 'none'; tlSharp.style.opacity = Math.max(0, 1 - Math.abs(x - G.xs[k]) / 60);
+    var per = G.rx * Math.sin(2 * Math.PI / N);          // px of finger travel for one look
+    rot = goal = drag.r0 - dx / per; place();
     drag.pts.push([e.clientX, performance.now()]); if (drag.pts.length > 6) drag.pts.shift();
   });
   function endDrag(e, cancel){
     if (!drag) return; var d = drag; drag = null;
     if (d.axis !== 'x'){
       if (cancel || d.axis === 'y') return tlGo(tl.i);
-      // a tap: the lit person opens; a tap on someone else brings them forward
-      var r = tlStage.getBoundingClientRect(), px = e.clientX - r.left - camX, best = 0, bd = 1e9;
-      LOOKS.forEach(function(L, k){ var dd = Math.abs(G.iw * L.sx / 100 - px); if (dd < bd){ bd = dd; best = k; } });
-      if (best === tl.i) return tlOpen(tl.i);
-      return tlGo(best, true);
+      var f = e.target.closest && e.target.closest('.tl-fig');
+      if (f){ var k = +f.getAttribute('data-k'); if (k === tl.i) return tlOpen(tl.i); return tlGo(k, true); }
+      return tlGo(tl.i);
     }
-    var a = d.pts[0], b = d.pts[d.pts.length - 1], v = (b[0] - a[0]) / Math.max(16, b[1] - a[1]);   // px per ms
-    var target = nearest(camX + v * 180);
-    if (target === tl.i && Math.abs(v) > .35) target = Math.max(0, Math.min(LOOKS.length - 1, tl.i + (v < 0 ? 1 : -1)));
-    var dist = Math.abs(G.xs[target] - camX), ms = Math.round(Math.max(380, Math.min(900, dist / Math.max(.6, Math.abs(v)) * 2.2)));
-    if (target !== tl.i){ snd('tick'); try { navigator.vibrate && navigator.vibrate(6); } catch(err){} }
-    tl.i = target; tlCam(G.xs[target], target, ms, EASE_OUT, G.push);
-    tlLight(target, true, ms * .45); tlInfo();
-    clearTimeout(tl.t); if (!tl.paused) tl.t = setTimeout(function(){ tlGo(tl.i + 1); }, tl.dur + 1500);
+    var a = d.pts[0], b = d.pts[d.pts.length - 1], v = (b[0] - a[0]) / Math.max(16, b[1] - a[1]);
+    var per = G.rx * Math.sin(2 * Math.PI / N), land = Math.round(rot - v * 170 / per);
+    if (Math.round(rot) === land && Math.abs(v) > .35) land += v < 0 ? 1 : -1;
+    try { navigator.vibrate && navigator.vibrate(6); } catch(err){}
+    snd('tick'); tlGo(land);
   }
   tlStage.addEventListener('pointerup', function(e){ endDrag(e, false); });
   tlStage.addEventListener('pointercancel', function(e){ endDrag(e, true); });
@@ -3379,7 +3375,7 @@ img,video,svg{display:block}
     if (!tlxOpen) return; e.stopPropagation();
     if (e.key === 'Escape') tlClose(); else if (e.key === 'ArrowRight') tlxFill(tlxK + 1); else if (e.key === 'ArrowLeft') tlxFill(tlxK - 1);
   }, true);
-  window.addEventListener('resize', function(){ tlGeo(); tlLay(0); });
+  window.addEventListener('resize', function(){ tlGeo(); place(); });
   // only run the clock while the lineup is on screen
   if ('IntersectionObserver' in window) new IntersectionObserver(function(es){ es.forEach(function(en){ if (tlxOpen) return; tl.paused = !en.isIntersecting; tlGo(tl.i); }); }, { threshold:.25 }).observe(tlSec);
   tlGo(0);
