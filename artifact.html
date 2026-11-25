@@ -1803,6 +1803,15 @@ img,video,svg{display:block}
 /* the mouse: a plain arrow, a little larger than the system one, outlined so it reads on dark and light */
 #app,#app *{cursor:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%2230%22%20height%3D%2230%22%20viewBox%3D%220%200%2030%2030%22%3E%3Cpath%20d%3D%22M3%202%20L3%2024%20L9%2018.5%20L13%2027%20L17%2025.2%20L13.2%2016.8%20L21.5%2016.8%20Z%22%20fill%3D%22%230b0b0b%22%20stroke%3D%22%23ffffff%22%20stroke-width%3D%221.8%22%20stroke-linejoin%3D%22round%22/%3E%3C/svg%3E") 3 2,auto!important}
 #app input,#app textarea{cursor:text!important}
+/* statement glitch: a word jumps to red, splits for a frame, then settles */
+.sh-about .gw{display:inline-block}
+.sh-about .gw.g{animation:gword .52s steps(1) 1}
+@keyframes gword{0%{color:var(--blood);transform:translateX(2px)}16%{color:var(--white);transform:none}30%{color:var(--blood);text-shadow:-2px 0 rgba(255,255,255,.55);transform:translateX(-1px)}52%{color:var(--blood);text-shadow:none;transform:none}74%{color:var(--white)}86%{color:var(--blood)}100%{color:inherit}}
+#app[data-theme="blood"] .sh-about .gw.g{animation-name:gwordb}
+@keyframes gwordb{0%{color:#070102;transform:translateX(2px)}16%{color:var(--white);transform:none}30%{color:#070102;text-shadow:-2px 0 rgba(255,255,255,.4);transform:translateX(-1px)}52%{color:#070102;text-shadow:none;transform:none}74%{color:var(--white)}86%{color:#070102}100%{color:inherit}}
+.sh-about .gw{display:inline;transform:none}
+@keyframes gword{0%{color:var(--blood);text-shadow:2px 0 rgba(255,255,255,.35)}16%{color:var(--white);text-shadow:none}30%{color:var(--blood);text-shadow:-2px 0 rgba(255,255,255,.55)}52%{color:var(--blood);text-shadow:none}74%{color:var(--white)}86%{color:var(--blood)}100%{color:inherit}}
+@keyframes gwordb{0%{color:#070102;text-shadow:2px 0 rgba(255,255,255,.3)}16%{color:var(--white);text-shadow:none}30%{color:#070102;text-shadow:-2px 0 rgba(255,255,255,.4)}52%{color:#070102;text-shadow:none}74%{color:var(--white)}86%{color:#070102}100%{color:inherit}}
 </style>
 <div id="app" data-view="home">
 
@@ -3380,6 +3389,25 @@ img,video,svg{display:block}
   if ('IntersectionObserver' in window) new IntersectionObserver(function(es){ es.forEach(function(en){ if (tlxOpen) return; tl.paused = !en.isIntersecting; tlGo(tl.i); }); }, { threshold:.25 }).observe(tlSec);
   tlGo(0);
 
+  /* the statement above the footer: now and then a word or two flicks to red, like a bad signal */
+  (function(){
+    var p = document.querySelector('.sh-about p'); if (!p) return;
+    p.innerHTML = p.textContent.trim().split(/\s+/).map(function(w){ return '<span class="gw">' + esc(w) + '</span>'; }).join(' ');
+    var ws = [].slice.call(p.querySelectorAll('.gw'));
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    (function tick(){
+      setTimeout(function(){
+        var r = p.getBoundingClientRect();
+        if (S.view === 'home' && !document.hidden && r.bottom > 0 && r.top < innerHeight){
+          var n = 1 + Math.floor(Math.random() * 3), start = Math.floor(Math.random() * ws.length);
+          for (var k = 0; k < n; k++){ (function(w, d){
+            setTimeout(function(){ w.classList.remove('g'); void w.offsetWidth; w.classList.add('g'); setTimeout(function(){ w.classList.remove('g'); }, 520); }, d);
+          })(ws[(start + k) % ws.length], k * 60); }
+        }
+        tick();
+      }, 700 + Math.random() * 1600);
+    })();
+  })();
   /* ---------- site settings: lighting, how products are shown, hover effect ---------- */
   var SET = { layout:'store', theme:'night', mode:'cutout', hover:'zoom', icon:'red' }, setEl = $('settings'), setOpen = false;
   var SET_OK = { layout:['store'], theme:['night','bone','chapel','blood'], mode:['cutout','model'], hover:['zoom','lift','focus'], icon:['red','white','ash','maroon'] };

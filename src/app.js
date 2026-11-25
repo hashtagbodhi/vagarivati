@@ -1138,6 +1138,25 @@
   if ('IntersectionObserver' in window) new IntersectionObserver(function(es){ es.forEach(function(en){ if (tlxOpen) return; tl.paused = !en.isIntersecting; tlGo(tl.i); }); }, { threshold:.25 }).observe(tlSec);
   tlGo(0);
 
+  /* the statement above the footer: now and then a word or two flicks to red, like a bad signal */
+  (function(){
+    var p = document.querySelector('.sh-about p'); if (!p) return;
+    p.innerHTML = p.textContent.trim().split(/\s+/).map(function(w){ return '<span class="gw">' + esc(w) + '</span>'; }).join(' ');
+    var ws = [].slice.call(p.querySelectorAll('.gw'));
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    (function tick(){
+      setTimeout(function(){
+        var r = p.getBoundingClientRect();
+        if (S.view === 'home' && !document.hidden && r.bottom > 0 && r.top < innerHeight){
+          var n = 1 + Math.floor(Math.random() * 3), start = Math.floor(Math.random() * ws.length);
+          for (var k = 0; k < n; k++){ (function(w, d){
+            setTimeout(function(){ w.classList.remove('g'); void w.offsetWidth; w.classList.add('g'); setTimeout(function(){ w.classList.remove('g'); }, 520); }, d);
+          })(ws[(start + k) % ws.length], k * 60); }
+        }
+        tick();
+      }, 700 + Math.random() * 1600);
+    })();
+  })();
   /* ---------- site settings: lighting, how products are shown, hover effect ---------- */
   var SET = { layout:'store', theme:'night', mode:'cutout', hover:'zoom', icon:'red' }, setEl = $('settings'), setOpen = false;
   var SET_OK = { layout:['store'], theme:['night','bone','chapel','blood'], mode:['cutout','model'], hover:['zoom','lift','focus'], icon:['red','white','ash','maroon'] };
