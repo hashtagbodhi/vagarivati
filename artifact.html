@@ -1768,6 +1768,15 @@ img,video,svg{display:block}
 .tl-head p{margin:0}
 .tl-stage{height:clamp(420px,calc(var(--vh,100vh) - var(--top) - 215px),820px)}
 @media (max-width:820px){.tl-head{padding-top:16px}.tl-stage{height:58vh;min-height:400px}}
+/* no lens blur: the room stays sharp and falls back into a haze of the backdrop; only the person in front is fully lit */
+.tl-soft{filter:none}
+.tl-soft::after{content:"";position:absolute;inset:0;background:var(--stage);opacity:.52}
+.tl-focus{--a:calc(var(--fx,50%) - var(--fw,120px)*1.5);--b:calc(var(--fx,50%) - var(--fw,120px)*.75);--c:calc(var(--fx,50%) + var(--fw,120px)*.75);--d:calc(var(--fx,50%) + var(--fw,120px)*1.5)}
+@keyframes tlpull{0%{opacity:1}35%{opacity:0}65%{opacity:0}100%{opacity:1}}
+.tl-stage{height:clamp(440px,calc(var(--vh,100vh) - var(--top) - 150px),860px)}
+#app[data-layout="store"] .catalog>.tl{padding-top:clamp(10px,2vh,20px)}
+@media (max-width:820px){.tl-stage{height:62vh;min-height:420px}}
+.tl-focus{--a:calc(var(--fx,50%) - var(--fw,120px)*.95);--b:calc(var(--fx,50%) - var(--fw,120px)*.5);--c:calc(var(--fx,50%) + var(--fw,120px)*.5);--d:calc(var(--fx,50%) + var(--fw,120px)*.95)}
 </style>
 <div id="app" data-view="home">
 
@@ -1800,7 +1809,7 @@ img,video,svg{display:block}
         <div class="sigil" aria-hidden="true"><span class="tri"><i class="t1"></i><i class="t2"></i><i class="t3"></i></span></div>
         <div class="wall" id="wall"></div>
         <section class="tl" id="tl" aria-label="Try the look">
-          <header class="tl-head"><h2>Try the look.</h2><p>Eight looks, shot in one room. Tap a look to shop the piece.</p></header>
+          <h2 class="sr">Try the look</h2>
           <div class="tl-stage" id="tlStage" aria-roledescription="carousel"></div>
           <div class="tl-bar">
             <div class="tl-prog" id="tlProg"></div>
