@@ -1771,3 +1771,11 @@ img,video,svg{display:block}
 #app[data-layout="store"] .catalog>.tl{padding-top:clamp(10px,2vh,20px)}
 @media (max-width:820px){.tl-stage{height:62vh;min-height:420px}}
 .tl-focus{--a:calc(var(--fx,50%) - var(--fw,120px)*.95);--b:calc(var(--fx,50%) - var(--fw,120px)*.5);--c:calc(var(--fx,50%) + var(--fw,120px)*.5);--d:calc(var(--fx,50%) + var(--fw,120px)*.95)}
+/* lineup v3: the lit layer moves with the camera; its light sits on one person */
+.tl-sharp{-webkit-mask:linear-gradient(90deg,transparent calc(var(--px,50%) - var(--pw,120px)*.95),#000 calc(var(--px,50%) - var(--pw,120px)*.5),#000 calc(var(--px,50%) + var(--pw,120px)*.5),transparent calc(var(--px,50%) + var(--pw,120px)*.95));mask:linear-gradient(90deg,transparent calc(var(--px,50%) - var(--pw,120px)*.95),#000 calc(var(--px,50%) - var(--pw,120px)*.5),#000 calc(var(--px,50%) + var(--pw,120px)*.5),transparent calc(var(--px,50%) + var(--pw,120px)*.95))}
+.tl-cam{transition:none}
+.tl-stage{touch-action:pan-y;-webkit-user-select:none;user-select:none;-webkit-tap-highlight-color:transparent}
+/* footer without the second link group: the shop links sit centred on their own */
+.sf-nav{justify-content:center}
+@media (max-width:820px){.sf-nav nav:first-child a:nth-child(-n+3){border-bottom:1px solid var(--line)}.sf-nav{border-bottom:1px solid var(--line)}}
+@media (max-width:820px){#app[data-layout="store"] .hero-copy{bottom:auto;top:clamp(70px,16%,140px)}}
