@@ -29,6 +29,7 @@
   function label(p){ return p.t + (p.s ? ' ' + p.s : ''); }
 
   var NEWS = ['yugen','qing','hikari','ekatva','satya','yun'], HEART = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20.3S4 15.4 4 9.6A4.3 4.3 0 0 1 12 7.4a4.3 4.3 0 0 1 8 2.2c0 5.8-8 10.7-8 10.7z"/></svg>';
+  var MOTION = { qing:'media/motion/qing.mp4' };   // pieces whose first photograph moves
   /* ---------- the wall ---------- */
   var home = document.querySelector('.v-home'), catalog = $('catalog'), wall = $('wall');
   wall.innerHTML = all.map(function(h){ return cellHTML(h); }).join('');
@@ -205,9 +206,11 @@
   /* ---------- piece ---------- */
   var KIND = { kimonos:'Kimono', dresses:'Dress', tops:'Top', bottoms:'Bottom', layers:'Layer' };
   var viewMode;   // 'cutout' or 'model', set from site settings
+  // pieces whose first photograph moves: a short loop that starts and ends on the still, so it never jumps
+  function motionHTML(h, cls){ return '<video class="' + cls + ' motion" src="' + MOTION[h] + '" poster="' + IMG + P[h].i[0] + '" muted loop playsinline autoplay preload="metadata" aria-hidden="true" disablepictureinpicture></video>'; }
   function cellHTML(h, forced){
     var p = P[h], pic = (forced || viewMode) === 'model'
-      ? '<span class="frame"><img class="shot" src="'+IMG+p.i[0]+'" alt="" loading="lazy" decoding="async" draggable="false"></span>'
+      ? '<span class="frame">' + (MOTION[h] ? motionHTML(h, 'shot') : '<img class="shot" src="'+IMG+p.i[0]+'" alt="" loading="lazy" decoding="async" draggable="false">') + '</span>'
       : '<img class="cut" src="cut2/'+h+'.webp" alt="" loading="lazy" decoding="async" draggable="false">';
     var m = (forced || viewMode) === 'model', alt = m ? p.i[1] : p.i[0], so = soldOut(p);
     var extra = (alt ? '<img class="alt" data-src="'+IMG+alt+'" alt="" draggable="false">' : '')
@@ -252,7 +255,7 @@
     $('buyNote').innerHTML = so ? 'This piece is sold out in every size.' : 'Ships worldwide from India. <a class="link" href="#returns">14-day returns</a>.';
     setNeighbor($('piecePrev'), c.items[k-1]); setNeighbor($('pieceNext'), c.items[k+1]);
     showImg(0, true);
-    $('pGal').innerHTML = p.i.map(function(f, n){ return '<img src="'+IMG+f+'" alt="'+esc(p.f)+', photo '+(n+1)+'"'+(n>1?' loading="lazy"':'')+'>'; }).join('');
+    $('pGal').innerHTML = p.i.map(function(f, n){ return n === 0 && MOTION[p.h] ? motionHTML(p.h, 'pg-motion') : '<img src="'+IMG+f+'" alt="'+esc(p.f)+', photo '+(n+1)+'"'+(n>1?' loading="lazy"':'')+'>'; }).join('');
     var more = catBy[p.c].items.filter(function(h){ return h !== p.h; }).slice(0, 4);
     $('pMore').innerHTML = '<h3 class="sh-h">Others also viewed</h3><div class="pm-row">' + more.map(function(h){ return cellHTML(h, 'model'); }).join('') + '</div>';
     $('pGal').scrollLeft = 0; pieceExtras(p);
