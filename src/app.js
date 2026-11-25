@@ -1021,7 +1021,7 @@
   function wrap(d){ d = ((d % N) + N) % N; return d > N / 2 ? d - N : d; }
   function tlGeo(){
     var sh = tlStage.clientHeight, sw = tlStage.clientWidth, phone = narrow.matches;
-    G = { sh:sh, sw:sw, rx:phone ? sw * .62 : Math.min(sw * .42, sh * 1.0), lift:sh * (phone ? .2 : .24), fh:sh * (phone ? .72 : .84), base:sh * .03, ex:phone ? .62 : .8 };
+    G = { sh:sh, sw:sw, rx:phone ? sw * .62 : Math.min(sw * .42, sh * 1.0), lift:sh * (phone ? .15 : .24), fh:sh * (phone ? .9 : .84), base:sh * (phone ? .015 : .03), ex:phone ? .62 : .8 };
     tlFigs.forEach(function(f, k){ var d = DIM[LOOKS[k].h], h = G.fh * d[1] / 1000; f.style.height = h + 'px'; f.style.width = (h * d[0] / d[1]) + 'px'; });
   }
   function place(){
