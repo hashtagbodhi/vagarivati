@@ -1673,7 +1673,7 @@ img,video,svg{display:block}
 .tl-fig img{width:100%;height:100%;display:block;pointer-events:none}
 .tl-fig.on{cursor:zoom-in}
 .tl-bar{position:relative;z-index:30;padding:0 var(--pad) clamp(22px,4vh,34px);display:grid;grid-template-columns:1fr auto;gap:14px 30px;align-items:end}
-.tl-prog{grid-column:1/-1;display:grid;grid-template-columns:repeat(8,1fr);gap:4px}
+.tl-prog{grid-column:1/-1;display:grid;grid-template-columns:repeat(13,1fr);gap:4px}
 .tl-prog i{height:2px;background:var(--hair);overflow:hidden}
 .tl-prog b{display:block;height:100%;width:0;background:var(--sink)}
 .tl-prog .done b{width:100%}
@@ -3239,7 +3239,7 @@ img,video,svg{display:block}
 
   /* ---------- try the look: eight models in one studio, a lineup that glides ---------- */
   // left to right as they stand in the one studio photograph; sx is each person's centre across that photo
-  var LOOKS = [{h:'surya',sx:10.8,x:57,y:40},{h:'padma',sx:23.4,x:51,y:42},{h:'qing',sx:34.2,x:50,y:44},{h:'yugen',sx:45.4,x:57,y:44},{h:'maitri',sx:56.4,x:50,y:40},{h:'mani',sx:67.9,x:50,y:47},{h:'hikari',sx:78.9,x:57,y:46},{h:'yun',sx:90,x:46,y:66}];
+  var LOOKS = [{h:'surya',sx:5.4,x:57,y:40},{h:'padma',sx:14.8,x:51,y:42},{h:'satya',sx:22.4,x:52,y:40},{h:'qing',sx:30.3,x:50,y:44},{h:'ekatva',sx:38.5,x:50,y:38},{h:'yugen',sx:45.5,x:57,y:44},{h:'dolma',sx:51.5,x:50,y:42},{h:'maitri',sx:57.8,x:50,y:40},{h:'mani',sx:64.6,x:50,y:47},{h:'milarepa',sx:71.7,x:50,y:40},{h:'hikari',sx:79.8,x:57,y:46},{h:'indra',sx:87.9,x:50,y:38},{h:'yun',sx:95.6,x:46,y:66}];
   var tl = { i:0, t:0, paused:false, dur:5200 }, tlStage = $('tlStage');
   // two copies of the same photo: one soft (the room), one sharp and masked to the person in front
   // both copies live in one rig, and only the rig moves, so they can never drift apart
@@ -3247,14 +3247,14 @@ img,video,svg{display:block}
     + '<div class="tl-cam tl-sharp"><img src="media/look/scene.jpg" alt="Eight Vagari Vati looks in one studio" draggable="false" decoding="async"></div></div>';
   $('tlProg').innerHTML = LOOKS.map(function(){ return '<i><b></b></i>'; }).join('');
   var tlRig = tlStage.querySelector('.tl-rig'), tlCams = [].slice.call(tlStage.querySelectorAll('.tl-cam')), tlSharp = tlStage.querySelector('.tl-sharp'), tlBars = [].slice.call($('tlProg').children);
-  var SCN = 2800 / 1185, G = {}, camX = 0;   // the photo's width over its height; the camera's current position
+  var SCN = 3600 / 893, G = {}, camX = 0;   // the photo's width over its height; the camera's current position
   var EASE_OUT = 'cubic-bezier(.16,1,.3,1)', EASE_GLIDE = 'cubic-bezier(.65,0,.35,1)';
   function tlGeo(){
     var sh = tlStage.clientHeight, sw = tlStage.clientWidth, ih = sh * (narrow.matches ? 1.05 : 1.0), iw = ih * SCN;
     G = { sh:sh, sw:sw, ih:ih, iw:iw, y:sh - ih * .985, min:Math.min(0, sw - iw), push:narrow.matches ? 1 : 1.07 };
     G.xs = LOOKS.map(function(L){ return Math.min(0, Math.max(G.min, sw / 2 - iw * L.sx / 100)); });
     tlRig.style.width = iw + 'px'; tlRig.style.height = ih + 'px';
-    tlSharp.style.setProperty('--pw', (iw * .105) + 'px');
+    tlSharp.style.setProperty('--pw', (iw * .066) + 'px');
   }
   // place the camera; ms = 0 follows the finger exactly
   function tlCam(x, k, ms, ease, push){
